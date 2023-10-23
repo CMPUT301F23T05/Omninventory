@@ -12,26 +12,26 @@
         android:layout_height="wrap_content"
         android:textSize="30sp"
         android:textAlignment="center"
-        android:background="@color/top_banner_salmon_background"
-        android:text="OMNINVENTORY">
+        android:background="@color/salmon_banner"
+        android:text="@string/top_banner_text">
     </TextView>
 
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="10dp"
-        android:background="@color/top_banner_blue_background">
+        android:background="@color/blue_banner">
     </TextView>
 
-    <TableLayout
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:orientation="vertical"
-        android:weightSum="10">
+        android:weightSum="10"
+        android:orientation="vertical">
 
         <TableRow
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="9">
+            android:layout_height="fill_parent"
+            android:layout_weight="2">
 
             <ListView
                 android:id="@+id/item_list"
@@ -43,16 +43,16 @@
 
         <TableRow
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/gray_banner">
+            android:layout_height="fill_parent"
+            android:background="@color/gray_banner"
+            android:layout_weight="8">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Total Estimated Value"
-                android:layout_marginLeft="5dp"
+                android:text="@string/estimated_value_text"
+                android:layout_marginStart="5dp"
                 android:textSize="30sp">
             </TextView>
 
@@ -60,12 +60,25 @@
                 android:id="@+id/total_charge_text"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
                 android:text="$0"
                 android:textSize="40sp">
             </TextView>
 
         </TableRow>
 
-    </TableLayout>
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="10dp"
+            android:textAlignment="center"
+            android:background="@color/salmon_banner">
+        </TextView>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="75dp"
+            android:background="@color/blue_banner">
+        </TextView>
+
+    </LinearLayout>
 </LinearLayout>
