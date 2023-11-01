@@ -2,7 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="salmon_banner">#F3A8A8</color>
-    <color name="blue_banner">#9FE0F3</color>
+    <color name="salmon_banner">#F5A9B8</color>
+    <color name="blue_banner">#5BCEFA</color>
     <color name="gray_banner">#B6B6B6</color>
 </resources>
