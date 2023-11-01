@@ -44,8 +44,8 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Log.d("MainActivity", "click");
 
-//                Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
-//                startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
+                startActivity(intent);
             }
         });
 
