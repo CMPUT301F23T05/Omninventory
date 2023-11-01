@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -27,6 +29,13 @@ public class DetailsActivity extends AppCompatActivity  {
         // === UI setup
         titleText.setText(getString(R.string.details_title_text));
 
-        // TODO: back button of some sort
+        // === set up click actions
+        final ImageButton backButton = findViewById(R.id.back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // return to MainActivity
+                finish();
+            }
+        });
     }
 }

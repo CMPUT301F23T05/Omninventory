@@ -11,4 +11,6 @@
     <string name="add_button_label">Add Item Button</string>
     <string name="delete_button_label">Delete Item Button</string>
     <string name="profile_button_label">Profile Button</string>
+    <string name="back_button_label">Back Button</string>
+
 </resources>
