@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
         itemListData.add(new InventoryItem("Cat", "beloved family pet"));
         itemListData.add(new InventoryItem("Laptop", "for developing android apps <3"));
+        itemListData.add(new InventoryItem("301 Group Members", "their names are Castor, Patrick, Kevin, Aron, Rose, and Zachary. this item has a long name and description so we can see what that looks like"));
 
         // === set up onClick actions
         itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
