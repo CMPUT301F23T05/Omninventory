@@ -1,5 +1,16 @@
 <resources>
     <string name="app_name">Omninventory</string>
-    <string name="top_banner_text">OMNINVENTORY</string>
+
+    <!-- text that goes in title_bar layout -->
+    <string name="main_title_text">OMNINVENTORY</string>
+    <string name="details_title_text">ITEM DETAILS</string>
+
     <string name="estimated_value_text">Total Estimated Value</string>
+    <string name="sort_button_label">Sort Button</string>
+    <string name="tag_button_label">Tag Button</string>
+    <string name="add_button_label">Add Item Button</string>
+    <string name="delete_button_label">Delete Item Button</string>
+    <string name="profile_button_label">Profile Button</string>
+    <string name="back_button_label">Back Button</string>
+
 </resources>

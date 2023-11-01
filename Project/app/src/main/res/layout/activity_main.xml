@@ -1,84 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textSize="30sp"
-        android:textAlignment="center"
-        android:background="@color/salmon_banner"
-        android:text="@string/top_banner_text">
-    </TextView>
-
-    <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="10dp"
-        android:background="@color/blue_banner">
-    </TextView>
+    <include layout="@layout/title_bar"/>
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:weightSum="10"
         android:orientation="vertical">
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="2">
+        <ListView
+            android:id="@+id/item_list"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="75"/>
 
-            <ListView
-                android:id="@+id/item_list"
-                android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="5"
+            android:background="#D5D5D5"
+            android:orientation="horizontal">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent">
-            </ListView>
 
-        </TableRow>
+                <TextView
+                    android:id="@+id/est_val_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/estimated_value_text"
+                    android:textSize="20sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
 
-        <TableRow
+                <TextView
+                    android:id="@+id/total_charge_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="24dp"
+                    android:text="$0"
+                    android:textSize="25sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/banner_bar"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:background="@color/gray_banner"
-            android:layout_weight="8">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/salmon_banner"
+            android:textAlignment="center"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/estimated_value_text"
-                android:layout_marginStart="5dp"
-                android:textSize="30sp">
-            </TextView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="10"
+            android:background="@color/blue_banner"
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/total_charge_text"
+            <ImageButton
+                android:id="@+id/sortFilterButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginEnd="10dp"
-                android:text="$0"
-                android:textSize="40sp">
-            </TextView>
+                android:background="@color/blue_banner"
+                android:contentDescription="@string/sort_button_label"
+                android:cropToPadding="false"
+                android:padding="10dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/generic_sorting_64" />
 
-        </TableRow>
+            <ImageButton
+                android:id="@+id/tagButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/blue_banner"
+                android:contentDescription="@string/tag_button_label"
+                android:padding="10dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/tag_5_64" />
 
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="10dp"
-            android:textAlignment="center"
-            android:background="@color/salmon_banner">
-        </TextView>
+            <ImageButton
+                android:id="@+id/addItemButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/blue_banner"
+                android:contentDescription="@string/add_button_label"
+                android:padding="10dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/add_64" />
 
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="75dp"
-            android:background="@color/blue_banner">
-        </TextView>
+            <ImageButton
+                android:id="@+id/deleteItemButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/blue_banner"
+                android:contentDescription="@string/delete_button_label"
+                android:padding="10dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/delete_64" />
+
+            <ImageButton
+                android:id="@+id/profileButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/blue_banner"
+                android:contentDescription="@string/profile_button_label"
+                android:padding="10dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/user_64" />
+
+        </LinearLayout>
 
     </LinearLayout>
 </LinearLayout>

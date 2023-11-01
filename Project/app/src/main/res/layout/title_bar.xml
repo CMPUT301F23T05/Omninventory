@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:text="@{title_text}">
+
+    <TextView
+        android:id="@+id/title_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:textAlignment="center"
+        android:background="@color/salmon_banner"
+        android:textColor="@color/white"
+        android:text="@string/main_title_text">
+    </TextView>
+<!--    Override the android:text attribute in Activity code -->
+
+    <TextView
+        android:id="@+id/title_band"
+        android:layout_width="fill_parent"
+        android:layout_height="10dp"
+        android:background="@color/blue_banner">
+    </TextView>
+
+</LinearLayout>
