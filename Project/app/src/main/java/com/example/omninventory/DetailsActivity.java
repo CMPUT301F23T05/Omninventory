@@ -12,6 +12,10 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.w3c.dom.Text;
+
+import java.security.InvalidParameterException;
+
 /**
  * Activity for viewing an item's detailed fields.
  * Will reuse (or extend?) with different behaviour for both viewing & editing items.
@@ -25,9 +29,26 @@ public class DetailsActivity extends AppCompatActivity  {
 
         // === get references to Views
         final TextView titleText = findViewById(R.id.title_text);
+        final TextView itemNameText = findViewById(R.id.item_name_text);
+        final TextView itemDescriptionText = findViewById(R.id.item_description_text);
+
+        // === load info passed from MainActivity (hopefully)
+        InventoryItem item;
+        if (savedInstanceState != null) {
+            // TODO: this will probably be used later when we go from this activity to others; for now, error
+            throw new RuntimeException("DetailsActivity opened with a savedInstanceState");
+        }
+        else if (getIntent().getExtras() == null) {
+            throw new RuntimeException("DetailsActivity opened without an InventoryItem");
+        }
+        else {
+            item = (InventoryItem) getIntent().getExtras().getSerializable("item");
+        }
 
         // === UI setup
         titleText.setText(getString(R.string.details_title_text));
+        itemNameText.setText(item.getName());
+        itemDescriptionText.setText(item.getDescription());
 
         // === set up click actions
         final ImageButton backButton = findViewById(R.id.back_button);

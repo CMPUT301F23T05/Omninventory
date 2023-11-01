@@ -39,15 +39,16 @@ public class MainActivity extends AppCompatActivity {
         itemListAdapter = new InventoryItemAdapter(this, itemListData);
         itemList.setAdapter(itemListAdapter);
 
-        itemListData.add(new InventoryItem("Cat"));
+        itemListData.add(new InventoryItem("Cat", "beloved family pet"));
+        itemListData.add(new InventoryItem("Laptop", "for developing android apps <3"));
 
         // === set up onClick actions
         itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Log.d("MainActivity", "click");
-
                 Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
+                intent.putExtra("item", itemListData.get(position));
                 startActivity(intent);
             }
         });
