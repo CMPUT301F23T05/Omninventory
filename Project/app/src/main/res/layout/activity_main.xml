@@ -8,22 +8,7 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/title_text"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:textSize="30sp"
-        android:textAlignment="center"
-        android:background="@color/salmon_banner"
-        android:text="@string/top_banner_text">
-    </TextView>
-
-    <TextView
-        android:id="@+id/title_bar"
-        android:layout_width="fill_parent"
-        android:layout_height="10dp"
-        android:background="@color/blue_banner">
-    </TextView>
+    <include layout="@layout/title_bar"/>
 
     <LinearLayout
         android:layout_width="fill_parent"
