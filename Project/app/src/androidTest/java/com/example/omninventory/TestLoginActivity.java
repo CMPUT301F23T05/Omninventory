@@ -37,7 +37,7 @@ public class TestLoginActivity {
     public void testSignupToLogin(){
         //From login screen go to sign up screen, go back to login screen
     }
-    
+
     @Test
     public void testInvalidLogin(){
         //Try to login with invalid user information
