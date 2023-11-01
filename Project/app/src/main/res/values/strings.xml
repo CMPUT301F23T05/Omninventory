@@ -3,7 +3,7 @@
 
     <!-- text that goes in title_bar layout -->
     <string name="main_title_text">OMNINVENTORY</string>
-    <string name="details_title_text">Item Details</string>
+    <string name="details_title_text">ITEM DETAILS</string>
 
     <string name="estimated_value_text">Total Estimated Value</string>
     <string name="sort_button_label">Sort Button</string>
