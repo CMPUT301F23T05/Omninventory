@@ -20,7 +20,7 @@
 <!--    Override the android:text attribute in Activity code -->
 
     <TextView
-        android:id="@+id/title_bar"
+        android:id="@+id/title_band"
         android:layout_width="fill_parent"
         android:layout_height="10dp"
         android:background="@color/blue_banner">

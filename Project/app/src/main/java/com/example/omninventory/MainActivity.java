@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -18,7 +19,6 @@ import java.util.ArrayList;
  */
 public class MainActivity extends AppCompatActivity {
 
-    private ListView itemList;
     private ArrayList<InventoryItem> itemListData;
     private InventoryItemAdapter itemListAdapter;
 
@@ -28,23 +28,28 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // === get references to Views
-        itemList = findViewById(R.id.item_list);
+        final ListView itemList = findViewById(R.id.item_list);
+        final TextView titleText = findViewById(R.id.title_text);
+
+        // === UI setup
+        titleText.setText(getString(R.string.main_title_text));
 
         // === set up itemList
-        // TODO: this is a string array for now, fix
         itemListData = new ArrayList<InventoryItem>();
         itemListAdapter = new InventoryItemAdapter(this, itemListData);
         itemList.setAdapter(itemListAdapter);
 
-        itemListData.add(new InventoryItem("Cat"));
+        itemListData.add(new InventoryItem("Cat", "beloved family pet"));
+        itemListData.add(new InventoryItem("Laptop", "for developing android apps <3"));
+        itemListData.add(new InventoryItem("301 Group Members", "their names are Castor, Patrick, Kevin, Aron, Rose, and Zachary. this item has a long name and description so we can see what that looks like"));
 
         // === set up onClick actions
         itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Log.d("MainActivity", "click");
-
                 Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
+                intent.putExtra("item", itemListData.get(position));
                 startActivity(intent);
             }
         });
