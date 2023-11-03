@@ -106,8 +106,8 @@ public class MainActivity extends AppCompatActivity {
 
     // todo: document ID is auto-generated for now, may change later
     public void onAddItemOKPressed(InventoryItem item) {
-        DocumentReference invItemDocRef = db.collection("inventoryItems").document();
         HashMap<String, Object> data = new HashMap<>();
+        data.put("user", currentUser);
         data.put("description", item.getDescription());
         data.put("comment", item.getComment());
         data.put("make", item.getMake());
