@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,12 +19,12 @@ public class InventoryItemAdapter extends ArrayAdapter<InventoryItem> {
      * for layout display of InventoryItem.
      */
 
-    private ArrayList<InventoryItem> inventoryItemList;
+    private ArrayList<InventoryItem> itemListData;
     private Context context;
 
     public InventoryItemAdapter(Context context, ArrayList<InventoryItem> items) {
         super(context, 0, items);
-        this.inventoryItemList = items;
+        this.itemListData = items;
         this.context = context;
     }
 
@@ -36,6 +37,13 @@ public class InventoryItemAdapter extends ArrayAdapter<InventoryItem> {
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.item_list_content, parent, false);
         }
+
+        InventoryItem item = itemListData.get(position);
+        TextView itemNameText = view.findViewById(R.id.item_name_text);
+        TextView itemDescriptionText = view.findViewById(R.id.item_description_text);
+
+        itemNameText.setText(item.getName());
+        itemDescriptionText.setText(item.getDescription());
 
         return view;
     }

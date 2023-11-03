@@ -1,12 +1,13 @@
 package com.example.omninventory;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
 /**
  * Hold all data stored in fields for each inventory item.
  */
-public class InventoryItem {
+public class InventoryItem implements Serializable {
     private String name;
     private String description;
     private String comment;
@@ -18,9 +19,10 @@ public class InventoryItem {
     private ArrayList<Object> tags; // placeholder
     private ArrayList<Object> images; // placeholder
 
-    public InventoryItem(String name) {
+    public InventoryItem(String name, String description) {
         // placeholder constructor for testing, just has name
         this.name = name;
+        this.description = description;
     }
 
     public String getName() {
