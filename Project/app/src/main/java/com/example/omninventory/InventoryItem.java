@@ -7,7 +7,9 @@ import java.util.Date;
 /**
  * Hold all data stored in fields for each inventory item.
  */
-public class InventoryItem implements Serializable {
+
+InventoryItem implements Serializable {
+    private String username;
     private String name;
     private String description;
     private String comment;
