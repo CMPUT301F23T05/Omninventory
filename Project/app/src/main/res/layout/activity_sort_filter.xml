@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".DetailsActivity">
+
+    <!--Override the android:text attribute in Activity code to ""SORT AND FILTER-->
+    <include layout="@layout/title_bar"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="75">
+
+        <Spinner
+            android:id="@+id/sort_dropdown_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/banner_bar"
+            android:layout_width="fill_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/salmon_banner"
+            android:textAlignment="center"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="10"
+            android:background="@color/blue_banner"
+            android:orientation="horizontal">
+
+            <!-- TODO: Need a back button here-->
+            <ImageButton
+                android:id="@+id/back_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/blue_banner"
+                android:contentDescription="@string/back_button_label"
+                android:cropToPadding="false"
+                android:padding="10dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/add_64" />
+            <!--            TODO: figure out why i cant add a png to this folder and switch with an actual back button -->
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+</LinearLayout>

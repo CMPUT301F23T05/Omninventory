@@ -4,6 +4,7 @@
     <!-- text that goes in title_bar layout -->
     <string name="main_title_text">OMNINVENTORY</string>
     <string name="details_title_text">ITEM DETAILS</string>
+    <string name="sort_filter_title_text">SORT AND FILTER</string>
 
     <string name="estimated_value_text">Total Estimated Value</string>
     <string name="sort_button_label">Sort Button</string>
@@ -12,5 +13,13 @@
     <string name="delete_button_label">Delete Item Button</string>
     <string name="profile_button_label">Profile Button</string>
     <string name="back_button_label">Back Button</string>
+
+    <string-array name="sort_dropdown_options">
+        <item>Date</item>
+        <item>Description</item>
+        <item>Make</item>
+        <item>Estimated Value</item>
+        <item>Tags</item>
+    </string-array>
 
 </resources>
