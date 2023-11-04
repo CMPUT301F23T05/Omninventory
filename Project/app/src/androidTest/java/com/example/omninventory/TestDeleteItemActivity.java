@@ -7,21 +7,23 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class TestDeleteItemActivity {
 
-    public void addTestItems() {
-        //adds a set of default items to be tested on
-        //these test items should have all necessary info different tags, photos, barcodes, and serial numbers
-    }
+    TestItems testItems;
+
 
     public void testDeleteItem(){
+        testItems.generateTestItems();
         //In the inventory screen, select an item
         //Select delete item
         //validate the item is deleted
+        testItems.wipeTestItems();
     }
 
     public void testDeleteMultipleItem(){
+        testItems.generateTestItems();
         //In the inventory screen select multiple items
         //select delete items
         //validate the items are deleted.
+        testItems.wipeTestItems();
     }
 
 

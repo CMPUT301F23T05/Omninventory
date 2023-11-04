@@ -11,70 +11,73 @@ import org.junit.runner.RunWith;
 public class TestEditItemActivity {
 
     //Rule to have activity start in the inventory screen
-    public void addTestItems() {
-        //adds a set of default items to be tested on
-        //these test items should have all necessary info different tags, photos, barcodes, and serial numbers
-    }
-
+    TestItems testItems;
 
     @Test
     public void testEditItemBase(){
-        addTestItems();
+        testItems.generateTestItems();
         // start on the inventory screen click on an inventory item
         //in the Edit item screen change the information about a certain item
         //edit the item
         //validate in the inventory screen that the item was edited
+        testItems.wipeTestItems();
     }
 
     @Test
     public void testEditItemWithTag(){
-        addTestItems();
+        testItems.generateTestItems();
         //Start on inventory screen, click on an inventory item
         //in the edit item screen, click on the edit tag
         //edit the tags on the item
         //apply the changes
         //validate from the inventory screen that the item's tags are changed
+        testItems.wipeTestItems();
     }
 
     @Test
     public void testEditItemWithPhotos(){
-        addTestItems();
+        testItems.generateTestItems();
         //Start on inventory screen, click on an inventory item
         //in the edit item screen, click on edit photos
         //change photos of the item
         //apply the changes
         //validate from the inventory screen that the item has different photos
+        testItems.wipeTestItems();
     }
 
     @Test
     public void testEditItemWithBarcode(){
-        addTestItems();
+        testItems.generateTestItems();
         //Start on inventory screen, click on an inventory item
         //in the edit item screen, click on change barcode
         //edit the barcode of the item
         //apply the changes
         //validate from the inventory screen that the barcode has changed
+        testItems.wipeTestItems();
     }
 
     @Test
     public void testEditItemWithSerialNumber(){
-        addTestItems();
+        testItems.generateTestItems();
         //Start on inventory screen, click on an inventory item
         //in the edit item screen, click on change serial number
         //edit the serial number of the item
         //apply the changes
         //validate from the inventory screen that the item has serial number has changed
+        testItems.wipeTestItems();
     }
 
     @Test
     public void testEditMultipleItemWithTags(){
-        addTestItems();
+        testItems.generateTestItems();
         //Start on inventory screen, Select multiple inventory items
         //in the edit item screen, click on edit tags
         //add new tags to the item and remove common tags from item
         //apply the changes
         //validate from the inventory screen that the item's tags are changed.
+        testItems.wipeTestItems();
     }
+
 }
 
 
