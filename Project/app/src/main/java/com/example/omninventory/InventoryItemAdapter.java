@@ -1,6 +1,7 @@
 package com.example.omninventory;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,11 @@ public class InventoryItemAdapter extends ArrayAdapter<InventoryItem> {
         }
 
         InventoryItem item = itemListData.get(position);
+        if (item.isSelected()) {
+            view.setBackgroundColor(Color.LTGRAY);
+        } else {
+            view.setBackgroundColor(Color.WHITE);
+        }
         TextView itemNameText = view.findViewById(R.id.item_name_text);
         TextView itemDescriptionText = view.findViewById(R.id.item_description_text);
 

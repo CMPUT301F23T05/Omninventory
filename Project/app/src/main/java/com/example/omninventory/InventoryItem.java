@@ -13,16 +13,19 @@ public class InventoryItem implements Serializable {
     private String comment;
     private String make;
     private String model;
-    private String serialno;
+    private String serialNo;
     private Integer value;
     private Date date;
     private ArrayList<Object> tags; // placeholder
     private ArrayList<Object> images; // placeholder
 
+    private boolean isSelected;
+
     public InventoryItem(String name, String description) {
         // placeholder constructor for testing, just has name
         this.name = name;
         this.description = description;
+        this.isSelected = false;
     }
 
     public String getName() {
@@ -65,12 +68,12 @@ public class InventoryItem implements Serializable {
         this.model = model;
     }
 
-    public String getSerialno() {
-        return serialno;
+    public String getSerialNo() {
+        return serialNo;
     }
 
-    public void setSerialno(String serialno) {
-        this.serialno = serialno;
+    public void setSerialNo(String serialNo) {
+        this.serialNo = serialNo;
     }
 
     public Integer getValue() {
@@ -88,4 +91,10 @@ public class InventoryItem implements Serializable {
     public void setDate(Date date) {
         this.date = date;
     }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean isSelected) { this.isSelected = isSelected;}
 }

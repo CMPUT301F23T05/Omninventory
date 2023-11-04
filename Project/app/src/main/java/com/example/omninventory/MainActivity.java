@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -51,6 +52,21 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
                 intent.putExtra("item", itemListData.get(position));
                 startActivity(intent);
+            }
+        });
+
+
+        itemList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+                InventoryItem item = itemListData.get(position);
+                if (item.isSelected()) {
+                    item.setSelected(false);
+                } else {
+                    item.setSelected(true);
+                }
+                itemListAdapter.notifyDataSetChanged();
+                return true;
             }
         });
 
