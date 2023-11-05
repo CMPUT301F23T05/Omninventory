@@ -5,10 +5,13 @@ import static android.content.ContentValues.TAG;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -44,7 +47,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // Set up database
+
+        // === set up database
         db = FirebaseFirestore.getInstance();
         inventoryItemRef = db.collection("inventoryItems");
 
@@ -53,7 +57,13 @@ public class MainActivity extends AppCompatActivity {
         final TextView titleText = findViewById(R.id.title_text);
 
         // === UI setup
+        // set title text
         titleText.setText(getString(R.string.main_title_text));
+        // add taskbar
+        LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View taskbarLayout = taskbarInflater.inflate(R.layout.main_taskbar, null);
+        ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.taskbar_holder);
+        taskbarHolder.addView(taskbarLayout);
 
         // === set up itemList
         itemListData = new ArrayList<InventoryItem>();

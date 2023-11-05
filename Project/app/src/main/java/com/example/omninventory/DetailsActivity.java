@@ -1,9 +1,12 @@
 package com.example.omninventory;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -46,9 +49,19 @@ public class DetailsActivity extends AppCompatActivity  {
         }
 
         // === UI setup
+
+        // set title text
         titleText.setText(getString(R.string.details_title_text));
+
+        // add item details
         itemNameText.setText(item.getName());
         itemDescriptionText.setText(item.getDescription());
+
+        // add taskbar
+        LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View taskbarLayout = taskbarInflater.inflate(R.layout.view_item_taskbar, null);
+        ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.taskbar_holder);
+        taskbarHolder.addView(taskbarLayout);
 
         // === set up click actions
         final ImageButton backButton = findViewById(R.id.back_button);

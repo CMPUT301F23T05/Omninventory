@@ -11,9 +11,9 @@
     <include layout="@layout/title_bar"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="75">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
 
         <TextView
             android:id="@+id/item_name_text"
@@ -21,51 +21,17 @@
             android:layout_height="wrap_content"
             android:text="name"
             app:layout_constraintTop_toTopOf="parent"
-            android:textSize="35dp"/>
+            android:textSize="35sp"/>
         <TextView
             android:id="@+id/item_description_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="description"
-            android:textSize="20dp"
+            android:textSize="20sp"
             app:layout_constraintTop_toBottomOf="@+id/item_name_text"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+    <include layout="@layout/taskbar_holder"/>
+    <!--        add view_item_taskbar.xml layout to this in code -->
 
-        <TextView
-            android:id="@+id/banner_bar"
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@color/salmon_banner"
-            android:textAlignment="center"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
-            android:background="@color/blue_banner"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/back_button"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@color/blue_banner"
-                android:contentDescription="@string/back_button_label"
-                android:cropToPadding="false"
-                android:padding="10dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/add_64" />
-<!--            TODO: figure out why i cant add a png to this folder and switch with an actual back button -->
-
-        </LinearLayout>
-
-
-
-    </LinearLayout>
 </LinearLayout>
