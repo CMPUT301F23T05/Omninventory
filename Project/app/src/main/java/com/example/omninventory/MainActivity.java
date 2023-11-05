@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -24,6 +25,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         // === set up database
         InventoryRepository db = new InventoryRepository();
-        
+
         // === get references to Views
         final ListView itemList = findViewById(R.id.item_list);
         final TextView titleText = findViewById(R.id.title_text);
@@ -65,9 +70,12 @@ public class MainActivity extends AppCompatActivity {
         itemListAdapter = new InventoryItemAdapter(this, itemListData);
         itemList.setAdapter(itemListAdapter);
 
-        itemListData.add(new InventoryItem("Cat", "beloved family pet"));
-        itemListData.add(new InventoryItem("Laptop", "for developing android apps <3"));
-        itemListData.add(new InventoryItem("301 Group Members", "their names are Castor, Patrick, Kevin, Aron, Rose, and Zachary. this item has a long name and description so we can see what that looks like"));
+        // set up listener for getting Firestore data
+        db.setupInventoryItemList(itemListAdapter);
+
+//        itemListData.add(new InventoryItem("Cat", "beloved family pet"));
+//        itemListData.add(new InventoryItem("Laptop", "for developing android apps <3"));
+//        itemListData.add(new InventoryItem("301 Group Members", "their names are Castor, Patrick, Kevin, Aron, Rose, and Zachary. this item has a long name and description so we can see what that looks like"));
 
         // === set up onClick actions
         itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

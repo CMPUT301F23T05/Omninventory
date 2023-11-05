@@ -5,24 +5,86 @@ import static android.content.ContentValues.TAG;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+/**
+ * Encapsulate behaviours related to Firestore, going from Firestore document to InventoryItem and
+ * vice-versa, etc.
+ */
 public class InventoryRepository {
 
     private FirebaseFirestore db;
     private CollectionReference usersRef;
     private CollectionReference inventoryItemsRef;
 
+    /**
+     * Basic constructor that sets up connection to Firestore and references.
+     */
     public InventoryRepository() {
-        this.db = FirebaseFirestore.getInstance();
+        db = FirebaseFirestore.getInstance();
+        usersRef = db.collection("users");
+        inventoryItemsRef = db.collection("inventoryItems");
+    }
+
+    /**
+     * Sets up an InventoryItemAdapter as a list that is automatically updated when inventoryItem
+     * changes.
+     * @param adapter
+     */
+    public void setupInventoryItemList(InventoryItemAdapter adapter) {
+        inventoryItemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.d(TAG, error.toString());
+                    return;
+                }
+                if (value != null) {
+                    adapter.clear(); // clear existing list data
+                    for (QueryDocumentSnapshot doc : value) {
+                        InventoryItem item = convertDocumentToInventoryItem(doc);
+                        adapter.add(item);
+                    }
+                }
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+    }
+
+    /**
+     * Convert fields of a QueryDocumentSnapshot from the inventoryItem collection to an
+     * InventoryItem.
+     * @param doc
+     * @return
+     */
+    public InventoryItem convertDocumentToInventoryItem(QueryDocumentSnapshot doc) {
+        InventoryItem item = new InventoryItem(
+            doc.getString("name"),
+            doc.getString("description"),
+            doc.getString("comment"),
+            doc.getString("make"),
+            doc.getString("model"),
+            doc.getString("serialno"),
+            doc.getLong("value").intValue(),
+            doc.getDate("date")
+        );
+
+        return item;
     }
 
     /**

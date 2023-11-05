@@ -9,17 +9,28 @@ import java.util.Date;
  */
 
 public class InventoryItem implements Serializable {
-    private String username;
     private String name;
     private String description;
     private String comment;
     private String make;
     private String model;
     private String serialno;
-    private Integer value;
+    private Integer value; // TODO: firestore only stores numeric values as longs; should we just use longs for value?
     private Date date;
     private ArrayList<Object> tags; // placeholder
     private ArrayList<Object> images; // placeholder
+
+    public InventoryItem() {
+        // empty constructor, initialize everything with default values
+        this.name = "";
+        this.description = "";
+        this.comment = "";
+        this.make = "";
+        this.model = "";
+        this.serialno = "";
+        this.value = 0;
+        this.date = new Date();
+    }
 
     public InventoryItem(String name, String description) {
         // placeholder constructor for testing, just has name
@@ -31,6 +42,20 @@ public class InventoryItem implements Serializable {
         this.serialno = "123";
         this.value = 0;
         this.date = new Date();
+    }
+
+    public InventoryItem(String name, String description, String comment,
+                         String make, String model, String serialno, Integer value, Date date) {
+        // full constructor
+        this.name = name;
+        this.description = description;
+        this.comment = comment;
+        this.make = make;
+        this.model = model;
+        this.serialno = serialno;
+        this.value = value;
+        this.date = date;
+        // TODO: tags & images
     }
 
     public String getName() {

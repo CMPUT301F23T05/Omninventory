@@ -28,6 +28,10 @@ public class InventoryItemAdapter extends ArrayAdapter<InventoryItem> {
         this.context = context;
     }
 
+    public ArrayList<InventoryItem> getList() {
+        return itemListData;
+    }
+
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
