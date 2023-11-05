@@ -12,20 +12,30 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
+
     <style name="item_edit_textinputlayout" parent="Widget.Design.TextInputLayout">
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">20sp</item>
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="boxStrokeColor">@color/salmon_banner</item>
-        <item name="android:textColorHint">@color/salmon_banner</item>
+        <item name="errorTextAppearance">@style/error_text_appearance</item>
+        <item name="hintTextAppearance">@style/hint_text_appearance</item>
     </style>
-    <style name="item_edit_edittext" parent="Widget.AppCompat.EditText">
-        <item name="android:textColor">@color/black</item>
-        <item name="android:textSize">20sp</item>
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="boxStrokeColor">@color/salmon_banner</item>
-        <item name="android:textColorHint">@color/salmon_banner</item>
+
+    <style name="item_edit_edittext" parent="Theme.AppCompat.Light">
+        <!-- Inactive underline color-->
+        <item name="colorControlNormal">@color/gray_banner</item>
+
+        <!-- Cursor and Active underline color, uses colorAccent by default if not defined-->
+        <item name="colorControlActivated">@color/blue_banner</item>
     </style>
+
+    <style name="hint_text_appearance" parent="TextAppearance.Design.Hint">
+        <!-- Inactive and Active label color, pointing to a selector-->
+        <item name="android:textColor">@color/blue_banner</item>
+    </style>
+
+    <style name="error_text_appearance" parent="TextAppearance.Design.Error">
+        <!-- Error text color-->
+        <item name="android:textColor">@color/salmon_banner</item>
+    </style>
+
+<!--    https://www.ekchang.com/tutorial/2018/03/25/styling_textinputlayout.html -->
+
 </resources>

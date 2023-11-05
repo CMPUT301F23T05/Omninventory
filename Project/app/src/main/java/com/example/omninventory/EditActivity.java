@@ -59,5 +59,14 @@ public class EditActivity extends AppCompatActivity  {
                 finish();
             }
         });
+
+        final ImageButton saveButton = findViewById(R.id.save_button);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // TODO: implement this
+                // return to DetailsActivity and save changes to item fields
+                finish();
+            }
+        });
     }
 }
