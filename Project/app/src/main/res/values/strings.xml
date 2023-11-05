@@ -12,6 +12,8 @@
     <string name="delete_button_label">Delete Item Button</string>
     <string name="profile_button_label">Profile Button</string>
     <string name="back_button_label">Back Button</string>
+    <string name="edit_button_label">Edit Button</string>
+
     <string name="item_name_head">Item Name</string>
     <string name="item_name_placeholder">Placeholder Item Name</string>
     <string name="item_description_head">Item Description</string>

@@ -11,15 +11,14 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 /**
- * Activity for viewing an item's detailed fields.
- * Will reuse (or extend?) with different behaviour for both viewing & editing items.
+ * Activity for editing an item's detailed fields.
  */
-public class DetailsActivity extends AppCompatActivity  {
+public class EditActivity extends AppCompatActivity  {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_details);
+        setContentView(R.layout.activity_edit);
 
         // === get references to Views
         final TextView titleText = findViewById(R.id.title_text);
@@ -51,14 +50,15 @@ public class DetailsActivity extends AppCompatActivity  {
         // set title text
         titleText.setText(getString(R.string.details_title_text));
 
-        // add item details to each field
+        // add item details
         itemNameText.setText(item.getName());
         itemDescriptionText.setText(item.getDescription());
         itemCommentText.setText(item.getComment());
         itemMakeText.setText(item.getMake());
+        itemMakeText.setText(item.getMake());
         itemModelText.setText(item.getModel());
         itemSerialText.setText(item.getSerialno());
-        itemValueText.setText(item.getValue().toString());
+        itemValueText.setText(item.getValue());
         itemDateText.setText(item.getDate().toString());
         itemTagsText.setText(item.getTagsString());
 

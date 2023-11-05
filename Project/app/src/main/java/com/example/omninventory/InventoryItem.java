@@ -25,6 +25,12 @@ public class InventoryItem implements Serializable {
         // placeholder constructor for testing, just has name
         this.name = name;
         this.description = description;
+        this.comment = "comment";
+        this.make = "make";
+        this.model = "model";
+        this.serialno = "123";
+        this.value = 0;
+        this.date = new Date();
     }
 
     public String getName() {
@@ -89,5 +95,9 @@ public class InventoryItem implements Serializable {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getTagsString() {
+        return "#placeholder #tags";
     }
 }
