@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -47,6 +46,10 @@ public class MainActivity extends AppCompatActivity {
     private ListView itemList;
 
     private TextView titleText;
+
+    private TextView totalValueText;
+
+    private float totalValue;
 
     private ImageButton deleteItemButton;
 
@@ -84,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
                     itemListData.remove(selectedItem);
                     itemListAdapter.notifyDataSetChanged();
                 }
+                calcValue();
                 deleteDialog.dismiss();
             }
         });
@@ -97,6 +101,15 @@ public class MainActivity extends AppCompatActivity {
 
         deleteDialog.show();
     }
+
+    private void calcValue() {
+        totalValue = 0.00F;
+        for (InventoryItem item: itemListData) {
+            totalValue += item.getValue();
+        }
+        String formattedValue = "$" + String.format("%.2f", totalValue);
+        totalValueText.setText(formattedValue);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
         itemList = findViewById(R.id.item_list);
         titleText = findViewById(R.id.title_text);
         deleteItemButton = findViewById(R.id.deleteItemButton);
+        totalValueText = findViewById(R.id.total_value_text);
 
         // Setup delete items dialog
         deleteDialog = new Dialog(this);
@@ -120,10 +134,22 @@ public class MainActivity extends AppCompatActivity {
         itemListData = new ArrayList<InventoryItem>();
         itemListAdapter = new InventoryItemAdapter(this, itemListData);
         itemList.setAdapter(itemListAdapter);
+        InventoryItem item1 = new InventoryItem("Cat", "beloved family pet");
+        InventoryItem item2 = new InventoryItem("Laptop", "for developing android apps <3");
+        InventoryItem item3 = new InventoryItem("301 Group Members", "their " +
+                "names are Castor, Patrick, Kevin, Aron, Rose, and Zachary. this item has a " +
+                "long name and description so we can see what that looks like");
+        itemListData.add(item1);
+        itemListData.add(item2);
+        itemListData.add(item3);
 
-        itemListData.add(new InventoryItem("Cat", "beloved family pet"));
-        itemListData.add(new InventoryItem("Laptop", "for developing android apps <3"));
-        itemListData.add(new InventoryItem("301 Group Members", "their names are Castor, Patrick, Kevin, Aron, Rose, and Zachary. this item has a long name and description so we can see what that looks like"));
+        // Set estimated values for each item
+        item1.setValue(454.44F);
+        item2.setValue(1243.45F);
+        item3.setValue(2F);
+
+        // Get total estimated value
+        calcValue();
 
         // Set up list of selected items
         selectedItems = new ArrayList<InventoryItem>();

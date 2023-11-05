@@ -16,7 +16,7 @@ public class InventoryItem implements Serializable {
     private String make;
     private String model;
     private String serialNo;
-    private Integer value;
+    private float value;
     private Date date;
     private ArrayList<Object> tags; // placeholder
     private ArrayList<Object> images; // placeholder
@@ -78,11 +78,11 @@ public class InventoryItem implements Serializable {
         this.serialNo = serialNo;
     }
 
-    public Integer getValue() {
+    public float getValue() {
         return value;
     }
 
-    public void setValue(Integer value) {
+    public void setValue(float value) {
         this.value = value;
     }
 
