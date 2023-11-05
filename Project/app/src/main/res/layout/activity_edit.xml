@@ -12,6 +12,203 @@
 
     <include layout="@layout/title_bar"/>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+
+            <!--        halfway guideline -->
+            <androidx.constraintlayout.widget.Guideline
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/half_guideline"
+                app:layout_constraintGuide_percent="0.5"
+                android:orientation="vertical"/>
+
+            <TextView
+                android:id="@+id/item_name_head"
+                style="@style/gray_text"
+                android:text="@string/item_name_head"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textfield.TextInputLayout style="@style/item_edit_textinputlayout"
+                android:id="@+id/item_name_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/item_name_placeholder"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/item_name_head">
+
+                <com.google.android.material.textfield.TextInputEditText style="@style/item_edit_edittext"
+                    android:id="@+id/item_name_edittext"
+                    android:textSize="35sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/item_description_head"
+                style="@style/gray_text"
+                android:layout_marginTop="10dp"
+                android:text="@string/item_description_head"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/item_name_text" />
+
+            <TextView
+                android:id="@+id/item_description_text"
+                style="@style/item_details_text"
+                android:text="@string/item_description_placeholder"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/item_description_head" />
+
+            <TextView
+                android:id="@+id/item_comment_head"
+                style="@style/gray_text"
+                android:layout_marginTop="10dp"
+                android:text="@string/item_comment_head"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/item_description_text" />
+
+            <TextView
+                android:id="@+id/item_comment_text"
+                style="@style/item_details_text"
+                android:text="@string/item_comment_placeholder"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/item_comment_head" />
+
+            <TextView style="@style/gray_text"
+                android:id="@+id/item_make_head"
+                android:text="@string/item_make_head"
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/half_guideline"
+                app:layout_constraintTop_toBottomOf="@+id/item_comment_text" />
+
+            <TextView style="@style/gray_text"
+                android:id="@+id/item_model_head"
+                android:text="@string/item_model_head"
+                app:layout_constraintStart_toEndOf="@+id/half_guideline"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/item_make_head" />
+
+            <TextView style="@style/item_details_text"
+                android:id="@+id/item_make_text"
+                android:text="@string/item_make_placeholder"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/half_guideline"
+                app:layout_constraintTop_toBottomOf="@+id/item_make_head" />
+
+            <TextView style="@style/item_details_text"
+                android:id="@+id/item_model_text"
+                android:text="@string/item_model_placeholder"
+                app:layout_constraintStart_toEndOf="@+id/half_guideline"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/item_make_text" />
+
+            <TextView style="@style/gray_text"
+                android:id="@+id/item_serial_head"
+                android:text="@string/item_serial_head"
+                android:layout_marginTop="10dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/half_guideline"
+                app:layout_constraintTop_toBottomOf="@+id/item_make_text" />
+
+            <TextView style="@style/gray_text"
+                android:id="@+id/item_value_head"
+                android:text="@string/item_value_head"
+                app:layout_constraintStart_toEndOf="@+id/half_guideline"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/item_serial_head" />
+
+            <TextView style="@style/item_details_text"
+                android:id="@+id/item_serial_text"
+                android:text="@string/item_serial_placeholder"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/half_guideline"
+                app:layout_constraintTop_toBottomOf="@+id/item_serial_head" />
+
+            <TextView style="@style/item_details_text"
+                android:id="@+id/item_value_text"
+                android:text="@string/item_value_placeholder"
+                app:layout_constraintStart_toEndOf="@+id/half_guideline"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/item_serial_text" />
+
+            <TextView
+                android:id="@+id/item_date_head"
+                style="@style/gray_text"
+                android:layout_marginTop="10dp"
+                android:text="@string/item_date_head"
+                app:layout_constraintEnd_toStartOf="@+id/half_guideline"
+                app:layout_constraintHorizontal_bias="0.009"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/item_serial_text" />
+
+            <TextView style="@style/item_details_text"
+                android:id="@+id/item_date_text"
+                android:text="@string/item_date_placeholder"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/half_guideline"
+                app:layout_constraintTop_toBottomOf="@+id/item_date_head" />
+
+            <TextView
+                android:id="@+id/item_tags_head"
+                style="@style/gray_text"
+                android:layout_marginTop="10dp"
+                android:text="@string/item_tags_head"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/item_date_text" />
+
+            <TextView style="@style/item_details_text"
+                android:id="@+id/item_tags_text"
+                android:text="@string/item_tags_placeholder"
+                app:layout_constraintTop_toBottomOf="@+id/item_tags_head"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <TextView
+                android:id="@+id/item_images_head"
+                style="@style/gray_text"
+                android:layout_marginTop="10dp"
+                android:text="@string/item_text_head"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/item_tags_text"/>
+
+            <LinearLayout
+                android:id="@+id/item_images_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/item_images_head"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_launcher_background"/>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/sort_64"/>
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
     <include layout="@layout/taskbar_holder"/>
     <!--        add view_item_taskbar.xml layout to this in code -->
 

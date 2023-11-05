@@ -22,6 +22,7 @@ public class EditActivity extends AppCompatActivity  {
 
         // === get references to Views
         final TextView titleText = findViewById(R.id.title_text);
+        final TextView itemNameEditText = findViewById(R.id.item_name_edittext);
 
         // === load info passed from MainActivity (hopefully)
         InventoryItem item;
@@ -46,6 +47,9 @@ public class EditActivity extends AppCompatActivity  {
         View taskbarLayout = taskbarInflater.inflate(R.layout.taskbar_edit, null);
         ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.taskbar_holder);
         taskbarHolder.addView(taskbarLayout);
+
+        // if initialized with an item, set default values for fields
+        itemNameEditText.setText(item.getName());
 
         // === set up click actions
         final ImageButton backButton = findViewById(R.id.back_button);

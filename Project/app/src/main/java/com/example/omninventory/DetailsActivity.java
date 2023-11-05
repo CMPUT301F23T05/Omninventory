@@ -36,11 +36,11 @@ public class DetailsActivity extends AppCompatActivity  {
 
         // === load info passed from MainActivity (hopefully)
         InventoryItem item;
-        if (savedInstanceState != null) {
-            // TODO: this will probably be used later when we go from this activity to others; for now, error
-            throw new RuntimeException("DetailsActivity opened with a savedInstanceState");
-        }
-        else if (getIntent().getExtras() == null) {
+//        if (savedInstanceState != null) {
+//            // TODO: this will probably be used later when we go from this activity to others; for now, error
+//            throw new RuntimeException("DetailsActivity opened with a savedInstanceState");
+//        }
+        if (getIntent().getExtras() == null) {
             throw new RuntimeException("DetailsActivity opened without an InventoryItem");
         }
         else {
