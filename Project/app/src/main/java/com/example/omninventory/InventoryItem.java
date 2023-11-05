@@ -9,6 +9,8 @@ import java.util.Date;
  */
 
 public class InventoryItem implements Serializable {
+
+    private String firebaseId;
     private String name;
     private String description;
     private String comment;
@@ -22,6 +24,7 @@ public class InventoryItem implements Serializable {
 
     public InventoryItem() {
         // empty constructor, initialize everything with default values
+        this.firebaseId = null;
         this.name = "";
         this.description = "";
         this.comment = "";
@@ -44,9 +47,10 @@ public class InventoryItem implements Serializable {
         this.date = new Date();
     }
 
-    public InventoryItem(String name, String description, String comment,
+    public InventoryItem(String firebaseId, String name, String description, String comment,
                          String make, String model, String serialno, Integer value, Date date) {
         // full constructor
+        this.firebaseId = firebaseId;
         this.name = name;
         this.description = description;
         this.comment = comment;
@@ -56,6 +60,10 @@ public class InventoryItem implements Serializable {
         this.value = value;
         this.date = date;
         // TODO: tags & images
+    }
+
+    public String getFirebaseId() {
+        return firebaseId;
     }
 
     public String getName() {

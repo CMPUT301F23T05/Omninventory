@@ -74,6 +74,7 @@ public class InventoryRepository {
      */
     public InventoryItem convertDocumentToInventoryItem(QueryDocumentSnapshot doc) {
         InventoryItem item = new InventoryItem(
+            doc.getId(),
             doc.getString("name"),
             doc.getString("description"),
             doc.getString("comment"),
@@ -88,13 +89,12 @@ public class InventoryRepository {
     }
 
     /**
-     * Add a new InventoryItem to the inventoryItem collection. Also adds reference to the current
-     * User's list of owned items.
-     * @param currentUser
+     * Convert fields of an InventoryItem into a HashMap for writing to Firebase.
+     * Note that item.firebaseId is not stored in the HashMap.
      * @param item
+     * @return
      */
-    public void addInventoryItem(User currentUser, InventoryItem item) {
-        // create data for new item document
+    public HashMap<String, Object> convertInventoryItemToHashMap(InventoryItem item) {
         HashMap<String, Object> itemData = new HashMap<>();
         itemData.put("name", item.getName());
         itemData.put("description", item.getDescription());
@@ -104,10 +104,22 @@ public class InventoryRepository {
         itemData.put("serialno", item.getSerialno());
         itemData.put("value", item.getValue());
         itemData.put("date", item.getDate());
-        // TODO: tags and images go here
+        // TODO: tags and images
+        return itemData;
+    }
+
+    /**
+     * Add a new InventoryItem to the inventoryItem collection. Also adds reference to the current
+     * User's list of owned items.
+     * @param currentUser
+     * @param item
+     */
+    public void addInventoryItem(User currentUser, InventoryItem item) {
+        // create data for new item document
+        HashMap<String, Object> itemData = convertInventoryItemToHashMap(item);
 
         // create new inventoryItems document with auto-generated id
-        DocumentReference newInventoryItemRef = db.collection("inventoryItems").document();
+        DocumentReference newInventoryItemRef = inventoryItemsRef.document();
 
         // set data of new document
         newInventoryItemRef
@@ -126,7 +138,7 @@ public class InventoryRepository {
             });
 
         // get document for currentUser (id is username)
-        DocumentReference currentUserRef = db.collection("users").document(currentUser.getUsername());
+        DocumentReference currentUserRef = usersRef.document(currentUser.getUsername());
 
         // add new inventoryItem reference to currentUser's list of ownedItems
         Object[] arrayToAdd = {newInventoryItemRef};
@@ -147,9 +159,32 @@ public class InventoryRepository {
             });
     }
 
+    public void updateInventoryItem(InventoryItem item) {
+        // create data for new item document
+        HashMap<String, Object> itemData = convertInventoryItemToHashMap(item);
+
+        // get the document for this item
+        DocumentReference inventoryItemRef = inventoryItemsRef.document(item.getFirebaseId());
+
+        // overwrite data of document with item data
+        inventoryItemRef
+            .set(itemData)
+            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void aVoid) {
+                    Log.d(TAG, "New inventoryItems DocumentSnapshot written");
+                }
+            })
+            .addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.w(TAG, "Error adding inventoryItems document", e);
+                }
+            });
+    }
+
     // TODO: implement these...
     public void deleteInventoryItem() {};
-    public void updateInventoryItem() {};
 
     public void addUser() {};
 }
