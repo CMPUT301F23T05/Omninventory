@@ -24,7 +24,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,8 +36,6 @@ public class MainActivity extends AppCompatActivity {
 
     private ArrayList<InventoryItem> itemListData;
     private InventoryItemAdapter itemListAdapter;
-    private FirebaseFirestore db;
-    private CollectionReference inventoryItemRef;
     private CollectionReference usersRef;
     private String currentUser;
 
@@ -48,8 +45,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // === set up database
-        db = FirebaseFirestore.getInstance();
-        inventoryItemRef = db.collection("inventoryItems");
+        InventoryRepository db = new InventoryRepository();
+
+        // add default items
+        User currentUser = new User("erika", "temp");
+        db.addInventoryItem(currentUser, new InventoryItem("Cat", "beloved family pet"));
+//        db.addInventoryItem(currentUser, new InventoryItem("Laptop", "for developing android apps <3"));
+//        db.addInventoryItem(currentUser, new InventoryItem("301 Group Members", "their names are Castor, Patrick, Kevin, Aron, Rose, and Zachary. this item has a long name and description so we can see what that looks like"));
 
         // === get references to Views
         final ListView itemList = findViewById(R.id.item_list);
@@ -84,65 +86,67 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    
     // add user to database
     // todo: hash password
-    public void onSignUpOKPressed(User user) {
-        // Check if username already exists
-        DocumentReference userDocRef = db.collection("users").document(user.getUsername());
-        userDocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        // toast displaying error message
-                        Toast.makeText(getApplicationContext(),"Username already exists", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Log.d(TAG, "Username is available");
-                        HashMap<String, Object> data = new HashMap<>();
-                        data.put("Password", user.getPassword());
-                        usersRef
-                                .document(user.getUsername())
-                                .set(data)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Log.d("Firestore", "DocumentSnapshot successfully written!");
-                                    }
-                                });
-                    }
-                } else {
-                    Log.d(TAG, "Failed with: ", task.getException());
-                }
-            }
-        });
-    }
+//    public void onSignUpOKPressed(User user) {
+//        // Check if username already exists
+//        DocumentReference userDocRef = db.collection("users").document(user.getUsername());
+//        userDocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                if (task.isSuccessful()) {
+//                    DocumentSnapshot document = task.getResult();
+//                    if (document.exists()) {
+//                        // toast displaying error message
+//                        Toast.makeText(getApplicationContext(),"Username already exists", Toast.LENGTH_SHORT).show();
+//                    } else {
+//                        Log.d(TAG, "Username is available");
+//                        HashMap<String, Object> data = new HashMap<>();
+//                        data.put("Password", user.getPassword());
+//                        usersRef
+//                                .document(user.getUsername())
+//                                .set(data)
+//                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                    @Override
+//                                    public void onSuccess(Void aVoid) {
+//                                        Log.d("Firestore", "DocumentSnapshot successfully written!");
+//                                    }
+//                                });
+//                    }
+//                } else {
+//                    Log.d(TAG, "Failed with: ", task.getException());
+//                }
+//            }
+//        });
+//    }
 
     // todo: document ID is auto-generated for now, may change later
-    public void onAddItemOKPressed(InventoryItem item) {
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("user", currentUser);
-        data.put("description", item.getDescription());
-        data.put("comment", item.getComment());
-        data.put("make", item.getMake());
-        data.put("model", item.getModel());
-        data.put("serialno", item.getSerialno());
-        data.put("value", item.getValue());
-        data.put("date", item.getDate());
-        // tags and images go here
-        db.collection("inventoryItems")
-                .add(data)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                    }
-                });
-    }
+//    public void onAddItemOKPressed(InventoryItem item) {
+//        HashMap<String, Object> data = new HashMap<>();
+//        data.put("user", currentUser);
+//        data.put("description", item.getDescription());
+//        data.put("comment", item.getComment());
+//        data.put("make", item.getMake());
+//        data.put("model", item.getModel());
+//        data.put("serialno", item.getSerialno());
+//        data.put("value", item.getValue());
+//        data.put("date", item.getDate());
+//        // tags and images go here
+//
+//        db.collection("inventoryItems")
+//            .add(data)
+//            .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+//                @Override
+//                public void onSuccess(DocumentReference documentReference) {
+//                    Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+//                }
+//            })
+//            .addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception e) {
+//                    Log.w(TAG, "Error adding document", e);
+//                }
+//            });
+//    }
 }
