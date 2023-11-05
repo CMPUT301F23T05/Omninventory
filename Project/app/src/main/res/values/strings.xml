@@ -4,6 +4,7 @@
     <!-- text that goes in title_bar layout -->
     <string name="main_title_text">OMNINVENTORY</string>
     <string name="details_title_text">ITEM DETAILS</string>
+    <string name="edit_title_text">EDIT ITEM</string>
 
     <string name="estimated_value_text">Total Estimated Value</string>
     <string name="sort_button_label">Sort Button</string>
@@ -13,6 +14,7 @@
     <string name="profile_button_label">Profile Button</string>
     <string name="back_button_label">Back Button</string>
     <string name="edit_button_label">Edit Button</string>
+    <string name="save_button_label">Save Button</string>
 
     <string name="item_name_head">Item Name</string>
     <string name="item_name_placeholder">Placeholder Item Name</string>

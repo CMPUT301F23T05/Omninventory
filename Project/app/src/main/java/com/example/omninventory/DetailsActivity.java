@@ -1,6 +1,7 @@
 package com.example.omninventory;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,7 +65,7 @@ public class DetailsActivity extends AppCompatActivity  {
 
         // add taskbar
         LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View taskbarLayout = taskbarInflater.inflate(R.layout.details_taskbar, null);
+        View taskbarLayout = taskbarInflater.inflate(R.layout.taskbar_details, null);
         ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.taskbar_holder);
         taskbarHolder.addView(taskbarLayout);
 
@@ -74,6 +75,16 @@ public class DetailsActivity extends AppCompatActivity  {
             public void onClick(View v) {
                 // return to MainActivity
                 finish();
+            }
+        });
+
+        final ImageButton editButton = findViewById(R.id.edit_button);
+        editButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // start a new EditActivity to edit this item
+                Intent intent = new Intent(DetailsActivity.this, EditActivity.class);
+                intent.putExtra("item", item);
+                startActivity(intent);
             }
         });
     }
