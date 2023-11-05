@@ -1,23 +1,14 @@
 package com.example.omninventory;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-
-import org.w3c.dom.Text;
-
-import java.security.InvalidParameterException;
 
 /**
  * Activity for viewing an item's detailed fields.
@@ -59,7 +50,7 @@ public class DetailsActivity extends AppCompatActivity  {
 
         // add taskbar
         LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View taskbarLayout = taskbarInflater.inflate(R.layout.view_item_taskbar, null);
+        View taskbarLayout = taskbarInflater.inflate(R.layout.details_taskbar, null);
         ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.taskbar_holder);
         taskbarHolder.addView(taskbarLayout);
 
