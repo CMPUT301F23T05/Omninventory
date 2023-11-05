@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "409140982386",
+    "project_id": "omninventory-c4a2e",
+    "storage_bucket": "omninventory-c4a2e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:409140982386:android:2ace594b7d0eafed3e48eb",
+        "android_client_info": {
+          "package_name": "com.example.omninventory"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMlsATAd7DTXsctnnd0Ic9ZGrMG-BQOIU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

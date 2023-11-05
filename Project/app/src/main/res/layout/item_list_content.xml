@@ -19,11 +19,10 @@
 
         <TextView
             android:id="@+id/item_description_text"
-            android:layout_width="fill_parent"
+            android:layout_width="225dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Short description of the item goes here"
-            android:textSize="15sp">
-        </TextView>
+            android:textSize="15sp"></TextView>
 
 </LinearLayout>
