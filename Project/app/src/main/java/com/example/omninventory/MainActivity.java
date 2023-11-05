@@ -46,13 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         // === set up database
         InventoryRepository db = new InventoryRepository();
-
-        // add default items
-        User currentUser = new User("erika", "temp");
-        db.addInventoryItem(currentUser, new InventoryItem("Cat", "beloved family pet"));
-//        db.addInventoryItem(currentUser, new InventoryItem("Laptop", "for developing android apps <3"));
-//        db.addInventoryItem(currentUser, new InventoryItem("301 Group Members", "their names are Castor, Patrick, Kevin, Aron, Rose, and Zachary. this item has a long name and description so we can see what that looks like"));
-
+        
         // === get references to Views
         final ListView itemList = findViewById(R.id.item_list);
         final TextView titleText = findViewById(R.id.title_text);

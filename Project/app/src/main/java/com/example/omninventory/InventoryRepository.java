@@ -25,9 +25,16 @@ public class InventoryRepository {
         this.db = FirebaseFirestore.getInstance();
     }
 
+    /**
+     * Add a new InventoryItem to the inventoryItem collection. Also adds reference to the current
+     * User's list of owned items.
+     * @param currentUser
+     * @param item
+     */
     public void addInventoryItem(User currentUser, InventoryItem item) {
         // create data for new item document
         HashMap<String, Object> itemData = new HashMap<>();
+        itemData.put("name", item.getName());
         itemData.put("description", item.getDescription());
         itemData.put("comment", item.getComment());
         itemData.put("make", item.getMake());
@@ -56,10 +63,10 @@ public class InventoryRepository {
                 }
             });
 
-        // get current User document
+        // get document for currentUser (id is username)
         DocumentReference currentUserRef = db.collection("users").document(currentUser.getUsername());
 
-        // add new inventoryItem reference to User's referenced items
+        // add new inventoryItem reference to currentUser's list of ownedItems
         Object[] arrayToAdd = {newInventoryItemRef};
 
         currentUserRef
@@ -77,4 +84,10 @@ public class InventoryRepository {
                 }
             });
     }
+
+    // TODO: implement these...
+    public void deleteInventoryItem() {};
+    public void updateInventoryItem() {};
+
+    public void addUser() {};
 }
