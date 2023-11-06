@@ -23,6 +23,19 @@ public class InventoryItemValue implements Serializable {
         this.value = x;
     }
 
+    /**
+     * Constructor for non-primitive Long that checks for null pointer.
+     * @param x
+     */
+    public InventoryItemValue(Long x) {
+        if (x != null) {
+            this.value = x;
+        }
+        else {
+            this.value = 0L;
+        }
+    }
+
     public long toPrimitiveLong() {
         return value;
     }

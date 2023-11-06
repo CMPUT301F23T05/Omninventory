@@ -1,15 +1,11 @@
 package com.example.omninventory;
 
-import static android.content.ContentValues.TAG;
-
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.Callable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -36,7 +32,7 @@ public class InventoryRepository {
     private CollectionReference inventoryItemsRef;
 
     /**
-     * Basic constructor that sets up connection to Firestore and references.
+     * Constructor that sets up connection to Firestore and references.
      */
     public InventoryRepository() {
         db = FirebaseFirestore.getInstance();
@@ -45,35 +41,36 @@ public class InventoryRepository {
     }
 
     /**
-     * Sets up an InventoryItemAdapter as a list that is automatically updated when inventoryItem
-     * changes.
-     * @param adapter
+     * Sets up an InventoryItemAdapter to contain contents of Firebase collection, and be
+     * automatically updated when inventoryItem changes.
+     * TODO: will need to make this get only the items associated with current user
+     * @param adapter An InventoryItemAdapter to set up to track contents of database.
      */
     public void setupInventoryItemList(InventoryItemAdapter adapter) {
+        // set up listener
         inventoryItemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {
-                    Log.d(TAG, error.toString());
+                    Log.d("InventoryRepository", error.toString());
                     return;
                 }
                 if (snapshot != null) {
                     adapter.clear(); // clear existing list data
                     for (QueryDocumentSnapshot doc : snapshot) {
+                        // get each item returned by query and add to adapter
                         InventoryItem item = convertDocumentToInventoryItem(doc);
                         adapter.add(item);
                     }
                 }
-                adapter.notifyDataSetChanged();
+                adapter.notifyDataSetChanged(); // TODO: is this necessary?
             }
         });
-
     }
 
     /**
-     * Convert fields of a QueryDocumentSnapshot from the inventoryItem collection to an
-     * InventoryItem.
-     * @param doc
+     * Convert fields of a DocumentSnapshot from the inventoryItem collection to an InventoryItem.
+     * @param doc DocumentSnapshot to convert.
      * @return
      */
     public InventoryItem convertDocumentToInventoryItem(DocumentSnapshot doc) {
@@ -88,7 +85,7 @@ public class InventoryRepository {
             doc.getString("make"),
             doc.getString("model"),
             doc.getString("serialno"),
-            new InventoryItemValue(doc.getLong("value").longValue()),
+            new InventoryItemValue(doc.getLong("value")), // use InventoryItemValue
             doc.getDate("date")
         );
 
@@ -98,29 +95,29 @@ public class InventoryRepository {
     /**
      * Add a new InventoryItem to the inventoryItem collection. Also adds reference to the current
      * User's list of owned items.
-     * @param currentUser
-     * @param item
+     * @param currentUser User currently signed in.
+     * @param item InventoryItem to add to currentUser's owned items.
      */
     public void addInventoryItem(User currentUser, InventoryItem item) {
         // create data for new item document
         HashMap<String, Object> itemData = item.convertToHashMap();
 
         // create new inventoryItems document with auto-generated id
-        DocumentReference newInventoryItemRef = inventoryItemsRef.document();
+        DocumentReference newItemRef = inventoryItemsRef.document();
 
         // set data of new document
-        newInventoryItemRef
+        newItemRef
             .set(itemData)
             .addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    Log.d(TAG, "New inventoryItems DocumentSnapshot written");
+                    Log.d("InventoryRepository", String.format("Updated new InventoryItem document, id=%s", newItemRef.getId()));
                 }
             })
             .addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.w(TAG, "Error adding inventoryItems document", e);
+                    Log.e("InventoryRepository", String.format("Error updating new InventoryItem document, id=%s", newItemRef.getId()), e);
                 }
             });
 
@@ -128,24 +125,30 @@ public class InventoryRepository {
         DocumentReference currentUserRef = usersRef.document(currentUser.getUsername());
 
         // add new inventoryItem reference to currentUser's list of ownedItems
-        Object[] arrayToAdd = {newInventoryItemRef};
+        Object[] arrayToAdd = {newItemRef};
 
         currentUserRef
             .update("ownedItems", FieldValue.arrayUnion(arrayToAdd))
             .addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    Log.d(TAG, "Updated users DocumentSnapshot");
+                    Log.d("InventoryRepository", String.format("Updated User, id=%s", currentUserRef.getId()));
                 }
             })
             .addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.w(TAG, "Error updating document", e);
+                    Log.e("InventoryRepository", String.format("Error updating User, id=%s", currentUserRef.getId()), e);
                 }
             });
     }
 
+    /**
+     * Updates an InventoryItem in the database with new data. Effectively, this means overwriting
+     * the document at the firebaseId of the given InventoryItem with entirely new InventoryItem
+     * data.
+     * @param item The InventoryItem to update.
+     */
     public void updateInventoryItem(InventoryItem item) {
         // create data for new item document
         HashMap<String, Object> itemData = item.convertToHashMap();
@@ -159,13 +162,13 @@ public class InventoryRepository {
             .addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    Log.d(TAG, String.format("New inventoryItems DocumentSnapshot written, id=%s", itemRef.getId()));
+                    Log.d("InventoryRepository", String.format("New inventoryItems DocumentSnapshot written, id=%s", itemRef.getId()));
                 }
             })
             .addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.w(TAG, String.format("Error writing inventoryItems DocumentSnapshot, id=%s", itemRef.getId()), e);
+                    Log.e("InventoryRepository", String.format("Error writing inventoryItems DocumentSnapshot, id=%s", itemRef.getId()), e);
                 }
             });
     }
@@ -174,8 +177,9 @@ public class InventoryRepository {
      * Bit of a roundabout way to update the DetailsActivity with an InventoryItem on update.
      * This sends the InventoryItem from Firebase into the onGetInventoryItem method of the handler,
      * which must implement the GetInventoryItemHandler interface.
-     * @param firebaseId
-     * @param handler
+     * @param firebaseId ID of item to get.
+     * @param handler GetInventoryItemHandler that implements function to call with InventoryItem
+     *                data, once received.
      */
     public void getInventoryItemInto(String firebaseId, GetInventoryItemHandler handler) {
         Log.d("InventoryRepository", "getInventoryItem called with id=" + firebaseId);
@@ -185,21 +189,19 @@ public class InventoryRepository {
         Log.d("InventoryRepository", itemRef.getId());
 
         // get actual data
-        // TODO: i dont know why but a weird one-element array is the only way i can get this to work. marking as todo revise
-
         itemRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot doc = task.getResult();
                     if (doc.exists()) {
-                        Log.d("InventoryRepository", "DocumentSnapshot data gotten from db: " + doc.getData());
+                        Log.d("InventoryRepository", "(getInventoryItemInto) data gotten from db: " + doc.getData());
                         handler.onGetInventoryItem(convertDocumentToInventoryItem(doc)); // call handler function
                     } else {
-                        Log.d("InventoryRepository", "Couldn't find document id=" + firebaseId);
+                        Log.d("InventoryRepository", "(getInventoryItemInto) couldn't find document id=" + firebaseId);
                     }
                 } else {
-                    Log.d("InventoryRepository", "get failed with ", task.getException());
+                    Log.d("InventoryRepository", "(getInventoryItemInto) failed with ", task.getException());
                 }
             }
         });
