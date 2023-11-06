@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -40,11 +41,12 @@ public class SortFilterActivity extends AppCompatActivity {
 
         final EditText makeFilterEditText = findViewById(R.id.make_filter_edit_text);
         final Button makeFilterButton = findViewById(R.id.add_make_filter_button);
+        final Button ascDescButton = findViewById(R.id.asc_desc_button);
 
         final Button dateFilterButton = findViewById(R.id.add_date_filter_button);
         final EditText descriptionFilterEditText = findViewById(R.id.description_filter_edit_text);
         final Button descriptionFilterButton = findViewById(R.id.add_description_filter_button);
-        final Button filterByTags = findViewById(R.id.filter_by_tags_button);
+        final Button filterByTagsButton = findViewById(R.id.filter_by_tags_button);
 
         // retrieve data passed from the main activity: itemListData
         Intent intent = getIntent();
@@ -70,6 +72,7 @@ public class SortFilterActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 dropdownSelection = (String) parentView.getItemAtPosition(position);
+                itemListData = applySorting(dropdownSelection, itemListData);
             }
 
             @Override
@@ -155,5 +158,50 @@ public class SortFilterActivity extends AppCompatActivity {
                 datePickerDialog.show();
             }
         });
+
+        makeFilterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String makeText = makeFilterEditText.getText().toString();
+                itemListData = applyMakeFilter(makeText, itemListData);
+            }
+        });
+
+        dateFilterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                itemListData = applyDateFilter(startDate, endDate, itemListData);
+            }
+        });
+        descriptionFilterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String descriptionText = descriptionFilterEditText.getText().toString();
+                itemListData = applyDescriptionFilter(descriptionText, itemListData);
+            }
+        });
+
+        filterByTagsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // do nothing for now, implemented in part 4
+            }
+        });
+    }
+
+    public ArrayList<InventoryItem> applySorting(String selection, ArrayList<InventoryItem> data) {
+        return null;
+    }
+
+    public ArrayList<InventoryItem> applyMakeFilter(String make, ArrayList<InventoryItem> itemListData) {
+        return null;
+    }
+
+    public ArrayList<InventoryItem> applyDateFilter(Calendar startDate, Calendar endDate, ArrayList<InventoryItem> itemListData) {
+        return null;
+    }
+
+    public ArrayList<InventoryItem> applyDescriptionFilter(String description, ArrayList<InventoryItem> itemListData) {
+        return null;
     }
 }
