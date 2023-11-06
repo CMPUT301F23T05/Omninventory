@@ -8,9 +8,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Hold all data stored in fields for each inventory item.
+ * Holds all data stored in fields for each inventory item.
  */
-
 public class InventoryItem implements Serializable {
 
     private String firebaseId;
@@ -25,8 +24,10 @@ public class InventoryItem implements Serializable {
     private ArrayList<Object> tags; // placeholder
     private ArrayList<Object> images; // placeholder
 
+    /**
+     * Empty constructor that initializes all fields to default values.
+     */
     public InventoryItem() {
-        // empty constructor, initialize everything with default values
         this.firebaseId = null;
         this.name = "";
         this.description = "";
@@ -36,10 +37,16 @@ public class InventoryItem implements Serializable {
         this.serialno = "";
         this.value = new InventoryItemValue(0);
         this.date = new Date();
+        // TODO: tags & images
     }
 
+    /**
+     * Placeholder constructor for testing that initializes fields with just a name and description.
+     * @param name
+     * @param description
+     */
     public InventoryItem(String name, String description) {
-        // placeholder constructor for testing, just has name
+        this.firebaseId = null;
         this.name = name;
         this.description = description;
         this.comment = "comment";
@@ -48,8 +55,21 @@ public class InventoryItem implements Serializable {
         this.serialno = "123";
         this.value = new InventoryItemValue(0);
         this.date = new Date();
+        // TODO: tags & images
     }
 
+    /**
+     * Full constructor.
+     * @param firebaseId
+     * @param name
+     * @param description
+     * @param comment
+     * @param make
+     * @param model
+     * @param serialno
+     * @param value
+     * @param date
+     */
     public InventoryItem(String firebaseId, String name, String description, String comment,
                          String make, String model, String serialno, InventoryItemValue value, Date date) {
         // full constructor
@@ -68,8 +88,7 @@ public class InventoryItem implements Serializable {
     /**
      * Convert fields of an InventoryItem into a HashMap for writing to Firebase.
      * Note that item.firebaseId is not stored in the HashMap.
-     * @param
-     * @return
+     * @return A HashMap representing this InventoryItem that may be written to Firebase.
      */
     public HashMap<String, Object> convertToHashMap() {
         HashMap<String, Object> itemData = new HashMap<>();
@@ -79,11 +98,13 @@ public class InventoryItem implements Serializable {
         itemData.put("make", this.getMake());
         itemData.put("model", this.getModel());
         itemData.put("serialno", this.getSerialno());
-        itemData.put("value", this.getValue().toPrimitiveLong());
+        itemData.put("value", this.getValue().toPrimitiveLong()); // convert InventoryItemValue to long
         itemData.put("date", this.getDate());
         // TODO: tags and images
         return itemData;
     }
+
+    // ============== getters and setters ================
 
     public String getFirebaseId() {
         return firebaseId;

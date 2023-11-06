@@ -1,8 +1,5 @@
 package com.example.omninventory;
 
-import static android.content.ContentValues.TAG;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -15,26 +12,11 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-import androidx.annotation.Nullable;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
- * Main screen of the app; holds list of inventory items and buttons
+ * Main screen of the app. Holds list of inventory items and buttons
  * that take user to other screens.
  */
 public class MainActivity extends AppCompatActivity {
@@ -57,25 +39,19 @@ public class MainActivity extends AppCompatActivity {
         final TextView titleText = findViewById(R.id.title_text);
 
         // === UI setup
-        // set title text
-        titleText.setText(getString(R.string.main_title_text));
+        titleText.setText(getString(R.string.main_title_text)); // set title text
+
         // add taskbar
         LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View taskbarLayout = taskbarInflater.inflate(R.layout.taskbar_main, null);
         ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.taskbar_holder);
         taskbarHolder.addView(taskbarLayout);
 
-        // === set up itemList
+        // connect itemList to Firestore database
         itemListData = new ArrayList<InventoryItem>();
         itemListAdapter = new InventoryItemAdapter(this, itemListData);
         itemList.setAdapter(itemListAdapter);
-
-        // set up listener for getting Firestore data
-        repo.setupInventoryItemList(itemListAdapter);
-
-//        itemListData.add(new InventoryItem("Cat", "beloved family pet"));
-//        itemListData.add(new InventoryItem("Laptop", "for developing android apps <3"));
-//        itemListData.add(new InventoryItem("301 Group Members", "their names are Castor, Patrick, Kevin, Aron, Rose, and Zachary. this item has a long name and description so we can see what that looks like"));
+        repo.setupInventoryItemList(itemListAdapter); // set up listener for getting Firestore data
 
         // === set up onClick actions
         itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {

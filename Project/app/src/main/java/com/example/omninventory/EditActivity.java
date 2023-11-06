@@ -19,7 +19,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.Date;
 
 /**
- * Activity for editing an item's detailed fields.
+ * Activity for editing an item's fields.
  */
 public class EditActivity extends AppCompatActivity  {
 
