@@ -2,12 +2,15 @@ package com.example.omninventory;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -72,18 +75,36 @@ public class EditActivity extends AppCompatActivity  {
         saveButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // TODO: implement this
-                // return to DetailsActivity and save changes to item fields
-                repo.updateInventoryItem(item);
-                finish();
+
+                if (validateInputs()) {
+                    // return to DetailsActivity and save changes to item fields
+                    Log.d("EditActivity", "validation success");
+                }
+                else {
+                    // show Toast prompting user to fix input issues
+                    CharSequence toastText = "Please fix invalid input fields.";
+                    Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
+                    toast.show();
+
+                }
             }
         });
     }
 
     /**
-     * Create a new InventoryItem from the data in the fields on this screen.
-     * @return
+     * Handles input validation for fields on this screen.
      */
-    private InventoryItem makeItemFromFields() {
+    private boolean validateInputs() {
+        // === get references to Views
+        final TextInputEditText itemNameEditText = findViewById(R.id.item_name_edittext);
+        boolean val_result = true;
 
+        // === item name
+        if (itemNameEditText.getText().toString().length() == 0) {
+            itemNameEditText.setError("Item name is required.");
+            val_result = false;
+        }
+
+        return val_result;
     }
 }

@@ -141,17 +141,17 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/item_serial_text" />
 
-                <TextView
-                    android:id="@+id/item_date_head"
-                    style="@style/gray_text"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/item_date_head"
-                    app:layout_constraintEnd_toStartOf="@+id/half_guideline"
-                    app:layout_constraintHorizontal_bias="0.009"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/item_serial_text" />
+            <TextView
+                android:id="@+id/item_date_head"
+                style="@style/gray_text"
+                android:layout_marginTop="10dp"
+                android:text="@string/item_date_head"
+                app:layout_constraintEnd_toStartOf="@+id/half_guideline"
+                app:layout_constraintHorizontal_bias="0.009"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/item_serial_text" />
 
-                <TextView style="@style/item_details_text"
+            <TextView style="@style/item_details_text"
                 android:id="@+id/item_date_text"
                 android:text="@string/item_date_placeholder"
                 app:layout_constraintStart_toStartOf="parent"
