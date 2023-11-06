@@ -6,10 +6,7 @@ import android.util.Log;
 import android.widget.EditText;
 
 import java.lang.ref.WeakReference;
-import java.text.NumberFormat;
 import java.util.Locale;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * With help from:
@@ -46,30 +43,8 @@ public class ValueTextWatcher implements TextWatcher {
         String s = editable.toString();
         Log.d("ValueTextWatcher", String.format("called with Editable: '%s'", s));
 
-        // get rid of non digits
-        String digits = s.replaceAll("[\\D]", "");
-
-        // consider all digits entered to be the number of cents
-        Long centsNum;
-        try {
-            if (digits.equals("")) {
-                centsNum = 0L;
-            } else {
-                centsNum = Long.parseLong(digits);
-            }
-        } catch (NumberFormatException e) {
-            // long too long :/
-            centsNum = Long.MAX_VALUE;
-        }
-
-        // separate value into dollars and cents
-        long sepDollarsNum = centsNum / 100;
-        long sepCentsNum = centsNum - 100 * sepDollarsNum;
-
-        // using Locale.CANADA here makes a lot of assumptions, however dealing with different
-        // currency formats is not within the scope of this project
-        Log.d("ValueEditText", String.format("Formatting values: %d, %d", sepDollarsNum, sepCentsNum));
-        String formatted = String.format(Locale.CANADA, "$%d.%02d", sepDollarsNum, sepCentsNum);
+        // convert whatever we have to a string representation of a valid currency value
+        String formatted = InventoryItemValue.makeValidString(s);
 
         // replace contents of EditText with new formatted string
         editText.removeTextChangedListener(this);

@@ -52,14 +52,14 @@ public class InventoryRepository {
     public void setupInventoryItemList(InventoryItemAdapter adapter) {
         inventoryItemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+            public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {
                     Log.d(TAG, error.toString());
                     return;
                 }
-                if (value != null) {
+                if (snapshot != null) {
                     adapter.clear(); // clear existing list data
-                    for (QueryDocumentSnapshot doc : value) {
+                    for (QueryDocumentSnapshot doc : snapshot) {
                         InventoryItem item = convertDocumentToInventoryItem(doc);
                         adapter.add(item);
                     }
@@ -77,7 +77,9 @@ public class InventoryRepository {
      * @return
      */
     public InventoryItem convertDocumentToInventoryItem(DocumentSnapshot doc) {
-        Log.d("InventoryRepository", "convert called with document" + doc.getId());
+        Log.d("InventoryRepository", "convert called with document id=" + doc.getId());
+        Log.d("InventoryRepository", doc.getData().toString());
+
         InventoryItem item = new InventoryItem(
             doc.getId(),
             doc.getString("name"),
@@ -86,31 +88,11 @@ public class InventoryRepository {
             doc.getString("make"),
             doc.getString("model"),
             doc.getString("serialno"),
-            doc.getLong("value").intValue(),
+            new InventoryItemValue(doc.getLong("value").longValue()),
             doc.getDate("date")
         );
 
         return item;
-    }
-
-    /**
-     * Convert fields of an InventoryItem into a HashMap for writing to Firebase.
-     * Note that item.firebaseId is not stored in the HashMap.
-     * @param item
-     * @return
-     */
-    public HashMap<String, Object> convertInventoryItemToHashMap(InventoryItem item) {
-        HashMap<String, Object> itemData = new HashMap<>();
-        itemData.put("name", item.getName());
-        itemData.put("description", item.getDescription());
-        itemData.put("comment", item.getComment());
-        itemData.put("make", item.getMake());
-        itemData.put("model", item.getModel());
-        itemData.put("serialno", item.getSerialno());
-        itemData.put("value", item.getValue());
-        itemData.put("date", item.getDate());
-        // TODO: tags and images
-        return itemData;
     }
 
     /**
@@ -121,7 +103,7 @@ public class InventoryRepository {
      */
     public void addInventoryItem(User currentUser, InventoryItem item) {
         // create data for new item document
-        HashMap<String, Object> itemData = convertInventoryItemToHashMap(item);
+        HashMap<String, Object> itemData = item.convertToHashMap();
 
         // create new inventoryItems document with auto-generated id
         DocumentReference newInventoryItemRef = inventoryItemsRef.document();
@@ -166,7 +148,7 @@ public class InventoryRepository {
 
     public void updateInventoryItem(InventoryItem item) {
         // create data for new item document
-        HashMap<String, Object> itemData = convertInventoryItemToHashMap(item);
+        HashMap<String, Object> itemData = item.convertToHashMap();
 
         // get the document for this item
         DocumentReference itemRef = inventoryItemsRef.document(item.getFirebaseId());

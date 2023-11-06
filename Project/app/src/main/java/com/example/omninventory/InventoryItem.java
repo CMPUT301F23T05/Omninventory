@@ -3,6 +3,7 @@ package com.example.omninventory;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,7 +20,7 @@ public class InventoryItem implements Serializable {
     private String make;
     private String model;
     private String serialno;
-    private Integer value; // TODO: firestore only stores numeric values as longs; should we just use longs for value?
+    private InventoryItemValue value;
     private Date date;
     private ArrayList<Object> tags; // placeholder
     private ArrayList<Object> images; // placeholder
@@ -33,7 +34,7 @@ public class InventoryItem implements Serializable {
         this.make = "";
         this.model = "";
         this.serialno = "";
-        this.value = 0;
+        this.value = new InventoryItemValue(0);
         this.date = new Date();
     }
 
@@ -45,12 +46,12 @@ public class InventoryItem implements Serializable {
         this.make = "make";
         this.model = "model";
         this.serialno = "123";
-        this.value = 0;
+        this.value = new InventoryItemValue(0);
         this.date = new Date();
     }
 
     public InventoryItem(String firebaseId, String name, String description, String comment,
-                         String make, String model, String serialno, Integer value, Date date) {
+                         String make, String model, String serialno, InventoryItemValue value, Date date) {
         // full constructor
         this.firebaseId = firebaseId;
         this.name = name;
@@ -62,6 +63,26 @@ public class InventoryItem implements Serializable {
         this.value = value;
         this.date = date;
         // TODO: tags & images
+    }
+
+    /**
+     * Convert fields of an InventoryItem into a HashMap for writing to Firebase.
+     * Note that item.firebaseId is not stored in the HashMap.
+     * @param
+     * @return
+     */
+    public HashMap<String, Object> convertToHashMap() {
+        HashMap<String, Object> itemData = new HashMap<>();
+        itemData.put("name", this.getName());
+        itemData.put("description", this.getDescription());
+        itemData.put("comment", this.getComment());
+        itemData.put("make", this.getMake());
+        itemData.put("model", this.getModel());
+        itemData.put("serialno", this.getSerialno());
+        itemData.put("value", this.getValue().toPrimitiveLong());
+        itemData.put("date", this.getDate());
+        // TODO: tags and images
+        return itemData;
     }
 
     public String getFirebaseId() {
@@ -116,11 +137,11 @@ public class InventoryItem implements Serializable {
         this.serialno = serialno;
     }
 
-    public Integer getValue() {
+    public InventoryItemValue getValue() {
         return value;
     }
 
-    public void setValue(Integer value) {
+    public void setValue(InventoryItemValue value) {
         this.value = value;
     }
 

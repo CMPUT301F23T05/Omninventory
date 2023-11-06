@@ -152,11 +152,13 @@ public class EditActivity extends AppCompatActivity  {
         final TextInputEditText itemNameEditText = findViewById(R.id.item_name_edittext);
         boolean val_result = true;
 
-        // === item name
+        // item name
         if (itemNameEditText.getText().toString().length() == 0) {
             itemNameEditText.setError("Item name is required.");
             val_result = false;
         }
+
+        // ValueTextWatcher effectively handles validation for the item value
 
         return val_result;
     }
@@ -177,7 +179,7 @@ public class EditActivity extends AppCompatActivity  {
             itemMakeEditText.getText().toString(),
             itemModelEditText.getText().toString(),
             itemSerialEditText.getText().toString(),
-            0,
+            new InventoryItemValue(itemValueEditText.getText().toString()),
             new Date()
         );
     }
