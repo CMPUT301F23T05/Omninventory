@@ -1,11 +1,13 @@
 package com.example.omninventory;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -48,6 +51,7 @@ public class EditActivity extends AppCompatActivity  {
 
         // === get references to Views
         final TextView titleText = findViewById(R.id.title_text);
+        final TextView itemDateText = findViewById(R.id.item_date_text);
 
         itemNameEditText = findViewById(R.id.item_name_edittext);
         itemDescriptionEditText = findViewById(R.id.item_description_edittext);
@@ -98,6 +102,36 @@ public class EditActivity extends AppCompatActivity  {
                 finish();
             }
         });
+
+        final ImageButton itemDateButton = findViewById(R.id.item_date_button);
+        itemDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // get current date for default calendar value
+                final Calendar c = Calendar.getInstance();
+                int currentYear = c.get(Calendar.YEAR);
+                int currentMonth = c.get(Calendar.MONTH);
+                int currentDay = c.get(Calendar.DAY_OF_MONTH);
+
+                // create a calendar dialog to get date input
+                DatePickerDialog datePickerDialog = new DatePickerDialog(
+                        EditActivity.this, // pass context
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                // set formatted date in itemDateText TextView
+                                itemDateText.setText(String.format("%04d-%02d-%02d", year, monthOfYear, dayOfMonth));
+                            }
+                        },
+                        // pass current year, month, and day
+                        currentYear, currentMonth, currentDay
+                );
+//                datePickerDialog.getDatePicker().setMaxDate(endDate.getTimeInMillis());
+                // display dialog
+                datePickerDialog.show();
+            }
+        });
+
 
         final ImageButton saveButton = findViewById(R.id.save_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
