@@ -87,6 +87,7 @@ public class EditActivity extends AppCompatActivity  {
         backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // return to DetailsActivity without changing any item fields
+                setResult(RESULT_CANCELED, null); // RESULT_CANCELED signifies edits cancelled
                 finish();
             }
         });
@@ -100,6 +101,8 @@ public class EditActivity extends AppCompatActivity  {
                     Log.d("EditActivity", "validation success, updating database");
                     InventoryItem updatedItem = makeInventoryItem();
                     repo.updateInventoryItem(updatedItem); // save changes to item fields
+
+                    setResult(RESULT_OK, null); // RESULT_OK signifies edits were made
                     finish(); // return to DetailsActivity
                 }
                 else {

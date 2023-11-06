@@ -76,6 +76,7 @@ public class InventoryRepository {
      * @return
      */
     public InventoryItem convertDocumentToInventoryItem(DocumentSnapshot doc) {
+        Log.d("InventoryRepository", "convert called with document" + doc.getId());
         InventoryItem item = new InventoryItem(
             doc.getId(),
             doc.getString("name"),
@@ -187,6 +188,8 @@ public class InventoryRepository {
     }
 
     public InventoryItem getInventoryItem(String firebaseId) {
+        Log.d("InventoryRepository", "getInventoryItem called with id" + firebaseId);
+
         // get document reference
         DocumentReference itemRef = inventoryItemsRef.document(firebaseId);
 

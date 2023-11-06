@@ -92,23 +92,21 @@ public class DetailsActivity extends AppCompatActivity  {
                 // start a new EditActivity to edit this item
                 Intent intent = new Intent(DetailsActivity.this, EditActivity.class);
                 intent.putExtra("item", currentItem);
-                startActivity(intent);
+                startActivity(intent); // use startActivityForResult so that onActivityResullt is called
             }
         });
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.i("EditActivity", "onActivityResult called with resultCode " + resultCode);
+    protected void onResume() {
+        super.onResume();
+        Log.i("DetailsActivity", "onResume called");
 
-        if (resultCode == RESULT_OK) {
-            Toast.makeText(this, "Edit was successful.", Toast.LENGTH_SHORT).show();
-        } else if ( resultCode == RESULT_CANCELED ) {
-            Toast.makeText(this, "There was an error saving your edits.", Toast.LENGTH_SHORT).show();
+        // repo and currentItem may be null if we are entering DetailActivity from MainActivity,
+        // as opposed to returning from EditActivity
+        if (repo != null && currentItem != null) {
+            Log.i("DetailsActivity", "refreshing currentItem");
+            currentItem = repo.getInventoryItem(currentItem.getFirebaseId()); // refresh our item
         }
-
-        // either way, refresh our item
-        currentItem = repo.refreshInventoryItem(currentItem);
     }
 }
