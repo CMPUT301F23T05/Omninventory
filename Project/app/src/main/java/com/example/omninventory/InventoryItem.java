@@ -3,6 +3,8 @@ package com.example.omninventory;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Hold all data stored in fields for each inventory item.

@@ -16,12 +16,26 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.Date;
+
 /**
  * Activity for editing an item's detailed fields.
  */
 public class EditActivity extends AppCompatActivity  {
 
     private InventoryRepository repo;
+
+    private InventoryItem currentItem;
+
+    // references to Views put here because they are used in multiple methods
+    private TextInputEditText itemNameEditText;
+    private TextInputEditText itemDescriptionEditText;
+    private TextInputEditText itemCommentEditText;
+    private TextInputEditText itemMakeEditText;
+    private TextInputEditText itemModelEditText;
+    private TextInputEditText itemSerialEditText;
+    private TextInputEditText itemValueEditText;
+    // TODO: date, tags, images
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,10 +47,16 @@ public class EditActivity extends AppCompatActivity  {
 
         // === get references to Views
         final TextView titleText = findViewById(R.id.title_text);
-        final TextInputEditText itemNameEditText = findViewById(R.id.item_name_edittext);
+
+        itemNameEditText = findViewById(R.id.item_name_edittext);
+        itemDescriptionEditText = findViewById(R.id.item_description_edittext);
+        itemCommentEditText = findViewById(R.id.item_comment_edittext);
+        itemMakeEditText = findViewById(R.id.item_make_edittext);
+        itemModelEditText = findViewById(R.id.item_model_edittext);
+        itemSerialEditText = findViewById(R.id.item_serial_edittext);
+        itemValueEditText = findViewById(R.id.item_value_edittext);
 
         // === load info passed from DetailsActivity (hopefully)
-        InventoryItem item;
         if (savedInstanceState != null) {
             // TODO: this will probably be used later when we go from this activity to others; for now, error
             throw new RuntimeException("EditActivity opened with a savedInstanceState");
@@ -45,7 +65,7 @@ public class EditActivity extends AppCompatActivity  {
             throw new RuntimeException("EditActivity opened without an InventoryItem");
         }
         else {
-            item = (InventoryItem) getIntent().getExtras().getSerializable("item");
+            currentItem = (InventoryItem) getIntent().getExtras().getSerializable("item");
         }
 
         // === UI setup
@@ -60,7 +80,7 @@ public class EditActivity extends AppCompatActivity  {
         taskbarHolder.addView(taskbarLayout);
 
         // if initialized with an item, set default values for fields
-        itemNameEditText.setText(item.getName());
+        itemNameEditText.setText(currentItem.getName());
 
         // === set up click actions
         final ImageButton backButton = findViewById(R.id.back_button);
@@ -77,8 +97,10 @@ public class EditActivity extends AppCompatActivity  {
                 // TODO: implement this
 
                 if (validateInputs()) {
-                    // return to DetailsActivity and save changes to item fields
-                    Log.d("EditActivity", "validation success");
+                    Log.d("EditActivity", "validation success, updating database");
+                    InventoryItem updatedItem = makeInventoryItem();
+                    repo.updateInventoryItem(updatedItem); // save changes to item fields
+                    finish(); // return to DetailsActivity
                 }
                 else {
                     // show Toast prompting user to fix input issues
@@ -106,5 +128,26 @@ public class EditActivity extends AppCompatActivity  {
         }
 
         return val_result;
+    }
+
+    /**
+     * Creates an InventoryItem from the fields on screen.
+     */
+    private InventoryItem makeInventoryItem() {
+        // assume validateInputs has already been run and inputs are OK
+
+        // TODO: this is not complete, need Date & others
+        // all fields are new except for firebaseId
+        return new InventoryItem(
+            currentItem.getFirebaseId(),
+            itemNameEditText.getText().toString(),
+            itemDescriptionEditText.getText().toString(),
+            itemCommentEditText.getText().toString(),
+            itemMakeEditText.getText().toString(),
+            itemModelEditText.getText().toString(),
+            itemSerialEditText.getText().toString(),
+            0,
+            new Date()
+        );
     }
 }

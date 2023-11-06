@@ -10,10 +10,13 @@ import androidx.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -72,7 +75,7 @@ public class InventoryRepository {
      * @param doc
      * @return
      */
-    public InventoryItem convertDocumentToInventoryItem(QueryDocumentSnapshot doc) {
+    public InventoryItem convertDocumentToInventoryItem(DocumentSnapshot doc) {
         InventoryItem item = new InventoryItem(
             doc.getId(),
             doc.getString("name"),
@@ -181,6 +184,33 @@ public class InventoryRepository {
                     Log.w(TAG, String.format("Error writing inventoryItems DocumentSnapshot, id=%s", itemRef.getId()), e);
                 }
             });
+    }
+
+    public InventoryItem getInventoryItem(String firebaseId) {
+        // get document reference
+        DocumentReference itemRef = inventoryItemsRef.document(firebaseId);
+
+        // get actual data
+        // TODO: i dont know why but a weird one-element array is the only way i can get this to work. marking as todo revise
+        final DocumentSnapshot[] doc = new DocumentSnapshot[1];
+
+        itemRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    doc[0] = task.getResult();
+                    if (doc[0].exists()) {
+                        Log.d("InventoryRepository", "DocumentSnapshot data gotten from db: " + doc[0].getData());
+                    } else {
+                        Log.d("InventoryRepository", "Couldn't find document id=" + firebaseId);
+                    }
+                } else {
+                    Log.d("InventoryRepository", "get failed with ", task.getException());
+                }
+            }
+        });
+
+        return convertDocumentToInventoryItem(doc[0]); // convert to InventoryItem and return
     }
 
     // TODO: implement these...
