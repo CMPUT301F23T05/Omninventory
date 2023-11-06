@@ -164,21 +164,21 @@ public class InventoryRepository {
         HashMap<String, Object> itemData = convertInventoryItemToHashMap(item);
 
         // get the document for this item
-        DocumentReference inventoryItemRef = inventoryItemsRef.document(item.getFirebaseId());
+        DocumentReference itemRef = inventoryItemsRef.document(item.getFirebaseId());
 
         // overwrite data of document with item data
-        inventoryItemRef
+        itemRef
             .set(itemData)
             .addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    Log.d(TAG, "New inventoryItems DocumentSnapshot written");
+                    Log.d(TAG, String.format("New inventoryItems DocumentSnapshot written, id=%s", itemRef.getId()));
                 }
             })
             .addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.w(TAG, "Error adding inventoryItems document", e);
+                    Log.w(TAG, String.format("Error writing inventoryItems DocumentSnapshot, id=%s", itemRef.getId()), e);
                 }
             });
     }

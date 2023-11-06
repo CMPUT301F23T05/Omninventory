@@ -39,9 +39,9 @@ import java.util.HashMap;
  */
 public class MainActivity extends AppCompatActivity {
 
+    private InventoryRepository repo;
     private ArrayList<InventoryItem> itemListData;
     private InventoryItemAdapter itemListAdapter;
-    private CollectionReference usersRef;
     private String currentUser;
 
     @Override
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // === set up database
-        InventoryRepository db = new InventoryRepository();
+        repo = new InventoryRepository();
 
         // === get references to Views
         final ListView itemList = findViewById(R.id.item_list);
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         itemList.setAdapter(itemListAdapter);
 
         // set up listener for getting Firestore data
-        db.setupInventoryItemList(itemListAdapter);
+        repo.setupInventoryItemList(itemListAdapter);
 
 //        itemListData.add(new InventoryItem("Cat", "beloved family pet"));
 //        itemListData.add(new InventoryItem("Laptop", "for developing android apps <3"));
