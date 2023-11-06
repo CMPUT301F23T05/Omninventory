@@ -14,19 +14,24 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 
 
 // TODO:
+//  Ability to sort by all options
 //  Add ability to filter by make (editText + button), date (2 date picker buttons + apply button), and description (editText + button) (tags left for part 4)
 //  Intent passing from this activity back to main (pass itemListData back, then update the adapter in MainActivity)
 //  Input validation and testing
 //  Clean up layout file UI
 //  Documentation
 public class SortFilterActivity extends AppCompatActivity {
-    protected ArrayList<InventoryItem> itemListData;
-    protected String dropdownSelection;
+    ArrayList<InventoryItem> itemListData;
+    String dropdownSelection;
+    Calendar startDate = Calendar.getInstance();
+    Calendar endDate = Calendar.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,12 +104,13 @@ public class SortFilterActivity extends AppCompatActivity {
                                                   int monthOfYear, int dayOfMonth) {
                                 // on below line we are setting date to our text view.
                                 startDateText.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-
+                                startDate.set(year, monthOfYear, dayOfMonth);
                             }
                         },
                         // on below line we are passing year,
                         // month and day for selected date in our date picker.
                         year, month, day);
+                datePickerDialog.getDatePicker().setMaxDate(endDate.getTimeInMillis());
                 // at last we are calling show to
                 // display our date picker dialog.
                 datePickerDialog.show();
@@ -114,7 +120,7 @@ public class SortFilterActivity extends AppCompatActivity {
 
         TextView endDateText = findViewById(R.id.end_date_text);
         Button endDateBtn = findViewById(R.id.end_date_button);
-        startDateBtn.setOnClickListener(new View.OnClickListener() {
+        endDateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // on below line we are getting
@@ -137,12 +143,13 @@ public class SortFilterActivity extends AppCompatActivity {
                                                   int monthOfYear, int dayOfMonth) {
                                 // on below line we are setting date to our text view.
                                 endDateText.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-
+                                endDate.set(year, monthOfYear, dayOfMonth);
                             }
                         },
                         // on below line we are passing year,
                         // month and day for selected date in our date picker.
                         year, month, day);
+                datePickerDialog.getDatePicker().setMinDate(startDate.getTimeInMillis());
                 // at last we are calling show to
                 // display our date picker dialog.
                 datePickerDialog.show();
