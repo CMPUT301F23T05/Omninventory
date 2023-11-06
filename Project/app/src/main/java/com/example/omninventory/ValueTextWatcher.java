@@ -6,7 +6,6 @@ import android.util.Log;
 import android.widget.EditText;
 
 import java.lang.ref.WeakReference;
-import java.util.Locale;
 
 /**
  * With help from:
@@ -44,7 +43,7 @@ public class ValueTextWatcher implements TextWatcher {
         Log.d("ValueTextWatcher", String.format("called with Editable: '%s'", s));
 
         // convert whatever we have to a string representation of a valid currency value
-        String formatted = InventoryItemValue.makeValidString(s);
+        String formatted = ItemValue.makeValidString(s);
 
         // replace contents of EditText with new formatted string
         editText.removeTextChangedListener(this);

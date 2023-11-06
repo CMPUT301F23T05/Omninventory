@@ -101,8 +101,8 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
         itemMakeText.setText(item.getMake());
         itemModelText.setText(item.getModel());
         itemSerialText.setText(item.getSerialno());
-        itemValueText.setText(item.getValue().toString()); // convert InventoryItemValue to String
-        itemDateText.setText(item.getDate().toString());
+        itemValueText.setText(item.getValue().toString()); // convert ItemValue to String
+        itemDateText.setText(item.getDate().toString()); // convert ItemDate to String
         itemTagsText.setText(item.getTagsString());
     }
 

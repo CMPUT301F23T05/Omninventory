@@ -85,8 +85,8 @@ public class InventoryRepository {
             doc.getString("make"),
             doc.getString("model"),
             doc.getString("serialno"),
-            new InventoryItemValue(doc.getLong("value")), // use InventoryItemValue
-            doc.getDate("date")
+            new ItemValue(doc.getLong("value")), // convert to ItemValue
+            new ItemDate(doc.getDate("date")) // convert to ItemDate
         );
 
         return item;
