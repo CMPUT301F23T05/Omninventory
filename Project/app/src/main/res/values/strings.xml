@@ -5,6 +5,7 @@
     <string name="main_title_text">OMNINVENTORY</string>
     <string name="details_title_text">ITEM DETAILS</string>
     <string name="edit_title_text">EDIT ITEM</string>
+    <string name="sort_filter_title_text">SORT AND FILTER</string>
 
     <string name="estimated_value_text">Total Estimated Value</string>
     <string name="sort_button_label">Sort Button</string>
@@ -35,5 +36,24 @@
     <string name="item_tags_head">Tags</string>
     <string name="item_tags_placeholder">#placeholder, #tags, #go, #here</string>
     <string name="item_text_head">Images</string>
+
+    <string name="make">Make</string>
+    <string name="ascending">ASC</string>
+    <string name="description_keywords_autofill">Test</string>
+    <string name="make_filter_button_text">Add Make Filter</string>
+    <string name="start_date_button">SD BTN</string>
+    <string name="end_date_button">ED BTN</string>
+    <string name="date_filter_button_text">Add Date Filter</string>
+    <string name="description_filter_button_text">Add Description Filter</string>
+    <string name="filter_by_tags_button_text">Filter By Tags</string>
+
+    <string-array name="sort_dropdown_options">
+        <item>None</item>
+        <item>Date</item>
+        <item>Description</item>
+        <item>Make</item>
+        <item>Estimated Value</item>
+        <item>Tags</item>
+    </string-array>
 
 </resources>

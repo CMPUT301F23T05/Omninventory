@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -62,6 +64,13 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("item", itemListData.get(position));
                 startActivity(intent);
             }
+        });
+
+        ImageButton sortFilterBtn = findViewById(R.id.sort_filter_button);
+        sortFilterBtn.setOnClickListener((v) -> {
+            Intent myIntent = new Intent(MainActivity.this, SortFilterActivity.class);
+            myIntent.putExtra("itemListData", itemListData);
+            MainActivity.this.startActivity(myIntent);
         });
     }
     

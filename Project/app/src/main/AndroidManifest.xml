@@ -24,8 +24,14 @@
             android:name=".DetailsActivity">
         </activity>
         <activity
+<<<<<<< HEAD
             android:name=".EditActivity">
         </activity>
+=======
+            android:name=".SortFilterActivity">
+        </activity>
+
+>>>>>>> origin/zachary
     </application>
 
 </manifest>
