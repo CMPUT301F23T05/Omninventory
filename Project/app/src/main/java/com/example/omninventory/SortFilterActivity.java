@@ -9,6 +9,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -21,6 +22,13 @@ import com.example.omninventory.databinding.ActivitySortFilterBinding;
 
 import java.util.Calendar;
 
+
+// TODO:
+//  Get item from dropdown spinner
+//  Add ability to filter by make (editText + button), date (2 date picker buttons + apply button), and description (editText + button) (tags left for part 4)
+//  Intent passing from this activity back to main
+//  Input validation and testing
+//  Clean up layout file UI
 public class SortFilterActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private AppBarConfiguration appBarConfiguration;
@@ -31,10 +39,18 @@ public class SortFilterActivity extends AppCompatActivity implements AdapterView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
+        final Spinner sortDropdown = findViewById(R.id.sort_dropdown_spinner);
+        final EditText makeFilterEditText = findViewById(R.id.make_filter_edit_text);
+        final Button makeFilterButton = findViewById(R.id.add_make_filter_button);
+
+        final Button dateFilterButton = findViewById(R.id.add_date_filter_button);
+        final EditText descriptionFilterEditText = findViewById(R.id.description_filter_edit_text);
+        final Button descriptionFilterButton = findViewById(R.id.add_description_filter_button);
+        final Button filterByTags = findViewById(R.id.filter_by_tags_button);
+
         final TextView titleText = findViewById(R.id.title_text);
         titleText.setText(getString(R.string.sort_filter_title_text));
 
-        final Spinner sortDropdown = (Spinner) findViewById(R.id.sort_dropdown_spinner);
         // Create an ArrayAdapter using the string array and a default spinner layout.
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this,
