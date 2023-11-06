@@ -57,11 +57,11 @@ public class EditActivity extends AppCompatActivity  {
         itemValueEditText = findViewById(R.id.item_value_edittext);
 
         // === load info passed from DetailsActivity (hopefully)
-        if (savedInstanceState != null) {
-            // TODO: this will probably be used later when we go from this activity to others; for now, error
-            throw new RuntimeException("EditActivity opened with a savedInstanceState");
-        }
-        else if (getIntent().getExtras() == null) {
+//        if (savedInstanceState != null) {
+//            // TODO: this will probably be used later when we go from this activity to others; for now, error
+//            throw new RuntimeException("EditActivity opened with a savedInstanceState");
+//        }
+        if (getIntent().getExtras() == null) {
             throw new RuntimeException("EditActivity opened without an InventoryItem");
         }
         else {
@@ -79,15 +79,22 @@ public class EditActivity extends AppCompatActivity  {
         ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.taskbar_holder);
         taskbarHolder.addView(taskbarLayout);
 
-        // if initialized with an item, set default values for fields
+        // set default values for fields
         itemNameEditText.setText(currentItem.getName());
+
+        // set up TextWatchers for dynamic input formatting
+        itemValueEditText.addTextChangedListener(new ValueTextWatcher(itemValueEditText));
 
         // === set up click actions
         final ImageButton backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                // display an exit message
+                CharSequence toastText = "Edits were discarded.";
+                Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
+                toast.show();
+
                 // return to DetailsActivity without changing any item fields
-                setResult(RESULT_CANCELED, null); // RESULT_CANCELED signifies edits cancelled
                 finish();
             }
         });
@@ -102,11 +109,15 @@ public class EditActivity extends AppCompatActivity  {
                     InventoryItem updatedItem = makeInventoryItem();
                     repo.updateInventoryItem(updatedItem); // save changes to item fields
 
-                    setResult(RESULT_OK, null); // RESULT_OK signifies edits were made
+                    // display a success message
+                    CharSequence toastText = String.format("%d was edited.", updatedItem.getName());
+                    Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
+                    toast.show();
+
                     finish(); // return to DetailsActivity
                 }
                 else {
-                    // show Toast prompting user to fix input issues
+                    // prompt user to fix input issues
                     CharSequence toastText = "Please fix invalid input fields.";
                     Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
                     toast.show();
@@ -114,6 +125,23 @@ public class EditActivity extends AppCompatActivity  {
                 }
             }
         });
+    }
+
+    /**
+     * Set fields in this activity's layout to the field values of an InventoryItem.
+     * @param item
+     */
+    private void setFields(InventoryItem item) {
+        // add item details to each field
+        itemNameEditText.setText(item.getName());
+        itemDescriptionEditText.setText(item.getDescription());
+        itemCommentEditText.setText(item.getComment());
+        itemMakeEditText.setText(item.getMake());
+        itemModelEditText.setText(item.getModel());
+        itemSerialEditText.setText(item.getSerialno());
+        itemValueEditText.setText(item.getValue().toString());
+//        itemDateEditText.setText(item.getDate().toString());
+//        itemTagsEditText.setText(item.getTagsString());
     }
 
     /**

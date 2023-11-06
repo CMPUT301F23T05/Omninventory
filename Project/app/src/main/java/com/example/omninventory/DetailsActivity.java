@@ -52,11 +52,10 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
         itemTagsText = findViewById(R.id.item_tags_text);
 
         // === load info passed from MainActivity (hopefully)
-        if (savedInstanceState != null) {
-            // TODO: this will probably be used later when we go from this activity to others; for now, error
-            throw new RuntimeException("DetailsActivity opened with a savedInstanceState");
-
-        }
+//        if (savedInstanceState != null) {
+//            // TODO: this will probably be used later when we go from this activity to others; for now, error
+//            throw new RuntimeException("DetailsActivity opened with a savedInstanceState");
+//        }
         if (getIntent().getExtras() == null) {
             throw new RuntimeException("DetailsActivity opened without an InventoryItem");
         }
@@ -135,7 +134,7 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
      * @param item
      */
     public void onGetInventoryItem(InventoryItem item) {
-        // refresh fields with the updated item
-        setFields(item);
+        currentItem = item;
+        setFields(currentItem);
     }
 }
