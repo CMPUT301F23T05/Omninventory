@@ -1,9 +1,10 @@
 package com.example.omninventory;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
-import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,31 +14,24 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.core.view.WindowCompat;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-import com.example.omninventory.databinding.ActivitySortFilterBinding;
-
+import java.util.ArrayList;
 import java.util.Calendar;
 
 
 // TODO:
-//  Get item from dropdown spinner
+//  Get selection from dropdown spinner
 //  Add ability to filter by make (editText + button), date (2 date picker buttons + apply button), and description (editText + button) (tags left for part 4)
-//  Intent passing from this activity back to main
+//  Intent passing from this activity back to main (pass itemListData back, then update the adapter in MainActivity)
 //  Input validation and testing
 //  Clean up layout file UI
+//  Documentation
 public class SortFilterActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-
-    private AppBarConfiguration appBarConfiguration;
-    private ActivitySortFilterBinding binding;
+    private ArrayList<InventoryItem> itemListData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_details);
+        setContentView(R.layout.activity_sort_filter);
 
         final Spinner sortDropdown = findViewById(R.id.sort_dropdown_spinner);
         final EditText makeFilterEditText = findViewById(R.id.make_filter_edit_text);
@@ -47,6 +41,14 @@ public class SortFilterActivity extends AppCompatActivity implements AdapterView
         final EditText descriptionFilterEditText = findViewById(R.id.description_filter_edit_text);
         final Button descriptionFilterButton = findViewById(R.id.add_description_filter_button);
         final Button filterByTags = findViewById(R.id.filter_by_tags_button);
+
+        // retrieve data passed from the main activity: itemListData
+        Intent intent = getIntent();
+        if (intent != null) {
+            if (intent.getSerializableExtra("itemListData") != null) {
+                this.itemListData = (ArrayList<InventoryItem>) intent.getSerializableExtra("itemListData");
+            }
+        }
 
         final TextView titleText = findViewById(R.id.title_text);
         titleText.setText(getString(R.string.sort_filter_title_text));

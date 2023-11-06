@@ -24,6 +24,7 @@
     <string name="filter_by_tags_button_text">Filter By Tags</string>
 
     <string-array name="sort_dropdown_options">
+        <item>None</item>
         <item>Date</item>
         <item>Description</item>
         <item>Make</item>

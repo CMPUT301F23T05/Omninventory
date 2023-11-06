@@ -11,6 +11,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -73,6 +75,13 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("item", itemListData.get(position));
                 startActivity(intent);
             }
+        });
+
+        ImageButton sortFilterBtn = findViewById(R.id.sortFilterButton);
+        sortFilterBtn.setOnClickListener((v) -> {
+            Intent myIntent = new Intent(MainActivity.this, SortFilterActivity.class);
+            myIntent.putExtra("itemListData", itemListData);
+            MainActivity.this.startActivity(myIntent);
         });
     }
     // add user to database
