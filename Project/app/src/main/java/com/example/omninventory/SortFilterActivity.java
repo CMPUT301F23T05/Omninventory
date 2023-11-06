@@ -19,21 +19,20 @@ import java.util.Calendar;
 
 
 // TODO:
-//  Get selection from dropdown spinner
 //  Add ability to filter by make (editText + button), date (2 date picker buttons + apply button), and description (editText + button) (tags left for part 4)
 //  Intent passing from this activity back to main (pass itemListData back, then update the adapter in MainActivity)
 //  Input validation and testing
 //  Clean up layout file UI
 //  Documentation
-public class SortFilterActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-    private ArrayList<InventoryItem> itemListData;
+public class SortFilterActivity extends AppCompatActivity {
+    protected ArrayList<InventoryItem> itemListData;
+    protected String dropdownSelection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sort_filter);
 
-        final Spinner sortDropdown = findViewById(R.id.sort_dropdown_spinner);
         final EditText makeFilterEditText = findViewById(R.id.make_filter_edit_text);
         final Button makeFilterButton = findViewById(R.id.add_make_filter_button);
 
@@ -46,24 +45,34 @@ public class SortFilterActivity extends AppCompatActivity implements AdapterView
         Intent intent = getIntent();
         if (intent != null) {
             if (intent.getSerializableExtra("itemListData") != null) {
-                this.itemListData = (ArrayList<InventoryItem>) intent.getSerializableExtra("itemListData");
+                itemListData = (ArrayList<InventoryItem>) intent.getSerializableExtra("itemListData");
             }
         }
 
         final TextView titleText = findViewById(R.id.title_text);
         titleText.setText(getString(R.string.sort_filter_title_text));
 
-        // Create an ArrayAdapter using the string array and a default spinner layout.
+        final Spinner sortDropdown = findViewById(R.id.sort_dropdown_spinner);
+        // ArrayAdapter for dropdown choices
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this,
                 R.array.sort_dropdown_options,
                 android.R.layout.simple_spinner_item
         );
-        // Specify the layout to use when the list of choices appears.
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner.
         sortDropdown.setAdapter(adapter);
-        sortDropdown.setOnItemSelectedListener(this);
+        sortDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                dropdownSelection = (String) parentView.getItemAtPosition(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                dropdownSelection = "";
+            }
+
+        });
 
         TextView startDateText = findViewById(R.id.start_date_text);
         Button startDateBtn = findViewById(R.id.start_date_button);
@@ -139,19 +148,5 @@ public class SortFilterActivity extends AppCompatActivity implements AdapterView
                 datePickerDialog.show();
             }
         });
-
     }
-
-    // called when item in dropdown selected
-    public void onItemSelected(AdapterView<?> parent, View view,
-                               int pos, long id) {
-        // An item is selected. You can retrieve the selected item using
-        // parent.getItemAtPosition(pos).
-    }
-
-    // called when nothing in dropdown selected
-    public void onNothingSelected(AdapterView<?> parent) {
-        // Another interface callback.
-    }
-
 }
