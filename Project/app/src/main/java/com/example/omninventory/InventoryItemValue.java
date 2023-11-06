@@ -64,7 +64,7 @@ public class InventoryItemValue implements Serializable {
 
         // using Locale.CANADA here makes a lot of assumptions, however dealing with different
         // currency formats is not within the scope of this project
-        Log.d("ValueEditText", String.format("Formatting values: %d, %d", dollarsNum, centsNum));
+        Log.d("InventoryItemValue", String.format("Formatting values: %d, %d", dollarsNum, centsNum));
 
         return String.format(Locale.CANADA, "$%d.%02d", dollarsNum, centsNum);
     }

@@ -19,8 +19,8 @@ public class ValueTextWatcher implements TextWatcher {
         // initialize with reference to EditText to watch
         editTextWeakReference = new WeakReference<EditText>(editText);
 
-        // make an empty Editable to mock an empty EditText and set EditText to a default value
-        this.afterTextChanged(Editable.Factory.getInstance().newEditable(""));
+        // unnecessary
+        // this.afterTextChanged(Editable.Factory.getInstance().newEditable(editText.getText()));
     }
 
     @Override

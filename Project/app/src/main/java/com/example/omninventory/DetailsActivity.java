@@ -113,7 +113,7 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
 
         // repo and currentItem may be null if we are entering DetailActivity from MainActivity
         if (repo != null && currentItem != null) {
-            // but, if we are entering from EditActivity, we need to refresh the item fields
+            // but, in case we are entering from EditActivity, we need to refresh the item fields
             // as they may have been edited
             Log.d("DetailsActivity", "refreshing currentItem");
             repo.getInventoryItemInto(currentItem.getFirebaseId(), this);

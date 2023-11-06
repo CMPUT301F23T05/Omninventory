@@ -6,7 +6,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -37,6 +36,8 @@ public class EditActivity extends AppCompatActivity  {
     private TextInputEditText itemValueEditText;
     // TODO: date, tags, images
 
+    private ValueTextWatcher itemValueTextWatcher;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,10 +58,6 @@ public class EditActivity extends AppCompatActivity  {
         itemValueEditText = findViewById(R.id.item_value_edittext);
 
         // === load info passed from DetailsActivity (hopefully)
-//        if (savedInstanceState != null) {
-//            // TODO: this will probably be used later when we go from this activity to others; for now, error
-//            throw new RuntimeException("EditActivity opened with a savedInstanceState");
-//        }
         if (getIntent().getExtras() == null) {
             throw new RuntimeException("EditActivity opened without an InventoryItem");
         }
@@ -80,9 +77,12 @@ public class EditActivity extends AppCompatActivity  {
         taskbarHolder.addView(taskbarLayout);
 
         // set default values for fields
-        itemNameEditText.setText(currentItem.getName());
+        Log.d("EditActivity", "setFields called from onCreate");
+        setFields(currentItem);
 
         // set up TextWatchers for dynamic input formatting
+        Log.d("EditActivity", "set up TextWatcher");
+        // initial text modified by TextWatcher will be from currentItem, as EditText contents were just set by setFields
         itemValueEditText.addTextChangedListener(new ValueTextWatcher(itemValueEditText));
 
         // === set up click actions
@@ -110,7 +110,7 @@ public class EditActivity extends AppCompatActivity  {
                     repo.updateInventoryItem(updatedItem); // save changes to item fields
 
                     // display a success message
-                    CharSequence toastText = String.format("%d was edited.", updatedItem.getName());
+                    CharSequence toastText = String.format("%s was edited.", updatedItem.getName());
                     Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
                     toast.show();
 
@@ -140,6 +140,7 @@ public class EditActivity extends AppCompatActivity  {
         itemModelEditText.setText(item.getModel());
         itemSerialEditText.setText(item.getSerialno());
         itemValueEditText.setText(item.getValue().toString());
+
 //        itemDateEditText.setText(item.getDate().toString());
 //        itemTagsEditText.setText(item.getTagsString());
     }
@@ -153,7 +154,7 @@ public class EditActivity extends AppCompatActivity  {
         boolean val_result = true;
 
         // item name
-        if (itemNameEditText.getText().toString().length() == 0) {
+        if (itemNameEditText.getText() == null || itemNameEditText.getText().toString().length() == 0) {
             itemNameEditText.setError("Item name is required.");
             val_result = false;
         }
