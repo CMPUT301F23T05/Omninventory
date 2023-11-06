@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.Callable;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -187,23 +188,31 @@ public class InventoryRepository {
             });
     }
 
-    public InventoryItem getInventoryItem(String firebaseId) {
-        Log.d("InventoryRepository", "getInventoryItem called with id" + firebaseId);
+    /**
+     * Bit of a roundabout way to update the DetailsActivity with an InventoryItem on update.
+     * This sends the InventoryItem from Firebase into the onGetInventoryItem method of the handler,
+     * which must implement the GetInventoryItemHandler interface.
+     * @param firebaseId
+     * @param handler
+     */
+    public void getInventoryItemInto(String firebaseId, GetInventoryItemHandler handler) {
+        Log.d("InventoryRepository", "getInventoryItem called with id=" + firebaseId);
 
         // get document reference
         DocumentReference itemRef = inventoryItemsRef.document(firebaseId);
+        Log.d("InventoryRepository", itemRef.getId());
 
         // get actual data
         // TODO: i dont know why but a weird one-element array is the only way i can get this to work. marking as todo revise
-        final DocumentSnapshot[] doc = new DocumentSnapshot[1];
 
         itemRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
-                    doc[0] = task.getResult();
-                    if (doc[0].exists()) {
-                        Log.d("InventoryRepository", "DocumentSnapshot data gotten from db: " + doc[0].getData());
+                    DocumentSnapshot doc = task.getResult();
+                    if (doc.exists()) {
+                        Log.d("InventoryRepository", "DocumentSnapshot data gotten from db: " + doc.getData());
+                        handler.onGetInventoryItem(convertDocumentToInventoryItem(doc)); // call handler function
                     } else {
                         Log.d("InventoryRepository", "Couldn't find document id=" + firebaseId);
                     }
@@ -212,8 +221,6 @@ public class InventoryRepository {
                 }
             }
         });
-
-        return convertDocumentToInventoryItem(doc[0]); // convert to InventoryItem and return
     }
 
     // TODO: implement these...

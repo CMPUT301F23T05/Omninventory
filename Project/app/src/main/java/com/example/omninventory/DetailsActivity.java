@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,10 +16,20 @@ import androidx.appcompat.app.AppCompatActivity;
  * Activity for viewing an item's detailed fields.
  * Will reuse (or extend?) with different behaviour for both viewing & editing items.
  */
-public class DetailsActivity extends AppCompatActivity  {
+public class DetailsActivity extends AppCompatActivity implements GetInventoryItemHandler {
 
     private InventoryRepository repo;
     private InventoryItem currentItem;
+
+    TextView itemNameText;
+    TextView itemDescriptionText;
+    TextView itemCommentText;
+    TextView itemMakeText;
+    TextView itemModelText;
+    TextView itemSerialText;
+    TextView itemValueText;
+    TextView itemDateText;
+    TextView itemTagsText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,15 +41,15 @@ public class DetailsActivity extends AppCompatActivity  {
 
         // === get references to Views
         final TextView titleText = findViewById(R.id.title_text);
-        final TextView itemNameText = findViewById(R.id.item_name_text);
-        final TextView itemDescriptionText = findViewById(R.id.item_description_text);
-        final TextView itemCommentText = findViewById(R.id.item_comment_text);
-        final TextView itemMakeText = findViewById(R.id.item_make_text);
-        final TextView itemModelText = findViewById(R.id.item_model_text);
-        final TextView itemSerialText = findViewById(R.id.item_serial_text);
-        final TextView itemValueText = findViewById(R.id.item_value_text);
-        final TextView itemDateText = findViewById(R.id.item_date_text);
-        final TextView itemTagsText = findViewById(R.id.item_tags_text);
+        itemNameText = findViewById(R.id.item_name_text);
+        itemDescriptionText = findViewById(R.id.item_description_text);
+        itemCommentText = findViewById(R.id.item_comment_text);
+        itemMakeText = findViewById(R.id.item_make_text);
+        itemModelText = findViewById(R.id.item_model_text);
+        itemSerialText = findViewById(R.id.item_serial_text);
+        itemValueText = findViewById(R.id.item_value_text);
+        itemDateText = findViewById(R.id.item_date_text);
+        itemTagsText = findViewById(R.id.item_tags_text);
 
         // === load info passed from MainActivity (hopefully)
         if (savedInstanceState != null) {
@@ -56,20 +65,11 @@ public class DetailsActivity extends AppCompatActivity  {
         }
 
         // === UI setup
+        // set item fields
+        setFields(currentItem);
 
         // set title text
         titleText.setText(getString(R.string.details_title_text));
-
-        // add item details to each field
-        itemNameText.setText(currentItem.getName());
-        itemDescriptionText.setText(currentItem.getDescription());
-        itemCommentText.setText(currentItem.getComment());
-        itemMakeText.setText(currentItem.getMake());
-        itemModelText.setText(currentItem.getModel());
-        itemSerialText.setText(currentItem.getSerialno());
-        itemValueText.setText(currentItem.getValue().toString());
-        itemDateText.setText(currentItem.getDate().toString());
-        itemTagsText.setText(currentItem.getTagsString());
 
         // add taskbar
         LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -97,6 +97,23 @@ public class DetailsActivity extends AppCompatActivity  {
         });
     }
 
+    /**
+     * Set fields in this activity's layout to the field values of an InventoryItem.
+     * @param item
+     */
+    private void setFields(InventoryItem item) {
+        // add item details to each field
+        itemNameText.setText(item.getName());
+        itemDescriptionText.setText(item.getDescription());
+        itemCommentText.setText(item.getComment());
+        itemMakeText.setText(item.getMake());
+        itemModelText.setText(item.getModel());
+        itemSerialText.setText(item.getSerialno());
+        itemValueText.setText(item.getValue().toString());
+        itemDateText.setText(item.getDate().toString());
+        itemTagsText.setText(item.getTagsString());
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -106,7 +123,19 @@ public class DetailsActivity extends AppCompatActivity  {
         // as opposed to returning from EditActivity
         if (repo != null && currentItem != null) {
             Log.i("DetailsActivity", "refreshing currentItem");
-            currentItem = repo.getInventoryItem(currentItem.getFirebaseId()); // refresh our item
+            repo.getInventoryItemInto(currentItem.getFirebaseId(), this); // refresh our item
         }
+    }
+
+    /**
+     * Implement behaviour when InventoryItem is read.
+     * I'm not sold that this is the best way to do this (update the fields in this Activity on return
+     * from EditActivity, I'll come back to it later.
+     * TODO: come back to this later
+     * @param item
+     */
+    public void onGetInventoryItem(InventoryItem item) {
+        // refresh fields with the updated item
+        setFields(item);
     }
 }
