@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<InventoryItem> itemListData;
     private InventoryItemAdapter itemListAdapter;
     private String currentUser;
+    private String sortBy;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +49,23 @@ public class MainActivity extends AppCompatActivity {
         ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.task_bar_main);
         taskbarHolder.addView(taskbarLayout);
 
-        // connect itemList to Firestore database
         itemListData = new ArrayList<InventoryItem>();
+        // retrieve data passed from SortFilterActivity: itemListData and sortBy
+        Intent intent = getIntent();
+        if (intent != null) {
+            if (intent.getSerializableExtra("itemListData") != null) {
+                itemListData = (ArrayList<InventoryItem>) intent.getSerializableExtra("itemListData");
+            }
+            if (intent.getStringExtra("sortBy") != null) {
+                sortBy = intent.getStringExtra("sortBy");
+            }
+        }
+
+        if (itemListData != null && sortBy != null) {
+            SortFilterActivity.applySorting(sortBy, itemListData);
+        }
+
+        // connect itemList to Firestore database
         itemListAdapter = new InventoryItemAdapter(this, itemListData);
         itemList.setAdapter(itemListAdapter);
         repo.setupInventoryItemList(itemListAdapter); // set up listener for getting Firestore data

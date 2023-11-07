@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -30,8 +31,8 @@ import java.util.Comparator;
 //  Clean up layout file UI
 //  Documentation
 public class SortFilterActivity extends AppCompatActivity {
-    ArrayList<InventoryItem> itemListData;
-    String dropdownSelection;
+    private ArrayList<InventoryItem> itemListData;
+    private String dropdownSelection;
     ItemDate startDate;
     ItemDate endDate;
     private String sortOrder;
@@ -50,6 +51,8 @@ public class SortFilterActivity extends AppCompatActivity {
         final EditText descriptionFilterEditText = findViewById(R.id.description_filter_edit_text);
         final Button descriptionFilterButton = findViewById(R.id.add_description_filter_button);
         final Button filterByTagsButton = findViewById(R.id.filter_by_tags_button);
+
+        final ImageButton backButton = findViewById(R.id.back_button);
 
         // retrieve data passed from the main activity: itemListData
         Intent intent = getIntent();
@@ -75,7 +78,7 @@ public class SortFilterActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 dropdownSelection = (String) parentView.getItemAtPosition(position);
-                itemListData = applySorting(dropdownSelection, itemListData);
+                applySorting(dropdownSelection, itemListData);
             }
 
             @Override
@@ -204,41 +207,37 @@ public class SortFilterActivity extends AppCompatActivity {
                 // do nothing for now, implemented in part 4
             }
         });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent myIntent = new Intent(SortFilterActivity.this, MainActivity.class);
+                myIntent.putExtra("itemListData", itemListData);
+                myIntent.putExtra("sortBy", dropdownSelection);
+                //myIntent.putExtra("filterOptions", filterOptions);
+                SortFilterActivity.this.startActivity(myIntent);
+                finish();
+            }
+        });
     }
 
-    public ArrayList<InventoryItem> applySorting(String selection, ArrayList<InventoryItem> itemListData) {
+    public static void applySorting(String selection, ArrayList<InventoryItem> itemListData) {
         switch (selection) {
             case "None":
+                break;
             case "Date":
-                Comparator<InventoryItem> sortDate =  new Comparator<InventoryItem>() {
-                    public int compare(InventoryItem ie1, InventoryItem ie2) {
-                        return ie1.getDate().toCalendar().compareTo(ie2.getDate().toCalendar());
-                    }
-                };
-                itemListData.sort(sortDate);
+                itemListData.sort(new SortByDate());
+                break;
             case "Description":
-                Comparator<InventoryItem> sortDescription =  new Comparator<InventoryItem>() {
-                    public int compare(InventoryItem ie1, InventoryItem ie2) {
-                        return ie1.getDescription().compareTo(ie2.getDescription());
-                    }
-                };
-                itemListData.sort(sortDescription);
+                itemListData.sort(new SortByDescription());
+                break;
             case "Make":
-                Comparator<InventoryItem> sortMake =  new Comparator<InventoryItem>() {
-                    public int compare(InventoryItem ie1, InventoryItem ie2) {
-                        return ie1.getMake().compareTo(ie2.getMake());
-                    }
-                };
-                itemListData.sort(sortMake);
+                itemListData.sort(new SortByMake());
+                break;
             case "Estimated Value":
-                Comparator<InventoryItem> sortEstimatedValue =  new Comparator<InventoryItem>() {
-                    public int compare(InventoryItem ie1, InventoryItem ie2) {
-                        return ie1.getValue().compare(ie2.getValue());
-                    }
-                };
-                itemListData.sort(sortEstimatedValue);
+                itemListData.sort(new SortByValue());
+                break;
         }
-        return itemListData;
     }
 
     public ArrayList<InventoryItem> applyMakeFilter(String make, ArrayList<InventoryItem> itemListData) {
