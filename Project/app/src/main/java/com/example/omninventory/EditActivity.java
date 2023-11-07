@@ -122,7 +122,13 @@ public class EditActivity extends AppCompatActivity  {
         backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // display an exit message
-                CharSequence toastText = "Edits were discarded.";
+                CharSequence toastText;
+                if (newItemFlag) {
+                    toastText = "Item was discarded.";
+                }
+                else {
+                    toastText = "Edits were discarded.";
+                }
                 Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
                 toast.show();
 
@@ -208,7 +214,7 @@ public class EditActivity extends AppCompatActivity  {
         itemCommentEditText.setText(item.getComment());
         itemMakeEditText.setText(item.getMake());
         itemModelEditText.setText(item.getModel());
-        itemSerialEditText.setText(item.getSerialno());
+        itemSerialEditText.setText(item.getSerialNo());
         itemValueEditText.setText(item.getValue().toString()); // convert ItemValue to String
         itemDateText.setText(item.getDate().toString()); // convert ItemDate to String. note this is a TextView, not EditText
 //        itemTagsEditText.setText(item.getTagsString());
