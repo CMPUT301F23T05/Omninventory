@@ -18,6 +18,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -46,9 +47,9 @@ public class InventoryRepository {
      * TODO: will need to make this get only the items associated with current user
      * @param adapter An InventoryItemAdapter to set up to track contents of database.
      */
-    public void setupInventoryItemList(InventoryItemAdapter adapter) {
+    public ListenerRegistration setupInventoryItemList(InventoryItemAdapter adapter) {
         // set up listener
-        inventoryItemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        ListenerRegistration registration = inventoryItemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {
@@ -66,6 +67,7 @@ public class InventoryRepository {
                 adapter.notifyDataSetChanged(); // TODO: is this necessary?
             }
         });
+        return registration;
     }
 
     /**

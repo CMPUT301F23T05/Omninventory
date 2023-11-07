@@ -14,6 +14,8 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.firebase.firestore.ListenerRegistration;
+
 import java.util.ArrayList;
 
 /**
@@ -60,15 +62,16 @@ public class MainActivity extends AppCompatActivity {
                 sortBy = intent.getStringExtra("sortBy");
             }
         }
-
-        if (itemListData != null && sortBy != null) {
-            SortFilterActivity.applySorting(sortBy, itemListData);
-        }
-
         // connect itemList to Firestore database
         itemListAdapter = new InventoryItemAdapter(this, itemListData);
         itemList.setAdapter(itemListAdapter);
-        repo.setupInventoryItemList(itemListAdapter); // set up listener for getting Firestore data
+        ListenerRegistration registration = repo.setupInventoryItemList(itemListAdapter); // set up listener for getting Firestore data
+
+        if (itemListData != null && sortBy != null) {
+            SortFilterActivity.applySorting(sortBy, itemListData);
+            itemListAdapter.notifyDataSetChanged();
+            registration.remove();
+        }
 
         // === set up onClick actions
         itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
