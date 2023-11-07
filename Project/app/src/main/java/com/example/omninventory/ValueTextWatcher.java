@@ -6,7 +6,6 @@ import android.util.Log;
 import android.widget.EditText;
 
 import java.lang.ref.WeakReference;
-import java.util.Locale;
 
 /**
  * With help from:
@@ -19,8 +18,8 @@ public class ValueTextWatcher implements TextWatcher {
         // initialize with reference to EditText to watch
         editTextWeakReference = new WeakReference<EditText>(editText);
 
-        // make an empty Editable to mock an empty EditText and set EditText to a default value
-        this.afterTextChanged(Editable.Factory.getInstance().newEditable(""));
+        // unnecessary
+        // this.afterTextChanged(Editable.Factory.getInstance().newEditable(editText.getText()));
     }
 
     @Override
@@ -44,7 +43,7 @@ public class ValueTextWatcher implements TextWatcher {
         Log.d("ValueTextWatcher", String.format("called with Editable: '%s'", s));
 
         // convert whatever we have to a string representation of a valid currency value
-        String formatted = InventoryItemValue.makeValidString(s);
+        String formatted = ItemValue.makeValidString(s);
 
         // replace contents of EditText with new formatted string
         editText.removeTextChangedListener(this);

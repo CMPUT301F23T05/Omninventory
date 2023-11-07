@@ -101,8 +101,8 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
         itemMakeText.setText(item.getMake());
         itemModelText.setText(item.getModel());
         itemSerialText.setText(item.getSerialno());
-        itemValueText.setText(item.getValue().toString()); // convert InventoryItemValue to String
-        itemDateText.setText(item.getDate().toString());
+        itemValueText.setText(item.getValue().toString()); // convert ItemValue to String
+        itemDateText.setText(item.getDate().toString()); // convert ItemDate to String
         itemTagsText.setText(item.getTagsString());
     }
 
@@ -113,7 +113,7 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
 
         // repo and currentItem may be null if we are entering DetailActivity from MainActivity
         if (repo != null && currentItem != null) {
-            // but, if we are entering from EditActivity, we need to refresh the item fields
+            // but, in case we are entering from EditActivity, we need to refresh the item fields
             // as they may have been edited
             Log.d("DetailsActivity", "refreshing currentItem");
             repo.getInventoryItemInto(currentItem.getFirebaseId(), this);

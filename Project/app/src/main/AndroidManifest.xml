@@ -24,10 +24,10 @@
             android:name=".DetailsActivity">
         </activity>
         <activity
-            android:name=".SortFilterActivity">
+            android:name=".EditActivity">
         </activity>
         <activity
-            android:name=".EditActivity">
+            android:name=".SortFilterActivity">
         </activity>
     </application>
 

@@ -4,8 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Holds all data stored in fields for each inventory item.
@@ -19,8 +17,8 @@ public class InventoryItem implements Serializable {
     private String make;
     private String model;
     private String serialno;
-    private InventoryItemValue value;
-    private Date date;
+    private ItemValue value;
+    private ItemDate date;
     private ArrayList<Object> tags; // placeholder
     private ArrayList<Object> images; // placeholder
 
@@ -35,8 +33,8 @@ public class InventoryItem implements Serializable {
         this.make = "";
         this.model = "";
         this.serialno = "";
-        this.value = new InventoryItemValue(0);
-        this.date = new Date();
+        this.value = new ItemValue(0);
+        this.date = new ItemDate(new Date());
         // TODO: tags & images
     }
 
@@ -53,8 +51,8 @@ public class InventoryItem implements Serializable {
         this.make = "make";
         this.model = "model";
         this.serialno = "123";
-        this.value = new InventoryItemValue(0);
-        this.date = new Date();
+        this.value = new ItemValue(0);
+        this.date = new ItemDate(new Date());
         // TODO: tags & images
     }
 
@@ -71,7 +69,7 @@ public class InventoryItem implements Serializable {
      * @param date
      */
     public InventoryItem(String firebaseId, String name, String description, String comment,
-                         String make, String model, String serialno, InventoryItemValue value, Date date) {
+                         String make, String model, String serialno, ItemValue value, ItemDate date) {
         // full constructor
         this.firebaseId = firebaseId;
         this.name = name;
@@ -98,8 +96,8 @@ public class InventoryItem implements Serializable {
         itemData.put("make", this.getMake());
         itemData.put("model", this.getModel());
         itemData.put("serialno", this.getSerialno());
-        itemData.put("value", this.getValue().toPrimitiveLong()); // convert InventoryItemValue to long
-        itemData.put("date", this.getDate());
+        itemData.put("value", this.getValue().toPrimitiveLong()); // convert ItemValue to long
+        itemData.put("date", this.getDate().toDate()); // convert ItemDate to Date
         // TODO: tags and images
         return itemData;
     }
@@ -158,19 +156,19 @@ public class InventoryItem implements Serializable {
         this.serialno = serialno;
     }
 
-    public InventoryItemValue getValue() {
+    public ItemValue getValue() {
         return value;
     }
 
-    public void setValue(InventoryItemValue value) {
+    public void setValue(ItemValue value) {
         this.value = value;
     }
 
-    public Date getDate() {
+    public ItemDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(ItemDate date) {
         this.date = date;
     }
 

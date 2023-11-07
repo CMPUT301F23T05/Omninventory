@@ -1,12 +1,13 @@
 package com.example.omninventory;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -37,6 +39,11 @@ public class EditActivity extends AppCompatActivity  {
     private TextInputEditText itemValueEditText;
     // TODO: date, tags, images
 
+
+    private TextView itemDateText;
+
+    private ValueTextWatcher itemValueTextWatcher;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +54,7 @@ public class EditActivity extends AppCompatActivity  {
 
         // === get references to Views
         final TextView titleText = findViewById(R.id.title_text);
+        itemDateText = findViewById(R.id.item_date_text);
 
         itemNameEditText = findViewById(R.id.item_name_edittext);
         itemDescriptionEditText = findViewById(R.id.item_description_edittext);
@@ -57,10 +65,6 @@ public class EditActivity extends AppCompatActivity  {
         itemValueEditText = findViewById(R.id.item_value_edittext);
 
         // === load info passed from DetailsActivity (hopefully)
-//        if (savedInstanceState != null) {
-//            // TODO: this will probably be used later when we go from this activity to others; for now, error
-//            throw new RuntimeException("EditActivity opened with a savedInstanceState");
-//        }
         if (getIntent().getExtras() == null) {
             throw new RuntimeException("EditActivity opened without an InventoryItem");
         }
@@ -80,12 +84,17 @@ public class EditActivity extends AppCompatActivity  {
         taskbarHolder.addView(taskbarLayout);
 
         // set default values for fields
-        itemNameEditText.setText(currentItem.getName());
+        Log.d("EditActivity", "setFields called from onCreate");
+        setFields(currentItem);
 
         // set up TextWatchers for dynamic input formatting
+        Log.d("EditActivity", "set up TextWatcher");
+        // initial text modified by TextWatcher will be from currentItem, as EditText contents were just set by setFields
         itemValueEditText.addTextChangedListener(new ValueTextWatcher(itemValueEditText));
 
         // === set up click actions
+
+        // back button should take us back to DetailsActivity without saving any item data on click
         final ImageButton backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -99,18 +108,49 @@ public class EditActivity extends AppCompatActivity  {
             }
         });
 
+        // itemDateButton should open a DatePickerDialog to choose date
+        final ImageButton itemDateButton = findViewById(R.id.item_date_button);
+        itemDateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // get current date for default calendar value
+                final Calendar c = Calendar.getInstance();
+                int currentYear = c.get(Calendar.YEAR);
+                int currentMonth = c.get(Calendar.MONTH);
+                int currentDay = c.get(Calendar.DAY_OF_MONTH);
+
+                // create a calendar dialog to get date input
+                DatePickerDialog datePickerDialog = new DatePickerDialog(
+                        EditActivity.this, // pass context
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                                // set formatted date in itemDateText TextView
+                                // use monthOfYear + 1 because Calendar zero-indexes month
+                                itemDateText.setText(ItemDate.ymdToString(year, monthOfYear + 1, dayOfMonth));
+                            }
+                        },
+                        currentYear, currentMonth, currentDay
+                );
+
+                // display dialog
+                datePickerDialog.show();
+            }
+        });
+
+        // saveButton should send data to Firebase and return to DetailsActivity
         final ImageButton saveButton = findViewById(R.id.save_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // TODO: implement this
 
-                if (validateInputs()) {
+                if (validateFields()) {
                     Log.d("EditActivity", "validation success, updating database");
                     InventoryItem updatedItem = makeInventoryItem();
                     repo.updateInventoryItem(updatedItem); // save changes to item fields
 
                     // display a success message
-                    CharSequence toastText = String.format("%d was edited.", updatedItem.getName());
+                    CharSequence toastText = String.format("%s was edited.", updatedItem.getName());
                     Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
                     toast.show();
 
@@ -139,26 +179,27 @@ public class EditActivity extends AppCompatActivity  {
         itemMakeEditText.setText(item.getMake());
         itemModelEditText.setText(item.getModel());
         itemSerialEditText.setText(item.getSerialno());
-        itemValueEditText.setText(item.getValue().toString());
-//        itemDateEditText.setText(item.getDate().toString());
+        itemValueEditText.setText(item.getValue().toString()); // convert ItemValue to String
+        itemDateText.setText(item.getDate().toString()); // convert ItemDate to String. note this is a TextView, not EditText
 //        itemTagsEditText.setText(item.getTagsString());
     }
 
     /**
      * Handles input validation for fields on this screen.
      */
-    private boolean validateInputs() {
+    private boolean validateFields() {
         // === get references to Views
         final TextInputEditText itemNameEditText = findViewById(R.id.item_name_edittext);
         boolean val_result = true;
 
         // item name
-        if (itemNameEditText.getText().toString().length() == 0) {
+        if (itemNameEditText.getText() == null || itemNameEditText.getText().toString().length() == 0) {
             itemNameEditText.setError("Item name is required.");
             val_result = false;
         }
 
         // ValueTextWatcher effectively handles validation for the item value
+        // DatePickerDialog and call to ItemDate.ymdToString effectively handles date validation
 
         return val_result;
     }
@@ -167,7 +208,7 @@ public class EditActivity extends AppCompatActivity  {
      * Creates an InventoryItem from the fields on screen.
      */
     private InventoryItem makeInventoryItem() {
-        // assume validateInputs has already been run and inputs are OK
+        // assume validateFields has already been run and inputs are OK
 
         // TODO: this is not complete, need Date & others
         // all fields are new except for firebaseId
@@ -179,8 +220,8 @@ public class EditActivity extends AppCompatActivity  {
             itemMakeEditText.getText().toString(),
             itemModelEditText.getText().toString(),
             itemSerialEditText.getText().toString(),
-            new InventoryItemValue(itemValueEditText.getText().toString()),
-            new Date()
+            new ItemValue(itemValueEditText.getText().toString()),
+            new ItemDate(itemDateText.getText().toString())
         );
     }
 }

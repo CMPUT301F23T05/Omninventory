@@ -11,15 +11,15 @@ import java.util.Locale;
  * `Long` representation.
  * Note that in Firebase, these values are stored as `long`s.
  */
-public class InventoryItemValue implements Serializable {
+public class ItemValue implements Serializable {
 
     private Long value; // the number of cents in the currency value
 
-    public InventoryItemValue(String x) {
+    public ItemValue(String x) {
         this.value = stringToNum(x);
     }
 
-    public InventoryItemValue(long x) {
+    public ItemValue(long x) {
         this.value = x;
     }
 
@@ -27,7 +27,7 @@ public class InventoryItemValue implements Serializable {
      * Constructor for non-primitive Long that checks for null pointer.
      * @param x
      */
-    public InventoryItemValue(Long x) {
+    public ItemValue(Long x) {
         if (x != null) {
             this.value = x;
         }
@@ -64,7 +64,7 @@ public class InventoryItemValue implements Serializable {
 
         // using Locale.CANADA here makes a lot of assumptions, however dealing with different
         // currency formats is not within the scope of this project
-        Log.d("ValueEditText", String.format("Formatting values: %d, %d", dollarsNum, centsNum));
+        Log.d("InventoryItemValue", String.format("Formatting values: %d, %d", dollarsNum, centsNum));
 
         return String.format(Locale.CANADA, "$%d.%02d", dollarsNum, centsNum);
     }
