@@ -4,6 +4,8 @@
     <!-- text that goes in title_bar layout -->
     <string name="main_title_text">OMNINVENTORY</string>
     <string name="details_title_text">Item Details</string>
+    <string name="signup_title_text">SIGN UP</string>
+    <string name="login_title_text">LOG IN</string>
 
     <string name="estimated_value_text">Total Estimated Value</string>
     <string name="sort_button_label">Sort Button</string>

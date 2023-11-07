@@ -2,16 +2,25 @@ package com.example.omninventory;
 
 import static android.content.ContentValues.TAG;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,21 +44,29 @@ public class MainActivity extends AppCompatActivity {
     private ListView itemList;
     private ArrayList<InventoryItem> itemListData;
     private InventoryItemAdapter itemListAdapter;
-    private FirebaseFirestore db;
-    private CollectionReference inventoryItemRef;
-    private CollectionReference usersRef;
     private String currentUser;
+    public static final String EXTRA_LOGIN_USERNAME = "EXTRA_LOGIN_USERNAME";
+    private ActivityResultLauncher<Intent> loginActivityResultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // Set up database
-        db = FirebaseFirestore.getInstance();
-        inventoryItemRef = db.collection("inventoryItems");
 
         // === get references to Views
-        itemList = findViewById(R.id.item_list);
+        final ListView itemList = findViewById(R.id.item_list);
+        final TextView titleText = findViewById(R.id.title_text);
+        final ImageButton profileBtn = findViewById(R.id.profile_button);
+
+        // === UI setup
+        // set title text
+        titleText.setText(getString(R.string.main_title_text));
+
+        // add taskbar
+        LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View taskbarLayout = taskbarInflater.inflate(R.layout.taskbar_main, null);
+        ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.taskbar_holder);
+        taskbarHolder.addView(taskbarLayout);
 
         // === set up itemList
         // TODO: this is a string array for now, fix
@@ -57,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         itemListAdapter = new InventoryItemAdapter(this, itemListData);
         itemList.setAdapter(itemListAdapter);
 
-        itemListData.add(new InventoryItem("Cat"));
+//        itemListData.add(new InventoryItem("Cat"));
 
         // === set up onClick actions
         itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -69,66 +86,30 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-    }
-    // add user to database
-    // todo: hash password
-    public void onSignUpOKPressed(User user) {
-        // Check if username already exists
-        DocumentReference userDocRef = db.collection("users").document(user.getUsername());
-        userDocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        // toast displaying error message
-                        Toast.makeText(getApplicationContext(),"Username already exists", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Log.d(TAG, "Username is available");
-                        HashMap<String, Object> data = new HashMap<>();
-                        data.put("Password", user.getPassword());
-                        usersRef
-                                .document(user.getUsername())
-                                .set(data)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Log.d("Firestore", "DocumentSnapshot successfully written!");
-                                    }
-                                });
-                    }
-                } else {
-                    Log.d(TAG, "Failed with: ", task.getException());
+
+        profileBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (currentUser != null) {
+                    // start Profile activity
+                }
+                else {
+                    startLoginActivity();
                 }
             }
         });
     }
 
-    // todo: document ID is auto-generated for now, may change later
-    public void onAddItemOKPressed(InventoryItem item) {
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("user", currentUser);
-        data.put("description", item.getDescription());
-        data.put("comment", item.getComment());
-        data.put("make", item.getMake());
-        data.put("model", item.getModel());
-        data.put("serialno", item.getSerialno());
-        data.put("value", item.getValue());
-        data.put("date", item.getDate());
-        // tags and images go here
-        db.collection("inventoryItems")
-                .add(data)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
+    private void startLoginActivity() {
+        loginActivityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                        String username = result.getData().getStringExtra(EXTRA_LOGIN_USERNAME);
+                        this.currentUser = username;
                     }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                    }
-                });
+                }
+        );
+        Intent intent = new Intent(this, LoginActivity.class);
+        loginActivityResultLauncher.launch(intent);
     }
 }

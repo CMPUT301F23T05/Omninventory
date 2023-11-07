@@ -7,7 +7,7 @@ import java.util.Date;
  * Hold all data stored in fields for each inventory item.
  */
 public class InventoryItem {
-    private String username;
+    private String FirebaseId;
     private String name;
     private String description;
     private String comment;
@@ -19,11 +19,13 @@ public class InventoryItem {
     private ArrayList<Object> tags; // placeholder
     private ArrayList<Object> images; // placeholder
 
-    public InventoryItem(String name) {
+    public InventoryItem(String FirebaseId, String name, String description, String comment,
+                         String make, String model, String serialno, Integer value, Date date) {
         // placeholder constructor for testing, just has name
         this.name = name;
     }
 
+    public String getFirebaseId() { return FirebaseId; }
     public String getName() {
         return name;
     }
