@@ -32,8 +32,8 @@ import java.util.Comparator;
 public class SortFilterActivity extends AppCompatActivity {
     ArrayList<InventoryItem> itemListData;
     String dropdownSelection;
-    Calendar startDate = Calendar.getInstance();
-    Calendar endDate = Calendar.getInstance();
+    ItemDate startDate;
+    ItemDate endDate;
     private String sortOrder;
 
 
@@ -123,14 +123,14 @@ public class SortFilterActivity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
                                 // on below line we are setting date to our text view.
-                                startDateText.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-                                startDate.set(year, monthOfYear, dayOfMonth);
+                                startDateText.setText(ItemDate.ymdToString(year, monthOfYear, dayOfMonth));
+                                startDate.setDate(year, monthOfYear, dayOfMonth);
                             }
                         },
                         // on below line we are passing year,
                         // month and day for selected date in our date picker.
                         year, month, day);
-                datePickerDialog.getDatePicker().setMaxDate(endDate.getTimeInMillis());
+                datePickerDialog.getDatePicker().setMaxDate(endDate.toCalendar().getTimeInMillis());
                 // at last we are calling show to
                 // display our date picker dialog.
                 datePickerDialog.show();
@@ -162,14 +162,14 @@ public class SortFilterActivity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
                                 // on below line we are setting date to our text view.
-                                endDateText.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-                                endDate.set(year, monthOfYear, dayOfMonth);
+                                endDateText.setText(ItemDate.ymdToString(year, monthOfYear, dayOfMonth));
+                                endDate.setDate(year, monthOfYear, dayOfMonth);
                             }
                         },
                         // on below line we are passing year,
                         // month and day for selected date in our date picker.
                         year, month, day);
-                datePickerDialog.getDatePicker().setMinDate(startDate.getTimeInMillis());
+                datePickerDialog.getDatePicker().setMinDate(startDate.toCalendar().getTimeInMillis());
                 // at last we are calling show to
                 // display our date picker dialog.
                 datePickerDialog.show();
@@ -246,9 +246,9 @@ public class SortFilterActivity extends AppCompatActivity {
         return itemListData;
     }
 
-    public ArrayList<InventoryItem> applyDateFilter(Calendar startDate, Calendar endDate, ArrayList<InventoryItem> itemListData) {
+    public ArrayList<InventoryItem> applyDateFilter(ItemDate startDate, ItemDate endDate, ArrayList<InventoryItem> itemListData) {
         // remove item if before startDate or after endDate
-        itemListData.removeIf(item -> item.getDate().toCalendar().compareTo(startDate) < 0 || item.getDate().toCalendar().compareTo(endDate) > 0);
+        itemListData.removeIf(item -> item.getDate().toCalendar().compareTo(startDate.toCalendar()) < 0 || item.getDate().toCalendar().compareTo(endDate.toCalendar()) > 0);
         return itemListData;
     }
 
