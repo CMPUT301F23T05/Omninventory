@@ -18,11 +18,14 @@ import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 
 
 // TODO:
 //  Ability to sort by all options
 //  Intent passing from this activity back to main (pass itemListData back, then update the adapter in MainActivity)
+//  Change Calendar/Dates to use ItemDate objects
 //  Input validation and testing
 //  Clean up layout file UI
 //  Documentation
@@ -31,6 +34,7 @@ public class SortFilterActivity extends AppCompatActivity {
     String dropdownSelection;
     Calendar startDate = Calendar.getInstance();
     Calendar endDate = Calendar.getInstance();
+    private String sortOrder;
 
 
     @Override
@@ -79,6 +83,20 @@ public class SortFilterActivity extends AppCompatActivity {
                 dropdownSelection = "";
             }
 
+        });
+
+        sortOrder = (String) ascDescButton.getText();
+        ascDescButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (sortOrder.equals(getResources().getString(R.string.ascending))) {
+                    sortOrder = getResources().getString(R.string.descending);;
+                    ascDescButton.setText(R.string.descending);
+                } else {
+                    sortOrder = getResources().getString(R.string.ascending);
+                    ascDescButton.setText(R.string.ascending);
+                }
+            }
         });
 
         TextView startDateText = findViewById(R.id.start_date_text);
@@ -188,8 +206,39 @@ public class SortFilterActivity extends AppCompatActivity {
         });
     }
 
-    public ArrayList<InventoryItem> applySorting(String selection, ArrayList<InventoryItem> data) {
-        return null;
+    public ArrayList<InventoryItem> applySorting(String selection, ArrayList<InventoryItem> itemListData) {
+        switch (selection) {
+            case "None":
+            case "Date":
+                Comparator<InventoryItem> sortDate =  new Comparator<InventoryItem>() {
+                    public int compare(InventoryItem ie1, InventoryItem ie2) {
+                        return ie1.getDate().toCalendar().compareTo(ie2.getDate().toCalendar());
+                    }
+                };
+                itemListData.sort(sortDate);
+            case "Description":
+                Comparator<InventoryItem> sortDescription =  new Comparator<InventoryItem>() {
+                    public int compare(InventoryItem ie1, InventoryItem ie2) {
+                        return ie1.getDescription().compareTo(ie2.getDescription());
+                    }
+                };
+                itemListData.sort(sortDescription);
+            case "Make":
+                Comparator<InventoryItem> sortMake =  new Comparator<InventoryItem>() {
+                    public int compare(InventoryItem ie1, InventoryItem ie2) {
+                        return ie1.getMake().compareTo(ie2.getMake());
+                    }
+                };
+                itemListData.sort(sortMake);
+            case "Estimated Value":
+                Comparator<InventoryItem> sortEstimatedValue =  new Comparator<InventoryItem>() {
+                    public int compare(InventoryItem ie1, InventoryItem ie2) {
+                        return ie1.getValue().compare(ie2.getValue());
+                    }
+                };
+                itemListData.sort(sortEstimatedValue);
+        }
+        return itemListData;
     }
 
     public ArrayList<InventoryItem> applyMakeFilter(String make, ArrayList<InventoryItem> itemListData) {

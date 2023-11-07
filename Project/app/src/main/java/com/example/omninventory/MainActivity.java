@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         // add taskbar
         LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View taskbarLayout = taskbarInflater.inflate(R.layout.taskbar_main, null);
-        ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.taskbar_holder);
+        ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.task_bar_main);
         taskbarHolder.addView(taskbarLayout);
 
         // connect itemList to Firestore database

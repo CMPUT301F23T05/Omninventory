@@ -39,6 +39,7 @@
 
     <string name="make">Make</string>
     <string name="ascending">ASC</string>
+    <string name="descending">DESC</string>
     <string name="description_keywords_autofill">Test</string>
     <string name="make_filter_button_text">Add Make Filter</string>
     <string name="start_date_button">SD BTN</string>
@@ -53,7 +54,6 @@
         <item>Description</item>
         <item>Make</item>
         <item>Estimated Value</item>
-        <item>Tags</item>
     </string-array>
 
 </resources>
