@@ -26,9 +26,14 @@ public class MainActivity extends AppCompatActivity {
 
     private InventoryRepository repo;
     private ArrayList<InventoryItem> itemListData;
+    private ArrayList<InventoryItem> completeItemList;
     private InventoryItemAdapter itemListAdapter;
     private String currentUser;
     private String sortBy;
+    private String filterMake;
+    private ItemDate filterStartDate;
+    private ItemDate filterEndDate;
+    private String filterDescription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,24 +58,48 @@ public class MainActivity extends AppCompatActivity {
 
         itemListData = new ArrayList<InventoryItem>();
         // retrieve data passed from SortFilterActivity: itemListData and sortBy
+
         Intent intent = getIntent();
         if (intent != null) {
             if (intent.getSerializableExtra("itemListData") != null) {
                 itemListData = (ArrayList<InventoryItem>) intent.getSerializableExtra("itemListData");
+                completeItemList = (ArrayList<InventoryItem>) itemListData.clone();
             }
             if (intent.getStringExtra("sortBy") != null) {
                 sortBy = intent.getStringExtra("sortBy");
             }
+            if (intent.getStringExtra("filterMake") != null) {
+                filterMake = intent.getStringExtra("filterMake");
+            }
+            if (intent.getStringExtra("filterStartDate") != null) {
+                filterStartDate = (ItemDate) intent.getSerializableExtra("filterStartDate");
+            }
+            if (intent.getStringExtra("filterEndDate") != null) {
+                filterEndDate = (ItemDate) intent.getSerializableExtra("filterEndDate");
+            }
+            if (intent.getStringExtra("filterDescription") != null) {
+                filterDescription = intent.getStringExtra("filterDescription");
+            }
         }
+
         // connect itemList to Firestore database
         itemListAdapter = new InventoryItemAdapter(this, itemListData);
         itemList.setAdapter(itemListAdapter);
         ListenerRegistration registration = repo.setupInventoryItemList(itemListAdapter); // set up listener for getting Firestore data
 
-        if (itemListData != null && sortBy != null) {
-            SortFilterActivity.applySorting(sortBy, itemListData);
-            itemListAdapter.notifyDataSetChanged();
+        if (sortBy != null) {
+            // should always trigger if coming from SortFilterActivity
             registration.remove();
+            SortFilterActivity.applySorting(sortBy, itemListAdapter);
+        }
+        if (filterMake != null) {
+            SortFilterActivity.applyMakeFilter(filterMake, itemListAdapter);
+        }
+        if (filterStartDate != null && filterEndDate != null) {
+            SortFilterActivity.applyDateFilter(filterStartDate, filterEndDate, itemListAdapter);
+        }
+        if (filterDescription != null) {
+                SortFilterActivity.applyDescriptionFilter(filterDescription, itemListAdapter);
         }
 
         // === set up onClick actions
@@ -87,7 +116,12 @@ public class MainActivity extends AppCompatActivity {
         ImageButton sortFilterBtn = findViewById(R.id.sort_filter_button);
         sortFilterBtn.setOnClickListener((v) -> {
             Intent myIntent = new Intent(MainActivity.this, SortFilterActivity.class);
-            myIntent.putExtra("itemListData", itemListData);
+            if (completeItemList == null) {
+                myIntent.putExtra("itemListData", itemListData);
+            }
+            else {
+                myIntent.putExtra("itemListData", completeItemList);
+            }
             MainActivity.this.startActivity(myIntent);
         });
     }
