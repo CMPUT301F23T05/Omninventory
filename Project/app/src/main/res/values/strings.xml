@@ -5,6 +5,7 @@
     <string name="main_title_text">OMNINVENTORY</string>
     <string name="details_title_text">ITEM DETAILS</string>
     <string name="edit_title_text">EDIT ITEM</string>
+    <string name="add_title_text">ADD ITEM</string>
     <string name="sort_filter_title_text">SORT AND FILTER</string>
 
     <string name="estimated_value_text">Total Estimated Value</string>

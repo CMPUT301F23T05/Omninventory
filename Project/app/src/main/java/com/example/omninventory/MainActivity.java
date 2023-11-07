@@ -26,12 +26,15 @@ public class MainActivity extends AppCompatActivity {
     private InventoryRepository repo;
     private ArrayList<InventoryItem> itemListData;
     private InventoryItemAdapter itemListAdapter;
-    private String currentUser;
+    private User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // TODO: this is testing code, replace when merged with Rose's code
+        currentUser = new User("erika", "password");
 
         // === set up database
         repo = new InventoryRepository();
@@ -62,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("MainActivity", "click");
                 Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
                 intent.putExtra("item", itemListData.get(position));
+                intent.putExtra("user", currentUser);
                 startActivity(intent);
             }
         });
@@ -71,6 +75,14 @@ public class MainActivity extends AppCompatActivity {
             Intent myIntent = new Intent(MainActivity.this, SortFilterActivity.class);
             myIntent.putExtra("itemListData", itemListData);
             MainActivity.this.startActivity(myIntent);
+        });
+
+        ImageButton addItemButton = findViewById(R.id.add_item_button);
+        addItemButton.setOnClickListener((v) -> {
+            Intent intent = new Intent(MainActivity.this, EditActivity.class);
+            // intent launched without an InventoryItem
+            intent.putExtra("user", currentUser);
+            startActivity(intent);
         });
     }
     

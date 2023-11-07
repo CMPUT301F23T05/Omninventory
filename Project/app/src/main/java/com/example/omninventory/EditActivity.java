@@ -18,7 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Activity for editing an item's fields.
@@ -28,6 +27,7 @@ public class EditActivity extends AppCompatActivity  {
     private InventoryRepository repo;
 
     private InventoryItem currentItem;
+    private User currentUser;
 
     // references to Views put here because they are used in multiple methods
     private TextInputEditText itemNameEditText;
@@ -37,10 +37,8 @@ public class EditActivity extends AppCompatActivity  {
     private TextInputEditText itemModelEditText;
     private TextInputEditText itemSerialEditText;
     private TextInputEditText itemValueEditText;
-    // TODO: date, tags, images
-
-
     private TextView itemDateText;
+    // TODO: tags, images
 
     private ValueTextWatcher itemValueTextWatcher;
 
@@ -65,17 +63,42 @@ public class EditActivity extends AppCompatActivity  {
         itemValueEditText = findViewById(R.id.item_value_edittext);
 
         // === load info passed from DetailsActivity (hopefully)
-        if (getIntent().getExtras() == null) {
-            throw new RuntimeException("EditActivity opened without an InventoryItem");
+        final boolean newItemFlag; // true if we are creating a new item, false if editing existing item
+
+        if (getIntent().getExtras() != null) {
+            if (getIntent().getExtras().getSerializable("item") == null) {
+                // creating a new item; initialize with no fields
+                Log.d("EditActivity", "EditActivity opened without an InventoryItem");
+                currentItem = new InventoryItem();
+                newItemFlag = true;
+            }
+            else {
+                Log.d("EditActivity", "EditActivity opened with an InventoryItem");
+                currentItem = (InventoryItem) getIntent().getExtras().getSerializable("item");
+                newItemFlag = false;
+            }
+
+            if (getIntent().getExtras().getSerializable("user") == null) {
+                Log.d("EditActivity", "EditActivity opened without a User; possibly concerning");
+            }
+            else {
+                currentUser = (User) getIntent().getExtras().getSerializable("user");
+            }
         }
         else {
-            currentItem = (InventoryItem) getIntent().getExtras().getSerializable("item");
+            // this shouldn't happen
+            throw new RuntimeException("EditActivity opened without any extra data");
         }
 
         // === UI setup
 
         // set title text
-        titleText.setText(getString(R.string.edit_title_text));
+        if (newItemFlag) {
+            titleText.setText(getString(R.string.add_title_text));
+        }
+        else {
+            titleText.setText(getString(R.string.edit_title_text));
+        }
 
         // add taskbar
         LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -103,7 +126,7 @@ public class EditActivity extends AppCompatActivity  {
                 Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
                 toast.show();
 
-                // return to DetailsActivity without changing any item fields
+                // return without changing any item fields
                 finish();
             }
         });
@@ -146,15 +169,22 @@ public class EditActivity extends AppCompatActivity  {
 
                 if (validateFields()) {
                     Log.d("EditActivity", "validation success, updating database");
-                    InventoryItem updatedItem = makeInventoryItem();
-                    repo.updateInventoryItem(updatedItem); // save changes to item fields
+                    InventoryItem newItem = makeInventoryItem();
+                    CharSequence toastText;
 
-                    // display a success message
-                    CharSequence toastText = String.format("%s was edited.", updatedItem.getName());
+                    if (newItemFlag) {
+                        repo.addInventoryItem(currentUser, newItem);
+                        toastText = String.format("%s was added.", newItem.getName());
+                    } else {
+                        repo.updateInventoryItem(newItem); // save changes to item fields
+                        toastText = String.format("%s was edited.", newItem.getName());
+                    }
+
+                    // display success message
                     Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
                     toast.show();
 
-                    finish(); // return to DetailsActivity
+                    finish(); // return after changing item fields
                 }
                 else {
                     // prompt user to fix input issues
