@@ -22,7 +22,6 @@ import java.util.Calendar;
 
 // TODO:
 //  Ability to sort by all options
-//  Add ability to filter by make (editText + button), date (2 date picker buttons + apply button), and description (editText + button) (tags left for part 4)
 //  Intent passing from this activity back to main (pass itemListData back, then update the adapter in MainActivity)
 //  Input validation and testing
 //  Clean up layout file UI
@@ -199,12 +198,25 @@ public class SortFilterActivity extends AppCompatActivity {
     }
 
     public ArrayList<InventoryItem> applyDateFilter(Calendar startDate, Calendar endDate, ArrayList<InventoryItem> itemListData) {
-        for (InventoryItem item : itemListData) {
-            if (item.getDate())
-        }
+        // remove item if before startDate or after endDate
+        itemListData.removeIf(item -> item.getDate().toCalendar().compareTo(startDate) < 0 || item.getDate().toCalendar().compareTo(endDate) > 0);
+        return itemListData;
     }
 
-    public ArrayList<InventoryItem> applyDescriptionFilter(String description, ArrayList<InventoryItem> itemListData) {
-        return null;
+    public ArrayList<InventoryItem> applyDescriptionFilter(String descriptionKeywords, ArrayList<InventoryItem> itemListData) {
+        String[] keywords = descriptionKeywords.split(" ");
+        for (InventoryItem item : itemListData) {
+            boolean foundKeyWord = false;
+            for (String keyword : keywords) {
+                if (item.getDescription().contains(keyword)) {
+                    foundKeyWord = true;
+                    break;  // short-circuit search
+                }
+            }
+            if (!foundKeyWord) {
+                itemListData.remove(item);
+            }
+        }
+        return itemListData;
     }
 }
