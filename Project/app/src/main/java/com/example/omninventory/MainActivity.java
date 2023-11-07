@@ -1,47 +1,37 @@
 package com.example.omninventory;
 
-import static android.content.ContentValues.TAG;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
- * Main screen of the app; holds list of inventory items and buttons
+ * Main screen of the app. Holds list of inventory items and buttons
  * that take user to other screens.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ItemListUpdateHandler {
 
+    private InventoryRepository repo;
     private ArrayList<InventoryItem> itemListData;
     private InventoryItemAdapter itemListAdapter;
-    private FirebaseFirestore db;
-    private CollectionReference inventoryItemRef;
-    private CollectionReference usersRef;
-    private String currentUser;
+    private User currentUser;
 
     private ListView itemList;
 
@@ -49,9 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView totalValueText;
 
-    private float totalValue;
-
-    private ImageButton deleteItemButton;
+    private Long totalValue;
 
     private ArrayList<InventoryItem> selectedItems;
 
@@ -69,9 +57,9 @@ public class MainActivity extends AppCompatActivity {
         // Fill out TextView with information
         String defaultText = "Are you sure you would like to delete the selected items (";
         int index = 0;
-        for (InventoryItem selectedItem: selectedItems) {
+        for (InventoryItem selectedItem : selectedItems) {
             defaultText += selectedItem.getName();
-            if (index == selectedItems.size()-1) {
+            if (index == selectedItems.size() - 1) {
                 defaultText += ")";
             } else {
                 defaultText += ", ";
@@ -83,7 +71,8 @@ public class MainActivity extends AppCompatActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                for (InventoryItem selectedItem: selectedItems) {
+                for (InventoryItem selectedItem : selectedItems) {
+                    // TODO: this needs to remove the item from the database as well
                     itemListData.remove(selectedItem);
                     itemListAdapter.notifyDataSetChanged();
                 }
@@ -103,65 +92,87 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void calcValue() {
-        totalValue = 0.00F;
-        for (InventoryItem item: itemListData) {
-            totalValue += item.getValue();
+        // TODO: this has overflow issues
+        Log.d("MainActivity", String.format("calcValue called, number of items in list is %d", itemListData.size()));
+        totalValue = 0L;
+        for (InventoryItem item : itemListData) {
+            totalValue += item.getValue().toPrimitiveLong();
         }
-        String formattedValue = "$" + String.format("%.2f", totalValue);
+        String formattedValue = ItemValue.numToString(totalValue);
         totalValueText.setText(formattedValue);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // Set up database
-        db = FirebaseFirestore.getInstance();
-        inventoryItemRef = db.collection("inventoryItems");
+
+        // TODO: this is testing code, replace when merged with Rose's code
+        currentUser = new User("erika", "password");
+
+        // === set up database
+        repo = new InventoryRepository();
 
         // Get references to views
         itemList = findViewById(R.id.item_list);
         titleText = findViewById(R.id.title_text);
-        deleteItemButton = findViewById(R.id.deleteItemButton);
         totalValueText = findViewById(R.id.total_value_text);
+
+        // === UI setup
+        titleText.setText(getString(R.string.main_title_text)); // set title text
+
+        // add taskbar
+        LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View taskbarLayout = taskbarInflater.inflate(R.layout.taskbar_main, null);
+        ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.taskbar_holder);
+        taskbarHolder.addView(taskbarLayout);
+
+        // connect itemList to Firestore database
+        itemListData = new ArrayList<InventoryItem>(); // TODO: unsure if this does anything
+        itemListAdapter = new InventoryItemAdapter(this, itemListData);
+        itemList.setAdapter(itemListAdapter);
+        repo.setupInventoryItemList(itemListAdapter, this); // set up listener for getting Firestore data
 
         // Setup delete items dialog
         deleteDialog = new Dialog(this);
 
-        // UI setup
-        titleText.setText(getString(R.string.main_title_text));
+        calcValue(); // Get total estimated value
 
-        // Set up itemList
-        itemListData = new ArrayList<InventoryItem>();
-        itemListAdapter = new InventoryItemAdapter(this, itemListData);
-        itemList.setAdapter(itemListAdapter);
-        InventoryItem item1 = new InventoryItem("Cat", "beloved family pet");
-        InventoryItem item2 = new InventoryItem("Laptop", "for developing android apps <3");
-        InventoryItem item3 = new InventoryItem("301 Group Members", "their " +
-                "names are Castor, Patrick, Kevin, Aron, Rose, and Zachary. this item has a " +
-                "long name and description so we can see what that looks like");
-        itemListData.add(item1);
-        itemListData.add(item2);
-        itemListData.add(item3);
+        // === Set up onClick actions
 
-        // Set estimated values for each item
-        item1.setValue(454.44F);
-        item2.setValue(1243.45F);
-        item3.setValue(2F);
-
-        // Get total estimated value
-        calcValue();
-
-        // Set up list of selected items
-        selectedItems = new ArrayList<InventoryItem>();
-
-        // Set up onClick actions
         itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Log.d("MainActivity", "click");
                 Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
                 intent.putExtra("item", itemListData.get(position));
+                intent.putExtra("user", currentUser);
                 startActivity(intent);
+            }
+        });
+
+        ImageButton sortFilterBtn = findViewById(R.id.sort_filter_button);
+        sortFilterBtn.setOnClickListener((v) -> {
+            Intent myIntent = new Intent(MainActivity.this, SortFilterActivity.class);
+            myIntent.putExtra("itemListData", itemListData);
+            MainActivity.this.startActivity(myIntent);
+        });
+
+        ImageButton addItemButton = findViewById(R.id.add_item_button);
+        addItemButton.setOnClickListener((v) -> {
+            Intent intent = new Intent(MainActivity.this, EditActivity.class);
+            // intent launched without an InventoryItem
+            intent.putExtra("user", currentUser);
+            startActivity(intent);
+        });
+
+        ImageButton deleteItemButton = findViewById(R.id.delete_item_button);
+        deleteItemButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (selectedItems.size() > 0) {
+                    deleteDialog();
+                }
             }
         });
 
@@ -182,75 +193,13 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-        deleteItemButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (selectedItems.size() > 0) {
-                    deleteDialog();
-                }
-            }
-        });
-    }
-    // add user to database
-    // todo: hash password
-    public void onSignUpOKPressed(User user) {
-        // Check if username already exists
-        DocumentReference userDocRef = db.collection("users").document(user.getUsername());
-        userDocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        // toast displaying error message
-                        Toast.makeText(getApplicationContext(),"Username already exists", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Log.d(TAG, "Username is available");
-                        HashMap<String, Object> data = new HashMap<>();
-                        data.put("Password", user.getPassword());
-                        usersRef
-                                .document(user.getUsername())
-                                .set(data)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Log.d("Firestore", "DocumentSnapshot successfully written!");
-                                    }
-                                });
-                    }
-                } else {
-                    Log.d(TAG, "Failed with: ", task.getException());
-                }
-            }
-        });
     }
 
-    // todo: document ID is auto-generated for now, may change later
-    public void onAddItemOKPressed(InventoryItem item) {
-        HashMap<String, Object> data = new HashMap<>();
-        data.put("user", currentUser);
-        data.put("description", item.getDescription());
-        data.put("comment", item.getComment());
-        data.put("make", item.getMake());
-        data.put("model", item.getModel());
-        data.put("serialNo", item.getSerialNo());
-        data.put("value", item.getValue());
-        data.put("date", item.getDate());
-        // tags and images go here
-        db.collection("inventoryItems")
-                .add(data)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(TAG, "DocumentSnapshot written with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error adding document", e);
-                    }
-                });
+    /**
+     * Need to asynchronously call an update routine when items are added to the list, else
+     * value will be calculated before items
+     */
+    public void onItemListUpdate() {
+        this.calcValue();
     }
 }

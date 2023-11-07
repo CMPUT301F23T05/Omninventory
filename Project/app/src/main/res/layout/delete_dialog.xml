@@ -14,13 +14,13 @@
         android:text="@string/delete_dialog"
         android:textAlignment="center"
         android:textColor="@color/white"
-        android:textSize="30sp"></TextView>
+        android:textSize="30sp"/>
 
     <TextView
         android:id="@+id/title_band2"
         android:layout_width="match_parent"
         android:layout_height="10dp"
-        android:background="@color/blue_banner"></TextView>
+        android:background="@color/blue_banner"/>
 
     <TextView
         android:id="@+id/delete_message"

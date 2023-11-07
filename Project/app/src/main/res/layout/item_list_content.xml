@@ -22,7 +22,7 @@
             android:layout_width="225dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Short description of the item goes here"
-            android:textSize="15sp"></TextView>
-
+            android:text="Short description"
+            android:textSize="15sp">
+        </TextView>
 </LinearLayout>
