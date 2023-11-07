@@ -26,7 +26,7 @@ import java.util.ArrayList;
  * Main screen of the app. Holds list of inventory items and buttons
  * that take user to other screens.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ItemListUpdateHandler {
 
     private InventoryRepository repo;
     private ArrayList<InventoryItem> itemListData;
@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 for (InventoryItem selectedItem : selectedItems) {
+                    // TODO: this needs to remove the item from the database as well
                     itemListData.remove(selectedItem);
                     itemListAdapter.notifyDataSetChanged();
                 }
@@ -91,11 +92,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void calcValue() {
-        // TODO: potential overflow issues
-        Log.d("calcValue", "run");
+        // TODO: this has overflow issues
+        Log.d("MainActivity", String.format("calcValue called, number of items in list is %d", itemListData.size()));
         totalValue = 0L;
         for (InventoryItem item : itemListData) {
-            Log.d("calcValue", item.getValue().toString());
             totalValue += item.getValue().toPrimitiveLong();
         }
         String formattedValue = ItemValue.numToString(totalValue);
@@ -128,10 +128,10 @@ public class MainActivity extends AppCompatActivity {
         taskbarHolder.addView(taskbarLayout);
 
         // connect itemList to Firestore database
-        itemListData = new ArrayList<InventoryItem>();
+        itemListData = new ArrayList<InventoryItem>(); // TODO: unsure if this does anything
         itemListAdapter = new InventoryItemAdapter(this, itemListData);
         itemList.setAdapter(itemListAdapter);
-        repo.setupInventoryItemList(itemListAdapter); // set up listener for getting Firestore data
+        repo.setupInventoryItemList(itemListAdapter, this); // set up listener for getting Firestore data
 
         // Setup delete items dialog
         deleteDialog = new Dialog(this);
@@ -193,5 +193,13 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+    }
+
+    /**
+     * Need to asynchronously call an update routine when items are added to the list, else
+     * value will be calculated before items
+     */
+    public void onItemListUpdate() {
+        this.calcValue();
     }
 }
