@@ -5,4 +5,6 @@
     <color name="salmon_banner">#F3A8A8</color>
     <color name="blue_banner">#9FE0F3</color>
     <color name="gray_banner">#B6B6B6</color>
+    <color name="gray_text">#8E8E8E</color>
+    <color name="gray_background">#EFEFEF</color>
 </resources>

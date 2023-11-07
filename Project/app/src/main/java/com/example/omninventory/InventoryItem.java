@@ -3,28 +3,111 @@ package com.example.omninventory;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * Hold all data stored in fields for each inventory item.
+ * Holds all data stored in fields for each inventory item.
  */
-
 public class InventoryItem implements Serializable {
-    private String username;
+
+    private String firebaseId;
     private String name;
     private String description;
     private String comment;
     private String make;
     private String model;
     private String serialno;
-    private Integer value;
+    private InventoryItemValue value;
     private Date date;
     private ArrayList<Object> tags; // placeholder
     private ArrayList<Object> images; // placeholder
 
+    /**
+     * Empty constructor that initializes all fields to default values.
+     */
+    public InventoryItem() {
+        this.firebaseId = null;
+        this.name = "";
+        this.description = "";
+        this.comment = "";
+        this.make = "";
+        this.model = "";
+        this.serialno = "";
+        this.value = new InventoryItemValue(0);
+        this.date = new Date();
+        // TODO: tags & images
+    }
+
+    /**
+     * Placeholder constructor for testing that initializes fields with just a name and description.
+     * @param name
+     * @param description
+     */
     public InventoryItem(String name, String description) {
-        // placeholder constructor for testing, just has name
+        this.firebaseId = null;
         this.name = name;
         this.description = description;
+        this.comment = "comment";
+        this.make = "make";
+        this.model = "model";
+        this.serialno = "123";
+        this.value = new InventoryItemValue(0);
+        this.date = new Date();
+        // TODO: tags & images
+    }
+
+    /**
+     * Full constructor.
+     * @param firebaseId
+     * @param name
+     * @param description
+     * @param comment
+     * @param make
+     * @param model
+     * @param serialno
+     * @param value
+     * @param date
+     */
+    public InventoryItem(String firebaseId, String name, String description, String comment,
+                         String make, String model, String serialno, InventoryItemValue value, Date date) {
+        // full constructor
+        this.firebaseId = firebaseId;
+        this.name = name;
+        this.description = description;
+        this.comment = comment;
+        this.make = make;
+        this.model = model;
+        this.serialno = serialno;
+        this.value = value;
+        this.date = date;
+        // TODO: tags & images
+    }
+
+    /**
+     * Convert fields of an InventoryItem into a HashMap for writing to Firebase.
+     * Note that item.firebaseId is not stored in the HashMap.
+     * @return A HashMap representing this InventoryItem that may be written to Firebase.
+     */
+    public HashMap<String, Object> convertToHashMap() {
+        HashMap<String, Object> itemData = new HashMap<>();
+        itemData.put("name", this.getName());
+        itemData.put("description", this.getDescription());
+        itemData.put("comment", this.getComment());
+        itemData.put("make", this.getMake());
+        itemData.put("model", this.getModel());
+        itemData.put("serialno", this.getSerialno());
+        itemData.put("value", this.getValue().toPrimitiveLong()); // convert InventoryItemValue to long
+        itemData.put("date", this.getDate());
+        // TODO: tags and images
+        return itemData;
+    }
+
+    // ============== getters and setters ================
+
+    public String getFirebaseId() {
+        return firebaseId;
     }
 
     public String getName() {
@@ -75,11 +158,11 @@ public class InventoryItem implements Serializable {
         this.serialno = serialno;
     }
 
-    public Integer getValue() {
+    public InventoryItemValue getValue() {
         return value;
     }
 
-    public void setValue(Integer value) {
+    public void setValue(InventoryItemValue value) {
         this.value = value;
     }
 
@@ -89,5 +172,9 @@ public class InventoryItem implements Serializable {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getTagsString() {
+        return "#placeholder #tags";
     }
 }

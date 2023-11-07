@@ -3,9 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parent_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/gray_background"
     tools:context=".MainActivity">
 
     <include layout="@layout/title_bar"/>
@@ -17,14 +19,13 @@
 
         <ListView
             android:id="@+id/item_list"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="75"/>
+            android:layout_weight="1"/>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="5"
+            android:layout_height="wrap_content"
             android:background="#D5D5D5"
             android:orientation="horizontal">
 
@@ -57,73 +58,8 @@
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/banner_bar"
-            android:layout_width="fill_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@color/salmon_banner"
-            android:textAlignment="center"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="10"
-            android:background="@color/blue_banner"
-            android:orientation="horizontal">
-
-            <ImageButton
-                android:id="@+id/sortFilterButton"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:background="@color/blue_banner"
-                android:contentDescription="@string/sort_button_label"
-                android:cropToPadding="false"
-                android:padding="10dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/generic_sorting_64" />
-
-            <ImageButton
-                android:id="@+id/tagButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/blue_banner"
-                android:contentDescription="@string/tag_button_label"
-                android:padding="10dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/tag_5_64" />
-
-            <ImageButton
-                android:id="@+id/addItemButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/blue_banner"
-                android:contentDescription="@string/add_button_label"
-                android:padding="10dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/add_64" />
-
-            <ImageButton
-                android:id="@+id/deleteItemButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/blue_banner"
-                android:contentDescription="@string/delete_button_label"
-                android:padding="10dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/delete_64" />
-
-            <ImageButton
-                android:id="@+id/profileButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/blue_banner"
-                android:contentDescription="@string/profile_button_label"
-                android:padding="10dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/user_64" />
-
-        </LinearLayout>
+        <include layout="@layout/taskbar_main"/>
+<!--        add main_taskbar.xml layout to this in code -->
 
     </LinearLayout>
 </LinearLayout>

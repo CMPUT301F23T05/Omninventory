@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="90dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/taskbar_band"
+        android:layout_width="fill_parent"
+        android:layout_height="10dp"
+        android:background="@color/salmon_banner"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@color/blue_banner"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/sort_filter_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/blue_banner"
+            android:contentDescription="@string/sort_button_label"
+            android:cropToPadding="false"
+            android:padding="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/sort_64" />
+
+        <ImageButton
+            android:id="@+id/tag_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/blue_banner"
+            android:contentDescription="@string/tag_button_label"
+            android:padding="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/tag_64" />
+
+        <ImageButton
+            android:id="@+id/add_item_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/blue_banner"
+            android:contentDescription="@string/add_button_label"
+            android:padding="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/add_64" />
+
+        <ImageButton
+            android:id="@+id/delete_item_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/blue_banner"
+            android:contentDescription="@string/delete_button_label"
+            android:padding="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/delete_64" />
+
+        <ImageButton
+            android:id="@+id/profile_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/blue_banner"
+            android:contentDescription="@string/profile_button_label"
+            android:padding="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/user_64" />
+
+    </LinearLayout>
+
+</LinearLayout>

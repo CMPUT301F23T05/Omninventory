@@ -5,6 +5,7 @@
     <string name="main_title_text">OMNINVENTORY</string>
     <string name="details_title_text">ITEM DETAILS</string>
     <string name="sort_filter_title_text">SORT AND FILTER</string>
+    <string name="edit_title_text">EDIT ITEM</string>
 
     <string name="estimated_value_text">Total Estimated Value</string>
     <string name="sort_button_label">Sort Button</string>
@@ -13,6 +14,28 @@
     <string name="delete_button_label">Delete Item Button</string>
     <string name="profile_button_label">Profile Button</string>
     <string name="back_button_label">Back Button</string>
+    <string name="edit_button_label">Edit Button</string>
+    <string name="save_button_label">Save Button</string>
+
+    <string name="item_name_head">Item Name</string>
+    <string name="item_name_placeholder">Placeholder Item Name</string>
+    <string name="item_description_head">Item Description</string>
+    <string name="item_description_placeholder">this is a placeholder item (short) description</string>
+    <string name="item_comment_head">Item Comment</string>
+    <string name="item_comment_placeholder">placeholder item (long) comment. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
+    <string name="item_make_head">Make</string>
+    <string name="item_model_head">Model</string>
+    <string name="item_make_placeholder">Placeholder Make</string>
+    <string name="item_model_placeholder">Placeholder Model</string>
+    <string name="item_serial_head">Serial Number</string>
+    <string name="item_value_head">Estimated Value</string>
+    <string name="item_serial_placeholder">123456789</string>
+    <string name="item_value_placeholder">$0</string>
+    <string name="item_date_head">Date of Purchase</string>
+    <string name="item_date_placeholder">2023-11-05</string>
+    <string name="item_tags_head">Tags</string>
+    <string name="item_tags_placeholder">#placeholder, #tags, #go, #here</string>
+    <string name="item_text_head">Images</string>
 
     <string name="make">Make</string>
     <string name="ascending">ASC</string>

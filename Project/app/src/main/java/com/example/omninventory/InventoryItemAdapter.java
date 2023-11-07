@@ -12,12 +12,11 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 
+/**
+ * A custom ArrayAdapter that works with InventoryItem objects. Uses item_list_content.xml
+ * for layout display of InventoryItems in a ListView.
+ */
 public class InventoryItemAdapter extends ArrayAdapter<InventoryItem> {
-
-    /**
-     * A custom ArrayAdapter that works with InventoryItem objects. Uses item_list_content.xml
-     * for layout display of InventoryItem.
-     */
 
     private ArrayList<InventoryItem> itemListData;
     private Context context;
@@ -31,17 +30,20 @@ public class InventoryItemAdapter extends ArrayAdapter<InventoryItem> {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        // === setup
+        // === setup view
         View view = convertView;
-
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.item_list_content, parent, false);
         }
 
-        InventoryItem item = itemListData.get(position);
+        // === find views
         TextView itemNameText = view.findViewById(R.id.item_name_text);
         TextView itemDescriptionText = view.findViewById(R.id.item_description_text);
 
+        // === UI setup
+        InventoryItem item = itemListData.get(position); // get item at this position
+
+        // set fields
         itemNameText.setText(item.getName());
         itemDescriptionText.setText(item.getDescription());
 

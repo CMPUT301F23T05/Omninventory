@@ -194,11 +194,14 @@ public class SortFilterActivity extends AppCompatActivity {
     }
 
     public ArrayList<InventoryItem> applyMakeFilter(String make, ArrayList<InventoryItem> itemListData) {
-        return null;
+        itemListData.removeIf(item -> !item.getMake().equals(make));
+        return itemListData;
     }
 
     public ArrayList<InventoryItem> applyDateFilter(Calendar startDate, Calendar endDate, ArrayList<InventoryItem> itemListData) {
-        return null;
+        for (InventoryItem item : itemListData) {
+            if (item.getDate())
+        }
     }
 
     public ArrayList<InventoryItem> applyDescriptionFilter(String description, ArrayList<InventoryItem> itemListData) {
