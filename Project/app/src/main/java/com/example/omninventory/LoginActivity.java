@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -30,7 +31,6 @@ public class LoginActivity extends AppCompatActivity {
     private EditText usernameEditText;
     private EditText passwordEditText;
     private FirebaseFirestore db;
-    private ActivityResultLauncher<Intent> signupActivityResultLauncher;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,66 +55,73 @@ public class LoginActivity extends AppCompatActivity {
         ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.taskbar_holder);
         taskbarHolder.addView(taskbarLayout);
 
+        // === todo: may move this somewhere later
         loginButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-
-                AtomicBoolean isValid = new AtomicBoolean(true);
                 String username = usernameEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
-
-                // check for empty input
-                if (username.isEmpty()) {
-                    isValid.set(false);
-                    usernameEditText.setError("Please fill out this field");
-                }
-                if (password.isEmpty()) {
-                    isValid.set(false);
-                    passwordEditText.setError("Please fill out this field");
-                }
-
-                // === check if username is in database
-                DocumentReference userDocRef = db.collection("users").document(username);
-                userDocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                validateUserInput(username, password, new ValidationResultCallback() {
                     @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (!document.exists()) {
-                                isValid.set(false);
-                            }
-                            else if (document.get("Password") != HashPassword.sha256(password)) {
-                                isValid.set(false);
-                            }
-                        }
-                        else {
-                            Log.d(TAG, "Failed with: ", task.getException());
+                    public void onValidationResult(boolean isValid, String message) {
+                        if (isValid) {
+                            // User is valid, log in and return to MainActivity
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            intent.putExtra("loggedInUser", username);
+                            startActivity(intent);
+                            finish();
+                        } else if (message == "invalidInput") {
+                            passwordEditText.setError("Incorrect username or password");
+                        } else if (message == "emptyPassword") {
+                            passwordEditText.setError("Please fill out this field");
+                        } else if (message == "emptyPassword") {
+                            usernameEditText.setError("Please fill out this field");
+                        } else if (message == "error") {
+                            Toast.makeText(getApplicationContext(), "Error occurred. Please try again.", Toast.LENGTH_LONG);
                         }
                     }
                 });
-
-                // log in and return to MainActivity
-                if (isValid.get()) {
-                    Intent data = new Intent();
-                    data.putExtra(MainActivity.EXTRA_LOGIN_USERNAME, username);
-                    setResult(RESULT_OK, data);
-                    finish();
-                }
             }
         });
     }
-    private void startSignupActivity() {
-        signupActivityResultLauncher =
-                registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        // Get the username from SignupActivity
-                        String username = result.getData().getStringExtra(MainActivity.EXTRA_LOGIN_USERNAME);
-                        Intent data = new Intent();
-                        data.putExtra(MainActivity.EXTRA_LOGIN_USERNAME, username);
-                        setResult(RESULT_OK, data);
-                        finish();
-                    }
-                });
+    public void onClickSignUpLink(View v) {
         Intent intent = new Intent(this, SignupActivity.class);
-        signupActivityResultLauncher.launch(intent);
+        startActivity(intent);
+        finish();
+    }
+
+    private void validateUserInput(String username, String password, ValidationResultCallback callback) {
+        // checks for empty fields
+        if (username.isEmpty()) {
+            usernameEditText.setError("Please fill out this field");
+            callback.onValidationResult(false, "emptyUsername");
+        }
+        else if (password.isEmpty()) {
+            passwordEditText.setError("Please fill out this field");
+            callback.onValidationResult(false, "emptyPassword");
+        }
+        else {
+            // authenticate username and password against database
+            DocumentReference userDocRef = db.collection("users").document(username);
+            userDocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (!document.exists()) {
+                            callback.onValidationResult(false, "invalidInput");
+                            Log.d(TAG, "username wrong", task.getException());
+                        } else if (!document.get("password").equals(Utils.sha256(password))) {
+                            callback.onValidationResult(false, "invalidInput");
+                            Log.d(TAG, "password wrong", task.getException());
+                        } else {
+                            callback.onValidationResult(true, "valid");
+                        }
+                    } else {
+                        Log.d(TAG, "Failed with: ", task.getException());
+                        callback.onValidationResult(false, "error");
+                    }
+                }
+            });
+        }
     }
 }

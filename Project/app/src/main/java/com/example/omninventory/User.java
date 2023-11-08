@@ -4,13 +4,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class User {
+        private String name;
         private String username;
         private String password;
         private ArrayList<String> ownedItems;
-        public User(String username, String password, ArrayList<String> ownedItems) {
+        public User(String name, String username, String password, ArrayList<String> ownedItems) {
+                this.name = name;
                 this.username = username;
                 this.password = password;
                 this.ownedItems = ownedItems;
+        }
+        public String getName() {
+                return name;
         }
         public String getUsername() {
                 return username;

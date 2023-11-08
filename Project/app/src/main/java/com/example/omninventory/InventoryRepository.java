@@ -21,7 +21,9 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Encapsulate behaviours related to Firestore, going from Firestore document to InventoryItem and
@@ -258,4 +260,28 @@ public class InventoryRepository {
                     }
                 });
     };
+
+    public void getUserInventory(String username) {
+        usersRef.document(username).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot doc = task.getResult();
+                    if (doc.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data: " + doc.getData());
+                        List<String> ownedItems = (List<String>) doc.get("ownedItems");
+                        ArrayList<InventoryItem> inventory = new ArrayList<InventoryItem>();
+                        // todo: get an array list of inventory items
+//                        for (String itemRef : ownedItems) {
+//
+//                        }
+                    } else {
+                        Log.d(TAG, "Can't find user with username: " + username);
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+    }
 }

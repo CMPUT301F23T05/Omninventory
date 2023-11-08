@@ -113,6 +113,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="true"
+                    android:onClick="onClickLogInLink"
                     android:padding="3dp"
                     android:text="Log In"
                     android:textColor="@color/salmon_banner"

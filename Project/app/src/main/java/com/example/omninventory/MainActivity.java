@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -44,9 +45,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView itemList;
     private ArrayList<InventoryItem> itemListData;
     private InventoryItemAdapter itemListAdapter;
-    private String currentUser;
-    public static final String EXTRA_LOGIN_USERNAME = "EXTRA_LOGIN_USERNAME";
-    private ActivityResultLauncher<Intent> loginActivityResultLauncher;
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,19 +55,35 @@ public class MainActivity extends AppCompatActivity {
         // === get references to Views
         final ListView itemList = findViewById(R.id.item_list);
         final TextView titleText = findViewById(R.id.title_text);
-        final ImageButton profileBtn = findViewById(R.id.profile_button);
 
         // === UI setup
         // set title text
         titleText.setText(getString(R.string.main_title_text));
 
+        // === this will store user's login state to keep them logged in
+        sp = getSharedPreferences("login",MODE_PRIVATE);
+
         // add taskbar
         LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View taskbarLayout = taskbarInflater.inflate(R.layout.taskbar_main, null);
         ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.taskbar_holder);
-        taskbarHolder.addView(taskbarLayout);
+        taskbarHolder.addView(taskbarLayout, 0);
 
-        // === set up itemList
+        // get taskbar buttons
+        final ImageButton profileBtn = findViewById(R.id.profile_button);
+
+        // check if user just logged in
+        if (getIntent().getExtras() != null)  {
+            // user just logged in
+            String user = getIntent().getExtras().getString("loggedInUser");
+            sp.edit().putBoolean("logged",true).apply();
+            sp.edit().putString("username",user).apply();
+            Log.d("login", "Logged in as: " + user);
+            // todo: for testing purposes only, will remove later
+            Toast.makeText(getApplicationContext(), "Logged in as , " + user, Toast.LENGTH_LONG).show();
+        }
+
+        // === set up itemList owned by logged in user
         // TODO: this is a string array for now, fix
         itemListData = new ArrayList<InventoryItem>();
         itemListAdapter = new InventoryItemAdapter(this, itemListData);
@@ -89,27 +104,22 @@ public class MainActivity extends AppCompatActivity {
 
         profileBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (currentUser != null) {
-                    // start Profile activity
+                // todo: this logs out the current user, for testing only, will remove this later
+                sp.edit().putBoolean("logged",false).apply();
+                // check if user is logged in
+                if (!sp.getBoolean("logged",false)) {
+                    startLoginActivity();
                 }
                 else {
-                    startLoginActivity();
+                    // start ProfileActivity
                 }
             }
         });
     }
 
     private void startLoginActivity() {
-        loginActivityResultLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                        String username = result.getData().getStringExtra(EXTRA_LOGIN_USERNAME);
-                        this.currentUser = username;
-                    }
-                }
-        );
         Intent intent = new Intent(this, LoginActivity.class);
-        loginActivityResultLauncher.launch(intent);
+        startActivity(intent);
+        finish();
     }
 }
