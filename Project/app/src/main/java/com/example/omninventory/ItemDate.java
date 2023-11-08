@@ -30,10 +30,6 @@ public class ItemDate implements Serializable {
         this.cal = dateToCal(x);
     }
 
-    public void setDate(int year, int month, int day) {
-        this.cal.set(year, month, day);
-    }
-
     @NonNull
     @Override
     public String toString() {

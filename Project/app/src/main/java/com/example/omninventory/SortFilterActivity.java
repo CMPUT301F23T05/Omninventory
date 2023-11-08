@@ -26,7 +26,8 @@ import java.util.Iterator;
 
 
 // TODO:
-//  Intent passing from this activity back to main (pass itemListData back, then update the adapter in MainActivity)
+//  Fill in fields based on previously entered values
+//  Make intent passing less messy, try using the InventoryRepository class
 //  Input validation and testing
 //  Clean up layout file UI
 //  Documentation
@@ -125,14 +126,18 @@ public class SortFilterActivity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
                                 // on below line we are setting date to our text view.
-                                startDateText.setText(ItemDate.ymdToString(year, monthOfYear, dayOfMonth));
-                                startDate.setDate(year, monthOfYear, dayOfMonth);
+                                monthOfYear++;
+                                String dateStr = ItemDate.ymdToString(year, monthOfYear, dayOfMonth);
+                                startDateText.setText(dateStr);
+                                startDate = new ItemDate(dateStr);
                             }
                         },
                         // on below line we are passing year,
                         // month and day for selected date in our date picker.
                         year, month, day);
-                datePickerDialog.getDatePicker().setMaxDate(endDate.toCalendar().getTimeInMillis());
+                if (endDate != null) {
+                    datePickerDialog.getDatePicker().setMaxDate(endDate.toCalendar().getTimeInMillis());
+                }
                 // at last we are calling show to
                 // display our date picker dialog.
                 datePickerDialog.show();
@@ -164,14 +169,18 @@ public class SortFilterActivity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
                                 // on below line we are setting date to our text view.
-                                endDateText.setText(ItemDate.ymdToString(year, monthOfYear, dayOfMonth));
-                                endDate.setDate(year, monthOfYear, dayOfMonth);
+                                monthOfYear++;
+                                String dateStr = ItemDate.ymdToString(year, monthOfYear, dayOfMonth);
+                                endDateText.setText(dateStr);
+                                endDate = new ItemDate(dateStr);
                             }
                         },
                         // on below line we are passing year,
                         // month and day for selected date in our date picker.
                         year, month, day);
-                datePickerDialog.getDatePicker().setMinDate(startDate.toCalendar().getTimeInMillis());
+                if (startDate != null) {
+                    datePickerDialog.getDatePicker().setMinDate(startDate.toCalendar().getTimeInMillis());
+                }
                 // at last we are calling show to
                 // display our date picker dialog.
                 datePickerDialog.show();

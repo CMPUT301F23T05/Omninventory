@@ -71,10 +71,10 @@ public class MainActivity extends AppCompatActivity {
             if (intent.getStringExtra("filterMake") != null) {
                 filterMake = intent.getStringExtra("filterMake");
             }
-            if (intent.getStringExtra("filterStartDate") != null) {
+            if (intent.getSerializableExtra("filterStartDate") != null) {
                 filterStartDate = (ItemDate) intent.getSerializableExtra("filterStartDate");
             }
-            if (intent.getStringExtra("filterEndDate") != null) {
+            if (intent.getSerializableExtra("filterEndDate") != null) {
                 filterEndDate = (ItemDate) intent.getSerializableExtra("filterEndDate");
             }
             if (intent.getStringExtra("filterDescription") != null) {
