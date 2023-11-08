@@ -19,6 +19,7 @@ import android.widget.TextView;
 import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,7 +29,6 @@ import java.util.List;
 
 // TODO:
 //  Fill in fields based on previously entered values
-//  Make intent passing less messy, try using the InventoryRepository class
 //  Input validation and testing
 //  Clean up layout file UI
 //  Documentation
@@ -48,6 +48,7 @@ public class SortFilterActivity extends AppCompatActivity {
         final EditText makeFilterEditText = findViewById(R.id.make_filter_edit_text);
         final Button makeFilterButton = findViewById(R.id.add_make_filter_button);
         final Button ascDescButton = findViewById(R.id.asc_desc_button);
+        sortOrder = getResources().getString(R.string.ascending);
 
         final Button dateFilterButton = findViewById(R.id.add_date_filter_button);
         final EditText descriptionFilterEditText = findViewById(R.id.description_filter_edit_text);
@@ -68,6 +69,44 @@ public class SortFilterActivity extends AppCompatActivity {
         );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sortDropdown.setAdapter(adapter);
+
+        TextView startDateText = findViewById(R.id.start_date_text);
+        Button startDateBtn = findViewById(R.id.start_date_button);
+
+        TextView endDateText = findViewById(R.id.end_date_text);
+        Button endDateBtn = findViewById(R.id.end_date_button);
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            if (intent.getStringExtra("sortBy") != null) {
+                dropdownSelection = intent.getStringExtra("sortBy");
+                List<String> list= Arrays.asList(getResources().getStringArray(R.array.sort_dropdown_options));
+                sortDropdown.setSelection(list.indexOf(dropdownSelection));
+            }
+            if (intent.getStringExtra("sortOrder") != null) {
+                sortOrder = intent.getStringExtra("sortOrder");
+                if (sortOrder.equals(getResources().getString(R.string.descending))) {
+                    ascDescButton.setText(R.string.descending);
+                }
+            }
+            if (intent.getStringExtra("filterMake") != null) {
+                makeText = intent.getStringExtra("filterMake");
+                makeFilterEditText.setText(makeText);
+            }
+            if (intent.getSerializableExtra("filterStartDate") != null) {
+                startDate = (ItemDate) intent.getSerializableExtra("filterStartDate");
+                startDateText.setText(startDate.toString());
+            }
+            if (intent.getSerializableExtra("filterEndDate") != null) {
+                endDate = (ItemDate) intent.getSerializableExtra("filterEndDate");
+                endDateText.setText(endDate.toString());
+            }
+            if (intent.getStringExtra("filterDescription") != null) {
+                descriptionText = intent.getStringExtra("filterDescription");
+                descriptionFilterEditText.setText(descriptionText);
+            }
+        }
+
         sortDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -81,7 +120,6 @@ public class SortFilterActivity extends AppCompatActivity {
 
         });
 
-        sortOrder = (String) ascDescButton.getText();
         ascDescButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,87 +133,78 @@ public class SortFilterActivity extends AppCompatActivity {
             }
         });
 
-        TextView startDateText = findViewById(R.id.start_date_text);
-        Button startDateBtn = findViewById(R.id.start_date_button);
         startDateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // on below line we are getting
-                // the instance of our calendar.
-                final Calendar c = Calendar.getInstance();
+                Calendar c;
+                if (startDate != null) {
+                    // restore date from previously selected
+                    c = startDate.toCalendar();
+                }
+                else {
+                    c = Calendar.getInstance();
+                }
 
-                // on below line we are getting
-                // our day, month and year.
                 int year = c.get(Calendar.YEAR);
                 int month = c.get(Calendar.MONTH);
                 int day = c.get(Calendar.DAY_OF_MONTH);
 
-                // on below line we are creating a variable for date picker dialog.
                 DatePickerDialog datePickerDialog = new DatePickerDialog(
-                        // on below line we are passing context.
                         SortFilterActivity.this,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
-                                // on below line we are setting date to our text view.
+                                // month starts at 0
                                 monthOfYear++;
                                 String dateStr = ItemDate.ymdToString(year, monthOfYear, dayOfMonth);
                                 startDateText.setText(dateStr);
                                 startDate = new ItemDate(dateStr);
                             }
                         },
-                        // on below line we are passing year,
-                        // month and day for selected date in our date picker.
                         year, month, day);
                 if (endDate != null) {
+                    // startDate can't be after endDate
                     datePickerDialog.getDatePicker().setMaxDate(endDate.toCalendar().getTimeInMillis());
                 }
-                // at last we are calling show to
-                // display our date picker dialog.
                 datePickerDialog.show();
             }
         });
 
-
-        TextView endDateText = findViewById(R.id.end_date_text);
-        Button endDateBtn = findViewById(R.id.end_date_button);
         endDateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // on below line we are getting
-                // the instance of our calendar.
-                final Calendar c = Calendar.getInstance();
+                Calendar c;
+                if (endDate != null) {
+                    // restore date from previously selected
+                    c = endDate.toCalendar();
+                }
+                else {
+                    c = Calendar.getInstance();
+                }
 
-                // on below line we are getting
-                // our day, month and year.
                 int year = c.get(Calendar.YEAR);
                 int month = c.get(Calendar.MONTH);
                 int day = c.get(Calendar.DAY_OF_MONTH);
 
-                // on below line we are creating a variable for date picker dialog.
                 DatePickerDialog datePickerDialog = new DatePickerDialog(
-                        // on below line we are passing context.
                         SortFilterActivity.this,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
-                                // on below line we are setting date to our text view.
+                                // months start at 0
                                 monthOfYear++;
                                 String dateStr = ItemDate.ymdToString(year, monthOfYear, dayOfMonth);
                                 endDateText.setText(dateStr);
                                 endDate = new ItemDate(dateStr);
                             }
                         },
-                        // on below line we are passing year,
-                        // month and day for selected date in our date picker.
                         year, month, day);
                 if (startDate != null) {
+                    // endDate can't be after startDate
                     datePickerDialog.getDatePicker().setMinDate(startDate.toCalendar().getTimeInMillis());
                 }
-                // at last we are calling show to
-                // display our date picker dialog.
                 datePickerDialog.show();
             }
         });
@@ -198,6 +227,7 @@ public class SortFilterActivity extends AppCompatActivity {
                 SortFilterActivity.this.startActivity(myIntent);
             }
         });
+
         descriptionFilterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

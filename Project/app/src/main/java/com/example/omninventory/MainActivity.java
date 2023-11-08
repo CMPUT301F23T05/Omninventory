@@ -224,6 +224,12 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         ImageButton sortFilterBtn = findViewById(R.id.sort_filter_button);
         sortFilterBtn.setOnClickListener((v) -> {
             Intent sortFilterIntent = new Intent(MainActivity.this, SortFilterActivity.class);
+            sortFilterIntent.putExtra("sortBy", sortBy);
+            sortFilterIntent.putExtra("sortOrder", sortOrder);
+            sortFilterIntent.putExtra("filterMake", filterMake);
+            sortFilterIntent.putExtra("filterStartDate", filterStartDate);
+            sortFilterIntent.putExtra("filterEndDate", filterEndDate);
+            sortFilterIntent.putExtra("filterDescription", filterDescription);
             MainActivity.this.startActivity(sortFilterIntent);
         });
 
