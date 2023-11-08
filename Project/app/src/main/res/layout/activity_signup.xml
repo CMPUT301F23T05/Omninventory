@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".SignupActivity">
+
+    <include layout="@layout/title_bar"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/design_default_color_surface"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:layout_weight="75"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:gravity="center_horizontal"
+                android:text="Join us to keep track of your stuff!"
+                android:textColor="@color/black"
+                android:textSize="18dp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:hint="Full Name"
+                android:inputType="textPersonName">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signup_name_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:hint="Username"
+                android:inputType="textPersonName">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signup_username_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:hint="Password (8-20 characters)"
+                android:inputType="textPassword">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signup_password_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:password="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:hint="Confirm Password"
+                android:inputType="textPassword">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/signup_confirm_password_edit_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:password="true" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:text="Already have an account?"
+                    android:textColor="@color/black"
+                    android:textSize="18dp" />
+
+                <TextView
+                    android:id="@+id/login_link"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:onClick="onClickLogInLink"
+                    android:padding="3dp"
+                    android:text="Log In"
+                    android:textColor="@color/salmon_banner"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/signup_btn"
+                style="@style/Widget.MaterialComponents.ExtendedFloatingActionButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:backgroundTint="@color/blue_banner"
+                android:text="Sign up"
+                android:textColor="@color/white"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                app:cornerRadius="20dp" />
+
+        </LinearLayout>
+
+        <include layout="@layout/taskbar_holder"/>
+
+<!--        <TextView-->
+<!--            android:id="@+id/banner_bar"-->
+<!--            android:layout_width="fill_parent"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:layout_weight="1"-->
+<!--            android:background="@color/salmon_banner"-->
+<!--            android:textAlignment="center"/>-->
+
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="0dp"-->
+<!--            android:layout_weight="10"-->
+<!--            android:background="@color/blue_banner"-->
+<!--            android:orientation="horizontal">-->
+
+<!--            <ImageButton-->
+<!--                android:id="@+id/sortFilterButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:background="@color/blue_banner"-->
+<!--                android:contentDescription="@string/sort_button_label"-->
+<!--                android:cropToPadding="false"-->
+<!--                android:padding="10dp"-->
+<!--                android:scaleType="centerInside"-->
+<!--                android:src="@drawable/generic_sorting_64" />-->
+
+<!--            <ImageButton-->
+<!--                android:id="@+id/tagButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="@color/blue_banner"-->
+<!--                android:contentDescription="@string/tag_button_label"-->
+<!--                android:padding="10dp"-->
+<!--                android:scaleType="centerInside"-->
+<!--                android:src="@drawable/tag_5_64" />-->
+
+<!--            <ImageButton-->
+<!--                android:id="@+id/addItemButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="@color/blue_banner"-->
+<!--                android:contentDescription="@string/add_button_label"-->
+<!--                android:padding="10dp"-->
+<!--                android:scaleType="centerInside"-->
+<!--                android:src="@drawable/add_64" />-->
+
+<!--            <ImageButton-->
+<!--                android:id="@+id/deleteItemButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="@color/blue_banner"-->
+<!--                android:contentDescription="@string/delete_button_label"-->
+<!--                android:padding="10dp"-->
+<!--                android:scaleType="centerInside"-->
+<!--                android:src="@drawable/delete_64" />-->
+
+<!--            <ImageButton-->
+<!--                android:id="@+id/profileButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="@color/blue_banner"-->
+<!--                android:contentDescription="@string/profile_button_label"-->
+<!--                android:padding="10dp"-->
+<!--                android:scaleType="centerInside"-->
+<!--                android:src="@drawable/user_64" />-->
+
+<!--        </LinearLayout>-->
+
+    </LinearLayout>
+
+</LinearLayout>

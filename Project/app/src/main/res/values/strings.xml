@@ -7,6 +7,8 @@
     <string name="edit_title_text">EDIT ITEM</string>
     <string name="add_title_text">ADD ITEM</string>
     <string name="sort_filter_title_text">SORT AND FILTER</string>
+    <string name="signup_title_text">SIGN UP</string>
+    <string name="login_title_text">LOG IN</string>
 
     <string name="estimated_value_text">Total Estimated Value</string>
 
@@ -44,6 +46,7 @@
     <!-- Text in Sort/Filter -->
     <string name="make">Make</string>
     <string name="ascending">ASC</string>
+    <string name="descending">DESC</string>
     <string name="description_keywords_autofill">Test</string>
     <string name="make_filter_button_text">Add Make Filter</string>
     <string name="start_date_button">SD BTN</string>
@@ -58,7 +61,6 @@
         <item>Description</item>
         <item>Make</item>
         <item>Estimated Value</item>
-        <item>Tags</item>
     </string-array>
 
     <!-- Text in delete item dialog -->

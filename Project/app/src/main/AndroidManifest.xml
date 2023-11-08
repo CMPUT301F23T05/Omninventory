@@ -29,6 +29,12 @@
         <activity
             android:name=".SortFilterActivity">
         </activity>
+        <activity
+            android:name=".SignupActivity">
+        </activity>        
+        <activity
+            android:name=".LoginActivity">
+        </activity>
     </application>
 
 </manifest>

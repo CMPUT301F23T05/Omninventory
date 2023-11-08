@@ -47,8 +47,9 @@ public class InventoryItem implements Serializable {
      * @param name
      * @param description
      */
-    public InventoryItem(String name, String description) {
-        this.firebaseId = null;
+    public InventoryItem(String FirebaseId, String name, String description, String comment,
+                         String make, String model, String serialno, Integer value, Date date) {
+        // placeholder constructor for testing, just has name
         this.name = name;
         this.description = description;
         this.comment = "comment";
