@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
                     itemListAdapter.notifyDataSetChanged();
                 }
                 calcValue();
+                resetSelectedItems();
                 deleteDialog.dismiss();
             }
         });
@@ -112,6 +113,7 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                resetSelectedItems();
                 deleteDialog.dismiss();
             }
         });
@@ -130,11 +132,12 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         totalValueText.setText(formattedValue);
     }
 
-    public void resetSelectedItems() {
+    private void resetSelectedItems() {
         for (InventoryItem selectedItem: selectedItems) {
             selectedItem.setSelected(false);
         }
         selectedItems.clear();
+        System.out.println("The number of selected items is: " + Integer.toString(selectedItems.size()));
     }
 
     @Override
@@ -253,6 +256,7 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
                 Intent detailsIntent = new Intent(MainActivity.this, DetailsActivity.class);
                 detailsIntent.putExtra("item", itemListData.get(position));
                 detailsIntent.putExtra("user", currentUser);
+                resetSelectedItems();
                 startActivity(detailsIntent);
             }
         });
@@ -281,7 +285,9 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         deleteItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (selectedItems.size() > 0) { deleteDialog();}
+                if (selectedItems.size() > 0) {
+                    deleteDialog();
+                }
             }
         });
         
