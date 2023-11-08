@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private InventoryItemAdapter itemListAdapter;
     private String currentUser;
     private String sortBy;
+    private String sortOrder;
     private String filterMake;
     private ItemDate filterStartDate;
     private ItemDate filterEndDate;
@@ -68,6 +69,9 @@ public class MainActivity extends AppCompatActivity {
             if (intent.getStringExtra("sortBy") != null) {
                 sortBy = intent.getStringExtra("sortBy");
             }
+            if (intent.getStringExtra("sortOrder") != null) {
+                sortOrder = intent.getStringExtra("sortOrder");
+            }
             if (intent.getStringExtra("filterMake") != null) {
                 filterMake = intent.getStringExtra("filterMake");
             }
@@ -87,10 +91,12 @@ public class MainActivity extends AppCompatActivity {
         itemList.setAdapter(itemListAdapter);
         ListenerRegistration registration = repo.setupInventoryItemList(itemListAdapter); // set up listener for getting Firestore data
 
-        if (sortBy != null) {
+        if (sortBy != null && sortOrder != null) {
             // should always trigger if coming from SortFilterActivity
             registration.remove();
-            SortFilterActivity.applySorting(sortBy, itemListAdapter);
+            String ascendingText = getString(R.string.ascending);
+            String descendingText = getString(R.string.descending);
+            SortFilterActivity.applySorting(sortBy, sortOrder, itemListAdapter, descendingText);
         }
         if (filterMake != null) {
             SortFilterActivity.applyMakeFilter(filterMake, itemListAdapter);

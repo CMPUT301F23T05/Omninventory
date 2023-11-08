@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 
 
 // TODO:
@@ -234,6 +235,7 @@ public class SortFilterActivity extends AppCompatActivity {
 
     private void putFieldsIntent(Intent myIntent) {
         myIntent.putExtra("sortBy", dropdownSelection);
+        myIntent.putExtra("sortOrder", sortOrder);
         myIntent.putExtra("filterMake", makeText);
         myIntent.putExtra("filterStartDate", startDate);
         myIntent.putExtra("filterEndDate", endDate);
@@ -241,21 +243,43 @@ public class SortFilterActivity extends AppCompatActivity {
         myIntent.putExtra("itemListData", itemListData);
     }
 
-    public static void applySorting(String selection, ArrayAdapter<InventoryItem> adapter) {
+    public static void applySorting(String selection, String sortOrder, ArrayAdapter<InventoryItem> adapter,
+                                    String descendingText) {
+        boolean descending = sortOrder.equals(descendingText);
         switch (selection) {
             case "None":
                 break;
             case "Date":
-                adapter.sort(new SortByDate());
+                if (descending) {
+                    adapter.sort(new SortByDate().reversed());
+                }
+                else {
+                    adapter.sort(new SortByDate());
+                }
                 break;
             case "Description":
-                adapter.sort(new SortByDescription());
+                if (descending) {
+                    adapter.sort(new SortByDescription().reversed());
+                }
+                else {
+                    adapter.sort(new SortByDescription());
+                }
                 break;
             case "Make":
-                adapter.sort(new SortByMake());
+                if (descending) {
+                    adapter.sort(new SortByMake().reversed());
+                }
+                else {
+                    adapter.sort(new SortByMake());
+                }
                 break;
             case "Estimated Value":
-                adapter.sort(new SortByValue());
+                if (descending) {
+                    adapter.sort(new SortByValue().reversed());
+                }
+                else {
+                    adapter.sort(new SortByValue());
+                }
                 break;
         }
         adapter.notifyDataSetChanged();
