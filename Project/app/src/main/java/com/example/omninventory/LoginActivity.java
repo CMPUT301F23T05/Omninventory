@@ -109,10 +109,10 @@ public class LoginActivity extends AppCompatActivity {
                         DocumentSnapshot document = task.getResult();
                         if (!document.exists()) {
                             callback.onValidationResult(false, "invalidInput");
-                            Log.d(TAG, "username wrong", task.getException());
+                            Log.d(TAG, "invalid username", task.getException());
                         } else if (!document.get("password").equals(Utils.sha256(password))) {
                             callback.onValidationResult(false, "invalidInput");
-                            Log.d(TAG, "password wrong", task.getException());
+                            Log.d(TAG, "invalid password", task.getException());
                         } else {
                             callback.onValidationResult(true, "valid");
                         }
