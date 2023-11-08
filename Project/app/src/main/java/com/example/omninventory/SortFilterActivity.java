@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.nfc.Tag;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.view.View;
 import android.widget.AdapterView;
@@ -28,17 +29,19 @@ import java.util.List;
 
 
 // TODO:
-//  Fill in fields based on previously entered values
 //  Input validation and testing
 //  Clean up layout file UI
 //  Documentation
 public class SortFilterActivity extends AppCompatActivity {
     private String dropdownSelection;
-    ItemDate startDate;
-    ItemDate endDate;
+    private ItemDate startDate;
+    private ItemDate endDate;
     private String sortOrder;
     private String makeText;
     private String descriptionText;
+    private boolean makePressed;
+    private boolean datePressed;
+    private boolean descriptionPressed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,10 +95,13 @@ public class SortFilterActivity extends AppCompatActivity {
             if (intent.getStringExtra("filterMake") != null) {
                 makeText = intent.getStringExtra("filterMake");
                 makeFilterEditText.setText(makeText);
+                makeFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
+                makePressed = true;
             }
             if (intent.getSerializableExtra("filterStartDate") != null) {
                 startDate = (ItemDate) intent.getSerializableExtra("filterStartDate");
                 startDateText.setText(startDate.toString());
+                datePressed = true;
             }
             if (intent.getSerializableExtra("filterEndDate") != null) {
                 endDate = (ItemDate) intent.getSerializableExtra("filterEndDate");
@@ -104,7 +110,13 @@ public class SortFilterActivity extends AppCompatActivity {
             if (intent.getStringExtra("filterDescription") != null) {
                 descriptionText = intent.getStringExtra("filterDescription");
                 descriptionFilterEditText.setText(descriptionText);
+                descriptionFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
+                descriptionPressed = true;
             }
+        }
+
+        if (startDate != null && endDate != null) {
+            dateFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
         }
 
         sortDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -115,7 +127,7 @@ public class SortFilterActivity extends AppCompatActivity {
 
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
-                dropdownSelection = "";
+                dropdownSelection = "None";
             }
 
         });
@@ -212,29 +224,44 @@ public class SortFilterActivity extends AppCompatActivity {
         makeFilterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                makeText = makeFilterEditText.getText().toString();
-                Intent myIntent = new Intent(SortFilterActivity.this, MainActivity.class);
-                putFieldsIntent(myIntent);
-                SortFilterActivity.this.startActivity(myIntent);
+                if (makePressed) {
+                    makeFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.unclicked_filter_button));
+                    makePressed = false;
+                }
+                else {
+                    makeText = makeFilterEditText.getText().toString();
+                    makeFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
+                    makePressed = true;
+                }
             }
         });
 
         dateFilterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent myIntent = new Intent(SortFilterActivity.this, MainActivity.class);
-                putFieldsIntent(myIntent);
-                SortFilterActivity.this.startActivity(myIntent);
+                if (datePressed) {
+                    dateFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.unclicked_filter_button));
+                    datePressed = false;
+                }
+                else {
+                    dateFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
+                    datePressed = true;
+                }
             }
         });
 
         descriptionFilterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                descriptionText = descriptionFilterEditText.getText().toString();
-                Intent myIntent = new Intent(SortFilterActivity.this, MainActivity.class);
-                putFieldsIntent(myIntent);
-                SortFilterActivity.this.startActivity(myIntent);
+                if (descriptionPressed) {
+                    descriptionFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.unclicked_filter_button));
+                    descriptionPressed = false;
+                }
+                else {
+                    descriptionText = descriptionFilterEditText.getText().toString();
+                    descriptionFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
+                    descriptionPressed = true;
+                }
             }
         });
 
@@ -249,19 +276,26 @@ public class SortFilterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent myIntent = new Intent(SortFilterActivity.this, MainActivity.class);
-                putFieldsIntent(myIntent);
+                putFieldsIntent(myIntent, makePressed, datePressed, descriptionPressed);
                 SortFilterActivity.this.startActivity(myIntent);
             }
         });
     }
 
-    private void putFieldsIntent(Intent myIntent) {
+    private void putFieldsIntent(Intent myIntent, boolean makePressed,
+                                 boolean datePressed, boolean descriptionPressed) {
         myIntent.putExtra("sortBy", dropdownSelection);
         myIntent.putExtra("sortOrder", sortOrder);
-        myIntent.putExtra("filterMake", makeText);
-        myIntent.putExtra("filterStartDate", startDate);
-        myIntent.putExtra("filterEndDate", endDate);
-        myIntent.putExtra("filterDescription", descriptionText);
+        if (makePressed) {
+            myIntent.putExtra("filterMake", makeText);
+        }
+        if (datePressed) {
+            myIntent.putExtra("filterStartDate", startDate);
+            myIntent.putExtra("filterEndDate", endDate);
+        }
+        if (descriptionPressed) {
+            myIntent.putExtra("filterDescription", descriptionText);
+        }
     }
 
     public static void applySorting(String selection, String sortOrder, ArrayAdapter<InventoryItem> adapter,

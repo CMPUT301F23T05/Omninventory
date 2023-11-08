@@ -7,4 +7,7 @@
     <color name="gray_banner">#B6B6B6</color>
     <color name="gray_text">#8E8E8E</color>
     <color name="gray_background">#EFEFEF</color>
+    <color name="ascending_descending_button">#306F71</color>
+    <color name="unclicked_filter_button">#6E44BA</color>
+    <color name="clicked_filter_button">#59AE3A</color>
 </resources>
