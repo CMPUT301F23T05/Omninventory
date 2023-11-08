@@ -11,38 +11,36 @@
         android:layout_height="10dp"
         android:background="@color/salmon_banner"/>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:background="@color/blue_banner"
         android:orientation="horizontal">
 
-        <ImageButton
+        <ImageButton style="@style/taskbar_button"
             android:id="@+id/back_button"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/blue_banner"
+            android:layout_weight="1"
             android:contentDescription="@string/back_button_label"
-            android:cropToPadding="false"
-            android:padding="10dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/back_64"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            android:src="@drawable/taskbar_back" />
 
-        <ImageButton
+        <!-- to keep spacing consistent with layout_weight -->
+        <LinearLayout
+            android:id="@+id/spacer"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="3"
+            android:orientation="horizontal"/>
+
+        <ImageButton style="@style/taskbar_button"
             android:id="@+id/save_button"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/blue_banner"
+            android:layout_weight="1"
             android:contentDescription="@string/save_button_label"
-            android:cropToPadding="false"
-            android:padding="10dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/save_64"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            android:src="@drawable/taskbar_save"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
 </LinearLayout>

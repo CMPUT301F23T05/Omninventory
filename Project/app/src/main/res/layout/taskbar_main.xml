@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="90dp"
     android:orientation="vertical"
@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/taskbar_band"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="10dp"
         android:background="@color/salmon_banner"/>
 
@@ -18,56 +18,45 @@
         android:background="@color/blue_banner"
         android:orientation="horizontal">
 
-        <ImageButton
+        <ImageButton style="@style/taskbar_button"
             android:id="@+id/sort_filter_button"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/blue_banner"
+            android:layout_weight="1"
             android:contentDescription="@string/sort_button_label"
-            android:cropToPadding="false"
-            android:padding="10dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/sort_64" />
+            android:src="@drawable/taskbar_sort" />
 
-        <ImageButton
+        <ImageButton style="@style/taskbar_button"
             android:id="@+id/tag_button"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/blue_banner"
+            android:layout_weight="1"
             android:contentDescription="@string/tag_button_label"
-            android:padding="10dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/tag_64" />
+            android:src="@drawable/taskbar_tag" />
 
-        <ImageButton
+        <ImageButton style="@style/taskbar_button"
             android:id="@+id/add_item_button"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/blue_banner"
+            android:layout_weight="1"
             android:contentDescription="@string/add_button_label"
-            android:padding="10dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/add_64" />
+            android:src="@drawable/taskbar_add" />
 
-        <ImageButton
+        <ImageButton style="@style/taskbar_button"
             android:id="@+id/delete_item_button"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/blue_banner"
+            android:layout_weight="1"
             android:contentDescription="@string/delete_button_label"
-            android:padding="10dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/delete_64" />
+            android:src="@drawable/taskbar_delete" />
 
-        <ImageButton
+        <ImageButton style="@style/taskbar_button"
             android:id="@+id/profile_button"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/blue_banner"
+            android:layout_weight="1"
             android:contentDescription="@string/profile_button_label"
-            android:padding="10dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/user_64" />
+            android:src="@drawable/taskbar_profile" />
 
     </LinearLayout>
 
