@@ -16,11 +16,13 @@ public class InventoryItem implements Serializable {
     private String comment;
     private String make;
     private String model;
-    private String serialno;
+    private String serialNo;
     private ItemValue value;
     private ItemDate date;
     private ArrayList<Object> tags; // placeholder
     private ArrayList<Object> images; // placeholder
+
+    private boolean isSelected;
 
     /**
      * Empty constructor that initializes all fields to default values.
@@ -32,10 +34,12 @@ public class InventoryItem implements Serializable {
         this.comment = "";
         this.make = "";
         this.model = "";
-        this.serialno = "";
+        this.serialNo = "";
         this.value = new ItemValue(0);
         this.date = new ItemDate(new Date());
         // TODO: tags & images
+
+        this.isSelected = false;
     }
 
     /**
@@ -50,10 +54,12 @@ public class InventoryItem implements Serializable {
         this.comment = "comment";
         this.make = "make";
         this.model = "model";
-        this.serialno = "123";
+        this.serialNo = "123";
         this.value = new ItemValue(0);
         this.date = new ItemDate(new Date());
         // TODO: tags & images
+
+        this.isSelected = false;
     }
 
     /**
@@ -64,12 +70,12 @@ public class InventoryItem implements Serializable {
      * @param comment
      * @param make
      * @param model
-     * @param serialno
+     * @param serialNo
      * @param value
      * @param date
      */
     public InventoryItem(String firebaseId, String name, String description, String comment,
-                         String make, String model, String serialno, ItemValue value, ItemDate date) {
+                         String make, String model, String serialNo, ItemValue value, ItemDate date) {
         // full constructor
         this.firebaseId = firebaseId;
         this.name = name;
@@ -77,10 +83,12 @@ public class InventoryItem implements Serializable {
         this.comment = comment;
         this.make = make;
         this.model = model;
-        this.serialno = serialno;
+        this.serialNo = serialNo;
         this.value = value;
         this.date = date;
         // TODO: tags & images
+
+        this.isSelected = false;
     }
 
     /**
@@ -95,7 +103,7 @@ public class InventoryItem implements Serializable {
         itemData.put("comment", this.getComment());
         itemData.put("make", this.getMake());
         itemData.put("model", this.getModel());
-        itemData.put("serialno", this.getSerialno());
+        itemData.put("serialno", this.getSerialNo());
         itemData.put("value", this.getValue().toPrimitiveLong()); // convert ItemValue to long
         itemData.put("date", this.getDate().toDate()); // convert ItemDate to Date
         // TODO: tags and images
@@ -148,12 +156,12 @@ public class InventoryItem implements Serializable {
         this.model = model;
     }
 
-    public String getSerialno() {
-        return serialno;
+    public String getSerialNo() {
+        return serialNo;
     }
 
-    public void setSerialno(String serialno) {
-        this.serialno = serialno;
+    public void setSerialNo(String serialNo) {
+        this.serialNo = serialNo;
     }
 
     public ItemValue getValue() {
@@ -174,5 +182,13 @@ public class InventoryItem implements Serializable {
 
     public String getTagsString() {
         return "#placeholder #tags";
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean isSelected) {
+        this.isSelected = isSelected;
     }
 }

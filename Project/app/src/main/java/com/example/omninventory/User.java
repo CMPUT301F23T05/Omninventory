@@ -1,6 +1,8 @@
 package com.example.omninventory;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
         private String username;
         // todo: hash password
         private String password;

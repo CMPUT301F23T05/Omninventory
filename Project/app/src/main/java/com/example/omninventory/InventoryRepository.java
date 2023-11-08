@@ -47,7 +47,7 @@ public class InventoryRepository {
      * TODO: will need to make this get only the items associated with current user
      * @param adapter An InventoryItemAdapter to set up to track contents of database.
      */
-    public ListenerRegistration setupInventoryItemList(InventoryItemAdapter adapter) {
+    public void setupInventoryItemList(InventoryItemAdapter adapter, ItemListUpdateHandler handler) {
         // set up listener
         ListenerRegistration registration = inventoryItemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -65,6 +65,7 @@ public class InventoryRepository {
                     }
                 }
                 adapter.notifyDataSetChanged(); // TODO: is this necessary?
+                handler.onItemListUpdate();
             }
         });
         return registration;

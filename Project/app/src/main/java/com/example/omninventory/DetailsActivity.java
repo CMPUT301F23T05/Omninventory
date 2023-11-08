@@ -19,6 +19,7 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
 
     private InventoryRepository repo;
     private InventoryItem currentItem;
+    private User currentUser;
 
     private TextView itemNameText;
     private TextView itemDescriptionText;
@@ -51,14 +52,28 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
         itemTagsText = findViewById(R.id.item_tags_text);
 
         // === load info passed from MainActivity (hopefully)
-        if (getIntent().getExtras() == null) {
-            throw new RuntimeException("DetailsActivity opened without extras passed in Intent");
+        if (getIntent().getExtras() != null) {
+            if (getIntent().getExtras().getSerializable("item") == null) {
+                // creating a new item; initialize with no fields
+                Log.d("DetailsActivity", "DetailsActivity opened without an InventoryItem; concerning");
+                currentItem = new InventoryItem();
+            }
+            else {
+                Log.d("DetailsActivity", "DetailsActivity opened with an InventoryItem");
+                currentItem = (InventoryItem) getIntent().getExtras().getSerializable("item");
+            }
+
+            if (getIntent().getExtras().getSerializable("user") == null) {
+                Log.d("DetailsActivity", "DetailsActivity opened without a User; concerning");
+            }
+            else {
+                currentUser = (User) getIntent().getExtras().getSerializable("user");
+            }
         }
         else {
-            currentItem = (InventoryItem) getIntent().getExtras().getSerializable("item");
+            // this shouldn't happen
+            throw new RuntimeException("DetailsActivity opened without any extra data");
         }
-        // this activity should never be opened without an item
-        assert currentItem != null;
 
         // === UI setup
         titleText.setText(getString(R.string.details_title_text)); // set title text
@@ -85,6 +100,7 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
                 // start a new EditActivity to edit this item
                 Intent intent = new Intent(DetailsActivity.this, EditActivity.class);
                 intent.putExtra("item", currentItem); // pass item data to EditActivity
+                intent.putExtra("user", currentUser);
                 startActivity(intent);
             }
         });
@@ -100,7 +116,7 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
         itemCommentText.setText(item.getComment());
         itemMakeText.setText(item.getMake());
         itemModelText.setText(item.getModel());
-        itemSerialText.setText(item.getSerialno());
+        itemSerialText.setText(item.getSerialNo());
         itemValueText.setText(item.getValue().toString()); // convert ItemValue to String
         itemDateText.setText(item.getDate().toString()); // convert ItemDate to String
         itemTagsText.setText(item.getTagsString());

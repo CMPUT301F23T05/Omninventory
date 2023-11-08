@@ -5,9 +5,12 @@
     <string name="main_title_text">OMNINVENTORY</string>
     <string name="details_title_text">ITEM DETAILS</string>
     <string name="edit_title_text">EDIT ITEM</string>
+    <string name="add_title_text">ADD ITEM</string>
     <string name="sort_filter_title_text">SORT AND FILTER</string>
 
     <string name="estimated_value_text">Total Estimated Value</string>
+
+    <!-- Labels for buttons -->
     <string name="sort_button_label">Sort Button</string>
     <string name="tag_button_label">Tag Button</string>
     <string name="add_button_label">Add Item Button</string>
@@ -17,6 +20,7 @@
     <string name="edit_button_label">Edit Button</string>
     <string name="save_button_label">Save Button</string>
 
+    <!-- Text in DetailsActivity and EditActivity -->
     <string name="item_name_head">Item Name</string>
     <string name="item_name_placeholder">Placeholder Item Name</string>
     <string name="item_description_head">Item Description</string>
@@ -37,6 +41,7 @@
     <string name="item_tags_placeholder">#placeholder, #tags, #go, #here</string>
     <string name="item_text_head">Images</string>
 
+    <!-- Text in Sort/Filter -->
     <string name="make">Make</string>
     <string name="ascending">ASC</string>
     <string name="descending">DESC</string>
@@ -55,5 +60,10 @@
         <item>Make</item>
         <item>Estimated Value</item>
     </string-array>
+
+    <!-- Text in delete item dialog -->
+    <string name="delete_dialog">DELETE ITEMS</string>
+    <string name="delete_dialog_button">DELETE</string>
+    <string name="cancel_dialog_button">CANCEL</string>
 
 </resources>
