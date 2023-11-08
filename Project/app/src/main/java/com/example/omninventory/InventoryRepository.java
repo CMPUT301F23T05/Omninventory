@@ -261,6 +261,7 @@ public class InventoryRepository {
                 });
     };
 
+//    todo: implement this
     public void getUserInventory(String username) {
         usersRef.document(username).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
