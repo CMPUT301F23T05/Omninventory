@@ -6,12 +6,29 @@ import android.content.Context;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
+import static android.content.ContentValues.TAG;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -33,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
     private ArrayList<InventoryItem> itemListData;
     private ArrayList<InventoryItem> completeItemList;
     private InventoryItemAdapter itemListAdapter;
+    SharedPreferences sp;
     private String sortBy;
     private String sortOrder;
     private String filterMake;
@@ -135,6 +153,26 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.task_bar_main);
         taskbarHolder.addView(taskbarLayout);
 
+
+        // === this will store user's login state to keep them logged in
+        sp = getSharedPreferences("login",MODE_PRIVATE);
+
+        // get taskbar buttons
+        final ImageButton profileBtn = findViewById(R.id.profile_button);
+
+        // check if user just logged in
+        if (getIntent().getExtras() != null)  {
+            // user just logged in
+            String user = getIntent().getExtras().getString("loggedInUser");
+            sp.edit().putBoolean("logged",true).apply();
+            sp.edit().putString("username",user).apply();
+            Log.d("login", "Logged in as: " + user);
+            // todo: for testing purposes only, will remove later
+            Toast.makeText(getApplicationContext(), "Logged in as , " + user, Toast.LENGTH_LONG).show();
+        }
+
+        // === set up itemList owned by logged in user
+        // TODO: this is a string array for now, fix
         itemListData = new ArrayList<InventoryItem>();
         // retrieve data passed from SortFilterActivity: itemListData and sortBy
 
@@ -192,6 +230,7 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         calcValue(); // Get total estimated value
 
         // === Set up onClick actions
+        //itemListData.add(new InventoryItem("Cat"));
 
         itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -228,8 +267,20 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         deleteItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (selectedItems.size() > 0) {
-                    deleteDialog();
+                if (selectedItems.size() > 0) { deleteDialog();}
+            }
+        });
+        
+        profileBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                // todo: this logs out the current user, for testing only, will remove this later
+                sp.edit().putBoolean("logged",false).apply();
+                // check if user is logged in
+                if (!sp.getBoolean("logged",false)) {
+                    startLoginActivity();
+                }
+                else {
+                    // start ProfileActivity
                 }
             }
         });
@@ -260,4 +311,10 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
     public void onItemListUpdate() {
         this.calcValue();
     }
+    private void startLoginActivity() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
 }
+            
