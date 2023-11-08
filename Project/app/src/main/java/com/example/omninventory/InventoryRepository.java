@@ -68,7 +68,7 @@ public class InventoryRepository {
                 handler.onItemListUpdate();
             }
         });
-        return registration;
+        //return registration;
     }
 
     /**
