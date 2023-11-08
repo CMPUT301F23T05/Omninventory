@@ -33,7 +33,6 @@ import java.util.List;
 //  Clean up layout file UI
 //  Documentation
 public class SortFilterActivity extends AppCompatActivity {
-    private ArrayList<InventoryItem> itemListData;
     private String dropdownSelection;
     ItemDate startDate;
     ItemDate endDate;
@@ -45,13 +44,6 @@ public class SortFilterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sort_filter);
-
-        Intent intent = getIntent();
-        if (intent != null) {
-            if (intent.getSerializableExtra("itemListData") != null) {
-                itemListData = (ArrayList<InventoryItem>) intent.getSerializableExtra("itemListData");
-            }
-        }
 
         final EditText makeFilterEditText = findViewById(R.id.make_filter_edit_text);
         final Button makeFilterButton = findViewById(R.id.add_make_filter_button);
@@ -240,7 +232,6 @@ public class SortFilterActivity extends AppCompatActivity {
         myIntent.putExtra("filterStartDate", startDate);
         myIntent.putExtra("filterEndDate", endDate);
         myIntent.putExtra("filterDescription", descriptionText);
-        myIntent.putExtra("itemListData", itemListData);
     }
 
     public static void applySorting(String selection, String sortOrder, ArrayAdapter<InventoryItem> adapter,

@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
 
     private InventoryRepository repo;
     private ArrayList<InventoryItem> itemListData;
-    private ArrayList<InventoryItem> completeItemList;
     private InventoryItemAdapter itemListAdapter;
     SharedPreferences sp;
     private String sortBy;
@@ -178,10 +177,6 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
 
         Intent intent = getIntent();
         if (intent != null) {
-            if (intent.getSerializableExtra("itemListData") != null) {
-                itemListData = (ArrayList<InventoryItem>) intent.getSerializableExtra("itemListData");
-                completeItemList = (ArrayList<InventoryItem>) itemListData.clone();
-            }
             if (intent.getStringExtra("sortBy") != null) {
                 sortBy = intent.getStringExtra("sortBy");
             }
@@ -229,12 +224,6 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         ImageButton sortFilterBtn = findViewById(R.id.sort_filter_button);
         sortFilterBtn.setOnClickListener((v) -> {
             Intent sortFilterIntent = new Intent(MainActivity.this, SortFilterActivity.class);
-            if (completeItemList == null) {
-                sortFilterIntent.putExtra("itemListData", itemListData);
-            }
-            else {
-                sortFilterIntent.putExtra("itemListData", completeItemList);
-            }
             MainActivity.this.startActivity(sortFilterIntent);
         });
 
