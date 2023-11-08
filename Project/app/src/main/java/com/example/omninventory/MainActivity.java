@@ -98,7 +98,9 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
             @Override
             public void onClick(View view) {
                 for (InventoryItem selectedItem : selectedItems) {
-                    // TODO: this needs to remove the item from the database as well
+                    if (selectedItem != null) {
+                        repo.deleteInventoryItem(currentUser, selectedItem.getFirebaseId());
+                    }
                     itemListData.remove(selectedItem);
                     itemListAdapter.notifyDataSetChanged();
                 }
@@ -126,6 +128,13 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         }
         String formattedValue = ItemValue.numToString(totalValue);
         totalValueText.setText(formattedValue);
+    }
+
+    public void resetSelectedItems() {
+        for (InventoryItem selectedItem: selectedItems) {
+            selectedItem.setSelected(false);
+        }
+        selectedItems.clear();
     }
 
     @Override
@@ -227,10 +236,15 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         // Setup delete items dialog
         deleteDialog = new Dialog(this);
 
+        // Setup selected items of inventory
+        selectedItems = new ArrayList<InventoryItem>();
+
         calcValue(); // Get total estimated value
 
         // === Set up onClick actions
         //itemListData.add(new InventoryItem("Cat"));
+
+        resetSelectedItems();
 
         itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -291,11 +305,9 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
                 InventoryItem item = itemListData.get(position);
                 if (item.isSelected()) {
                     item.setSelected(false);
-                    view.setBackgroundColor(Color.WHITE);
                     selectedItems.remove(item);
                 } else {
                     item.setSelected(true);
-                    view.setBackgroundColor(Color.LTGRAY);
                     selectedItems.add(item);
                 }
                 itemListAdapter.notifyDataSetChanged();
