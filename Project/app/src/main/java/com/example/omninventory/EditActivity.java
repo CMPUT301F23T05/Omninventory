@@ -142,11 +142,11 @@ public class EditActivity extends AppCompatActivity  {
         itemDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // get current date for default calendar value
+                // get InventoryItem's current date for default calendar value
                 final Calendar c = Calendar.getInstance();
-                int currentYear = c.get(Calendar.YEAR);
-                int currentMonth = c.get(Calendar.MONTH);
-                int currentDay = c.get(Calendar.DAY_OF_MONTH);
+                int currentYear = currentItem.getDate().toCalendar().get(Calendar.YEAR);
+                int currentMonth = currentItem.getDate().toCalendar().get(Calendar.MONTH);
+                int currentDay = currentItem.getDate().toCalendar().get(Calendar.DAY_OF_MONTH);
 
                 // create a calendar dialog to get date input
                 DatePickerDialog datePickerDialog = new DatePickerDialog(
