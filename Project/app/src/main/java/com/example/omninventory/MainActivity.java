@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         setContentView(R.layout.activity_main);
 
         // TODO: this is testing code, replace when merged with Rose's code
-        currentUser = new User("erika", "password");
+        currentUser = new User("erika", "erikausername", "password", new ArrayList<String>());
 
         // === set up database
         repo = new InventoryRepository();
@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
 
 
         // === this will store user's login state to keep them logged in
-        sp = getSharedPreferences("login",MODE_PRIVATE);
+        sp = getSharedPreferences("login", MODE_PRIVATE);
 
         // get taskbar buttons
         final ImageButton profileBtn = findViewById(R.id.profile_button);
@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         // connect itemList to Firestore database
         itemListAdapter = new InventoryItemAdapter(this, itemListData);
         itemList.setAdapter(itemListAdapter);
-        ListenerRegistration registration = repo.setupInventoryItemList(itemListAdapter); // set up listener for getting Firestore data
+        ListenerRegistration registration = repo.setupInventoryItemList(itemListAdapter, this); // set up listener for getting Firestore data
 
         if (sortBy != null && sortOrder != null) {
             // should always trigger if coming from SortFilterActivity
@@ -236,31 +236,31 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 Log.d("MainActivity", "click");
-                Intent intent = new Intent(MainActivity.this, DetailsActivity.class);
-                intent.putExtra("item", itemListData.get(position));
-                intent.putExtra("user", currentUser);
-                startActivity(intent);
+                Intent detailsIntent = new Intent(MainActivity.this, DetailsActivity.class);
+                detailsIntent.putExtra("item", itemListData.get(position));
+                detailsIntent.putExtra("user", currentUser);
+                startActivity(detailsIntent);
             }
         });
 
         ImageButton sortFilterBtn = findViewById(R.id.sort_filter_button);
         sortFilterBtn.setOnClickListener((v) -> {
-            Intent myIntent = new Intent(MainActivity.this, SortFilterActivity.class);
+            Intent sortFilterIntent = new Intent(MainActivity.this, SortFilterActivity.class);
             if (completeItemList == null) {
-                myIntent.putExtra("itemListData", itemListData);
+                sortFilterIntent.putExtra("itemListData", itemListData);
             }
             else {
-                myIntent.putExtra("itemListData", completeItemList);
+                sortFilterIntent.putExtra("itemListData", completeItemList);
             }
-            MainActivity.this.startActivity(myIntent);
+            MainActivity.this.startActivity(sortFilterIntent);
         });
 
         ImageButton addItemButton = findViewById(R.id.add_item_button);
         addItemButton.setOnClickListener((v) -> {
-            Intent intent = new Intent(MainActivity.this, EditActivity.class);
+            Intent addIntent = new Intent(MainActivity.this, EditActivity.class);
             // intent launched without an InventoryItem
-            intent.putExtra("user", currentUser);
-            startActivity(intent);
+            addIntent.putExtra("user", currentUser);
+            startActivity(addIntent);
         });
 
         ImageButton deleteItemButton = findViewById(R.id.delete_item_button);
@@ -312,8 +312,8 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         this.calcValue();
     }
     private void startLoginActivity() {
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+        Intent loginIntent = new Intent(this, LoginActivity.class);
+        startActivity(loginIntent);
         finish();
     }
 }

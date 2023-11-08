@@ -53,7 +53,7 @@ public class InventoryRepository {
      * TODO: will need to make this get only the items associated with current user
      * @param adapter An InventoryItemAdapter to set up to track contents of database.
      */
-    public void setupInventoryItemList(InventoryItemAdapter adapter, ItemListUpdateHandler handler) {
+    public ListenerRegistration setupInventoryItemList(InventoryItemAdapter adapter, ItemListUpdateHandler handler) {
         // set up listener
         ListenerRegistration registration = inventoryItemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -74,7 +74,7 @@ public class InventoryRepository {
                 handler.onItemListUpdate();
             }
         });
-        //return registration;
+        return registration;
     }
 
 
@@ -113,7 +113,7 @@ public class InventoryRepository {
         itemData.put("comment", item.getComment());
         itemData.put("make", item.getMake());
         itemData.put("model", item.getModel());
-        itemData.put("serialno", item.getSerialno());
+        itemData.put("serialno", item.getSerialNo());
         itemData.put("value", item.getValue());
         itemData.put("date", item.getDate());
         // TODO: tags and images
