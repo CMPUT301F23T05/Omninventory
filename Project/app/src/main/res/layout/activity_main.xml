@@ -58,7 +58,7 @@
 
         </LinearLayout>
 
-        <include layout="@layout/taskbar_holder"/>
+        <include layout="@layout/taskbar_main"/>
 <!--        add main_taskbar.xml layout to this in code -->
 
     </LinearLayout>

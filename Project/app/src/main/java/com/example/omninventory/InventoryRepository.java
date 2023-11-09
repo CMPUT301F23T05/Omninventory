@@ -1,11 +1,15 @@
 package com.example.omninventory;
 
+import static android.content.ContentValues.TAG;
+
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -18,6 +22,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -44,9 +49,11 @@ public class InventoryRepository {
      * Sets up an InventoryItemAdapter to contain contents of Firebase collection, and be
      * automatically updated when inventoryItem changes.
      * TODO: will need to make this get only the items associated with current user
+     *
      * @param adapter An InventoryItemAdapter to set up to track contents of database.
+     * @return
      */
-    public void setupInventoryItemList(InventoryItemAdapter adapter, ItemListUpdateHandler handler) {
+    public ListenerRegistration setupInventoryItemList(InventoryItemAdapter adapter, ItemListUpdateHandler handler) {
         // set up listener
         inventoryItemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -67,6 +74,7 @@ public class InventoryRepository {
                 handler.onItemListUpdate();
             }
         });
+        return null;
     }
 
     /**
@@ -208,8 +216,80 @@ public class InventoryRepository {
         });
     }
 
-    // TODO: implement these...
-    public void deleteInventoryItem() {};
+    public void deleteInventoryItem(User currentUser, String itemId) {
+        // get document for currentUser (id is username)
+        DocumentReference currentUserRef = usersRef.document(currentUser.getUsername());
+        // remove item from user's ownedItems in users collection
+        currentUserRef.update("ownedItems", FieldValue.arrayRemove(itemId));
+        // remove from inventoryItems collection
+        usersRef.document(itemId)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error deleting document", e);
+                    }
+                });
 
-    public void addUser() {};
+        inventoryItemsRef.document(itemId)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d(TAG, "InventoryItem successfully deleted!");
+                    }
+                })
+
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error deleting item", e);
+                    }
+                });
+    };
+
+    public void addUser(User user) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("password", user.getPassword());
+        data.put("ownedItems", user.getItemsRefs());
+        usersRef.document(user.getUsername())
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("Firestore", "DocumentSnapshot successfully written!");
+                    }
+                });
+
+    };
+
+    public void getUserInventory(String username) {
+        usersRef.document(username).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot doc = task.getResult();
+                    if (doc.exists()) {
+                        Log.d(TAG, "DocumentSnapshot data: " + doc.getData());
+                        List<String> ownedItems = (List<String>) doc.get("ownedItems");
+                        ArrayList<InventoryItem> inventory = new ArrayList<InventoryItem>();
+                        // todo: get an array list of inventory items
+//                        for (String itemRef : ownedItems) {
+//
+//                        }
+                    } else {
+                        Log.d(TAG, "Can't find user with username: " + username);
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+    }
 }

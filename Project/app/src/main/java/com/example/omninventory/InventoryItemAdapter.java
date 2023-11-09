@@ -44,6 +44,12 @@ public class InventoryItemAdapter extends ArrayAdapter<InventoryItem> {
         // === UI setup
         InventoryItem item = itemListData.get(position); // get item at this position
 
+        if (item.isSelected()) {
+            view.setBackgroundColor(Color.LTGRAY);
+        } else {
+            view.setBackgroundColor(Color.WHITE);
+        }
+
         // set fields
         itemNameText.setText(item.getName());
         itemDescriptionText.setText(item.getDescription());

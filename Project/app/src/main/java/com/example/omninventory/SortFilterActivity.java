@@ -2,6 +2,7 @@ package com.example.omninventory;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -18,26 +20,38 @@ import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
 
 // TODO:
-//  Ability to sort by all options
-//  Add ability to filter by make (editText + button), date (2 date picker buttons + apply button), and description (editText + button) (tags left for part 4)
-//  Intent passing from this activity back to main (pass itemListData back, then update the adapter in MainActivity)
+//  Fill in fields based on previously entered values
+//  Make intent passing less messy, try using the InventoryRepository class
 //  Input validation and testing
 //  Clean up layout file UI
 //  Documentation
 public class SortFilterActivity extends AppCompatActivity {
-    ArrayList<InventoryItem> itemListData;
-    String dropdownSelection;
-    Calendar startDate = Calendar.getInstance();
-    Calendar endDate = Calendar.getInstance();
-
+    private ArrayList<InventoryItem> itemListData;
+    private String dropdownSelection;
+    ItemDate startDate;
+    ItemDate endDate;
+    private String sortOrder;
+    private String makeText;
+    private String descriptionText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sort_filter);
+
+        Intent intent = getIntent();
+        if (intent != null) {
+            if (intent.getSerializableExtra("itemListData") != null) {
+                itemListData = (ArrayList<InventoryItem>) intent.getSerializableExtra("itemListData");
+            }
+        }
 
         final EditText makeFilterEditText = findViewById(R.id.make_filter_edit_text);
         final Button makeFilterButton = findViewById(R.id.add_make_filter_button);
@@ -48,13 +62,7 @@ public class SortFilterActivity extends AppCompatActivity {
         final Button descriptionFilterButton = findViewById(R.id.add_description_filter_button);
         final Button filterByTagsButton = findViewById(R.id.filter_by_tags_button);
 
-        // retrieve data passed from the main activity: itemListData
-        Intent intent = getIntent();
-        if (intent != null) {
-            if (intent.getSerializableExtra("itemListData") != null) {
-                itemListData = (ArrayList<InventoryItem>) intent.getSerializableExtra("itemListData");
-            }
-        }
+        final ImageButton backButton = findViewById(R.id.back_button);
 
         final TextView titleText = findViewById(R.id.title_text);
         titleText.setText(getString(R.string.sort_filter_title_text));
@@ -72,7 +80,6 @@ public class SortFilterActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 dropdownSelection = (String) parentView.getItemAtPosition(position);
-                itemListData = applySorting(dropdownSelection, itemListData);
             }
 
             @Override
@@ -80,6 +87,20 @@ public class SortFilterActivity extends AppCompatActivity {
                 dropdownSelection = "";
             }
 
+        });
+
+        sortOrder = (String) ascDescButton.getText();
+        ascDescButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (sortOrder.equals(getResources().getString(R.string.ascending))) {
+                    sortOrder = getResources().getString(R.string.descending);;
+                    ascDescButton.setText(R.string.descending);
+                } else {
+                    sortOrder = getResources().getString(R.string.ascending);
+                    ascDescButton.setText(R.string.ascending);
+                }
+            }
         });
 
         TextView startDateText = findViewById(R.id.start_date_text);
@@ -106,14 +127,18 @@ public class SortFilterActivity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
                                 // on below line we are setting date to our text view.
-                                startDateText.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-                                startDate.set(year, monthOfYear, dayOfMonth);
+                                monthOfYear++;
+                                String dateStr = ItemDate.ymdToString(year, monthOfYear, dayOfMonth);
+                                startDateText.setText(dateStr);
+                                startDate = new ItemDate(dateStr);
                             }
                         },
                         // on below line we are passing year,
                         // month and day for selected date in our date picker.
                         year, month, day);
-                datePickerDialog.getDatePicker().setMaxDate(endDate.getTimeInMillis());
+                if (endDate != null) {
+                    datePickerDialog.getDatePicker().setMaxDate(endDate.toCalendar().getTimeInMillis());
+                }
                 // at last we are calling show to
                 // display our date picker dialog.
                 datePickerDialog.show();
@@ -145,14 +170,18 @@ public class SortFilterActivity extends AppCompatActivity {
                             public void onDateSet(DatePicker view, int year,
                                                   int monthOfYear, int dayOfMonth) {
                                 // on below line we are setting date to our text view.
-                                endDateText.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
-                                endDate.set(year, monthOfYear, dayOfMonth);
+                                monthOfYear++;
+                                String dateStr = ItemDate.ymdToString(year, monthOfYear, dayOfMonth);
+                                endDateText.setText(dateStr);
+                                endDate = new ItemDate(dateStr);
                             }
                         },
                         // on below line we are passing year,
                         // month and day for selected date in our date picker.
                         year, month, day);
-                datePickerDialog.getDatePicker().setMinDate(startDate.getTimeInMillis());
+                if (startDate != null) {
+                    datePickerDialog.getDatePicker().setMinDate(startDate.toCalendar().getTimeInMillis());
+                }
                 // at last we are calling show to
                 // display our date picker dialog.
                 datePickerDialog.show();
@@ -162,46 +191,152 @@ public class SortFilterActivity extends AppCompatActivity {
         makeFilterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String makeText = makeFilterEditText.getText().toString();
-                itemListData = applyMakeFilter(makeText, itemListData);
+                makeText = makeFilterEditText.getText().toString();
+                Intent myIntent = new Intent(SortFilterActivity.this, MainActivity.class);
+                putFieldsIntent(myIntent);
+                SortFilterActivity.this.startActivity(myIntent);
             }
         });
 
         dateFilterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                itemListData = applyDateFilter(startDate, endDate, itemListData);
+                Intent myIntent = new Intent(SortFilterActivity.this, MainActivity.class);
+                putFieldsIntent(myIntent);
+                SortFilterActivity.this.startActivity(myIntent);
             }
         });
         descriptionFilterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String descriptionText = descriptionFilterEditText.getText().toString();
-                itemListData = applyDescriptionFilter(descriptionText, itemListData);
+                descriptionText = descriptionFilterEditText.getText().toString();
+                Intent myIntent = new Intent(SortFilterActivity.this, MainActivity.class);
+                putFieldsIntent(myIntent);
+                SortFilterActivity.this.startActivity(myIntent);
             }
         });
 
         filterByTagsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // do nothing for now, implemented in part 4
+                //applyTagsFilter(tags, adapter);
+            }
+        });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent myIntent = new Intent(SortFilterActivity.this, MainActivity.class);
+                putFieldsIntent(myIntent);
+                SortFilterActivity.this.startActivity(myIntent);
             }
         });
     }
 
-    public ArrayList<InventoryItem> applySorting(String selection, ArrayList<InventoryItem> data) {
-        return null;
+    private void putFieldsIntent(Intent myIntent) {
+        myIntent.putExtra("sortBy", dropdownSelection);
+        myIntent.putExtra("sortOrder", sortOrder);
+        myIntent.putExtra("filterMake", makeText);
+        myIntent.putExtra("filterStartDate", startDate);
+        myIntent.putExtra("filterEndDate", endDate);
+        myIntent.putExtra("filterDescription", descriptionText);
+        myIntent.putExtra("itemListData", itemListData);
     }
 
-    public ArrayList<InventoryItem> applyMakeFilter(String make, ArrayList<InventoryItem> itemListData) {
-        return null;
+    public static void applySorting(String selection, String sortOrder, ArrayAdapter<InventoryItem> adapter,
+                                    String descendingText) {
+        boolean descending = sortOrder.equals(descendingText);
+        switch (selection) {
+            case "None":
+                break;
+            case "Date":
+                if (descending) {
+                    adapter.sort(new SortByDate().reversed());
+                }
+                else {
+                    adapter.sort(new SortByDate());
+                }
+                break;
+            case "Description":
+                if (descending) {
+                    adapter.sort(new SortByDescription().reversed());
+                }
+                else {
+                    adapter.sort(new SortByDescription());
+                }
+                break;
+            case "Make":
+                if (descending) {
+                    adapter.sort(new SortByMake().reversed());
+                }
+                else {
+                    adapter.sort(new SortByMake());
+                }
+                break;
+            case "Estimated Value":
+                if (descending) {
+                    adapter.sort(new SortByValue().reversed());
+                }
+                else {
+                    adapter.sort(new SortByValue());
+                }
+                break;
+        }
+        adapter.notifyDataSetChanged();
     }
 
-    public ArrayList<InventoryItem> applyDateFilter(Calendar startDate, Calendar endDate, ArrayList<InventoryItem> itemListData) {
-        return null;
+    public static void applyMakeFilter(String make, ArrayAdapter<InventoryItem> adapter) {
+        ArrayList<InventoryItem> itemsToRemove = new ArrayList<InventoryItem>();
+        for (int i = 0; i < adapter.getCount(); i++) {
+            InventoryItem item = adapter.getItem(i);
+            if (!item.getMake().equals(make)) {
+                itemsToRemove.add(item);
+            }
+        }
+        for (InventoryItem item : itemsToRemove) {
+            adapter.remove(item);
+        }
+        adapter.notifyDataSetChanged();
     }
 
-    public ArrayList<InventoryItem> applyDescriptionFilter(String description, ArrayList<InventoryItem> itemListData) {
-        return null;
+    public static void applyDateFilter(ItemDate startDate, ItemDate endDate, ArrayAdapter<InventoryItem> adapter) {
+        // remove item if before startDate or after endDate
+        ArrayList<InventoryItem> itemsToRemove = new ArrayList<InventoryItem>();
+        for (int i = 0; i < adapter.getCount(); i++) {
+            InventoryItem item = adapter.getItem(i);
+            if (item.getDate().toCalendar().compareTo(startDate.toCalendar()) < 0 || item.getDate().toCalendar().compareTo(endDate.toCalendar()) > 0) {
+                itemsToRemove.add(item);
+            }
+        }
+        for (InventoryItem item : itemsToRemove) {
+            adapter.remove(item);
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    public static void applyDescriptionFilter(String descriptionKeywords, ArrayAdapter<InventoryItem> adapter) {
+        ArrayList<InventoryItem> itemsToRemove = new ArrayList<InventoryItem>();
+        String[] keywords = descriptionKeywords.split(" ");
+        for (int i = 0; i < adapter.getCount(); i++) {
+            InventoryItem item = adapter.getItem(i);
+            boolean foundKeyWord = false;
+            for (String keyword : keywords) {
+                if (item.getDescription().contains(keyword)) {
+                    foundKeyWord = true;
+                    break;  // short-circuit search
+                }
+            }
+            if (!foundKeyWord) {
+                itemsToRemove.add(item);
+            }
+        }
+        for (InventoryItem item : itemsToRemove) {
+            adapter.remove(item);
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    public static void applyTagsFilter(Tag[] tags, ArrayAdapter<InventoryItem> adapter) {
+        // do nothing for now, implemented in part 4
     }
 }

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import java.io.Serializable;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * A standard representation of the 'Value' field of an InventoryItem. Stores a Long value of cents
@@ -67,6 +68,23 @@ public class ItemValue implements Serializable {
         Log.d("InventoryItemValue", String.format("Formatting values: %d, %d", dollarsNum, centsNum));
 
         return String.format(Locale.CANADA, "$%d.%02d", dollarsNum, centsNum);
+    }
+
+    /**
+     * Compares two ItemValue objects.
+     * Return 0 if same value.
+     * If this object value > ie's value, return 1.
+     * If this object's value < ie's value, return -1.
+     * @param ie The ItemVlue object to compare to
+     * @return 1 if value > ie.value, 0 if value == ie.value, -1 if value < ie.value
+     */
+    public int compare(ItemValue ie) {
+        if (value.equals(ie.value))
+            return 0;
+        else if (value > ie.value)
+            return 1;
+        else
+            return -1;
     }
 
     /**
