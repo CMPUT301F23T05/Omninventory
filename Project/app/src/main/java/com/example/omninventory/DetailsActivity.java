@@ -79,12 +79,6 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
         titleText.setText(getString(R.string.details_title_text)); // set title text
         setFields(currentItem); // set item fields
 
-        // add taskbar
-        LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View taskbarLayout = taskbarInflater.inflate(R.layout.taskbar_details, null); // TODO: fix warning
-        ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.taskbar_holder);
-        taskbarHolder.addView(taskbarLayout);
-
         // === set up click actions
         final ImageButton backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(new View.OnClickListener() {

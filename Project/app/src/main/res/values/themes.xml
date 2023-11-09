@@ -6,12 +6,16 @@
         <item name="colorOnPrimary">@color/white</item>
 
         <item name="colorSecondary">@color/light_blue_1</item>
+        <item name="colorOnSecondary">@color/white</item>
 
-        <item name="colorTertiary">@color/light_gray_1</item>
+        <item name="colorTertiary">@color/light_gray_2</item>
+        <item name="colorOnTertiary">@color/dark_gray_2</item>
 
-        <item name="colorSurface">@color/white</item>
+        <item name="colorSurface">@color/light_gray_1</item>
         <item name="colorOnSurface">@color/black</item>
+
+        <item name="colorOnSurfaceVariant">@color/light_gray_2</item>
     </style>
 
-    <style name="Theme.Omninventory" parent="Base.Theme.Omninventory" />
+<!--    <style name="Theme.Omninventory" parent="Base.Theme.Omninventory" />-->
 </resources>

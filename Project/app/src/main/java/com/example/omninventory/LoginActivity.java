@@ -49,12 +49,6 @@ public class LoginActivity extends AppCompatActivity {
         // set title text
         titleText.setText(getString(R.string.login_title_text));
 
-        // === add taskbar
-        LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View taskbarLayout = taskbarInflater.inflate(R.layout.taskbar_main, null);
-        ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.taskbar_holder);
-        taskbarHolder.addView(taskbarLayout);
-
         // === todo: may move this somewhere later
         loginButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

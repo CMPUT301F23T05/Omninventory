@@ -100,12 +100,6 @@ public class EditActivity extends AppCompatActivity  {
             titleText.setText(getString(R.string.edit_title_text));
         }
 
-        // add taskbar
-        LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View taskbarLayout = taskbarInflater.inflate(R.layout.taskbar_edit, null);
-        ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.taskbar_holder);
-        taskbarHolder.addView(taskbarLayout);
-
         // set default values for fields
         Log.d("EditActivity", "setFields called from onCreate");
         setFields(currentItem);
