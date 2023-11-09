@@ -23,10 +23,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -53,7 +51,7 @@ public class InventoryRepository {
      * TODO: will need to make this get only the items associated with current user
      * @param adapter An InventoryItemAdapter to set up to track contents of database.
      */
-    public ListenerRegistration setupInventoryItemList(InventoryItemAdapter adapter, ItemListUpdateHandler handler) {
+    public ListenerRegistration setupInventoryItemList(InventoryItemAdapter adapter, InventoryUpdateHandler handler) {
         // set up listener
         ListenerRegistration registration = inventoryItemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override

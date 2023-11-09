@@ -6,16 +6,7 @@ import android.content.Context;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
-import static android.content.ContentValues.TAG;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,20 +14,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ListView;
-import android.widget.TextView;
-
 import com.google.firebase.firestore.ListenerRegistration;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 
@@ -44,7 +28,7 @@ import java.util.ArrayList;
  * Main screen of the app. Holds list of inventory items and buttons
  * that take user to other screens.
  */
-public class MainActivity extends AppCompatActivity implements ItemListUpdateHandler {
+public class MainActivity extends AppCompatActivity implements InventoryUpdateHandler {
 
     private InventoryRepository repo;
     private ArrayList<InventoryItem> itemListData;
