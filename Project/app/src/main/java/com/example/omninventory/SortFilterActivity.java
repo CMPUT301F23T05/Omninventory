@@ -32,6 +32,15 @@ import java.util.List;
 //  Input validation and testing
 //  Clean up layout file UI
 //  Documentation
+
+/**
+ * Activity used for user to select how to sort/filter items. Selections for sorting (dropdown)
+ * are: None, Date, Description, Make, and Value. Options for filtering are make, date, description,
+ * and tags. Selections are passed back to MainActivity via Intent. Previous selections
+ * are passed back to MainActivity and will be restored when coming back to this Activity.
+ * Static methods are provided for the actual sorting/filtering so they can be accessed from
+ * anywhere. Sorting is done with the help of Comparator class.
+ */
 public class SortFilterActivity extends AppCompatActivity {
     private String dropdownSelection;
     private ItemDate startDate;
@@ -48,6 +57,7 @@ public class SortFilterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sort_filter);
 
+        // get all buttons/editTexts to be accessed later
         final EditText makeFilterEditText = findViewById(R.id.make_filter_edit_text);
         final Button makeFilterButton = findViewById(R.id.add_make_filter_button);
         final Button ascDescButton = findViewById(R.id.asc_desc_button);
@@ -64,7 +74,7 @@ public class SortFilterActivity extends AppCompatActivity {
         titleText.setText(getString(R.string.sort_filter_title_text));
 
         final Spinner sortDropdown = findViewById(R.id.sort_dropdown_spinner);
-        // ArrayAdapter for dropdown choices
+        // ArrayAdapter for dropdown choices. Choices stored in strings.xml
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this,
                 R.array.sort_dropdown_options,
@@ -79,6 +89,8 @@ public class SortFilterActivity extends AppCompatActivity {
         TextView endDateText = findViewById(R.id.end_date_text);
         Button endDateBtn = findViewById(R.id.end_date_button);
 
+        // to restore previous selections, get the data from intent
+        // if restoring value, set button background color to R.color.clicked_filter_button
         Intent intent = getIntent();
         if (intent != null) {
             if (intent.getStringExtra("sortBy") != null) {
@@ -119,6 +131,7 @@ public class SortFilterActivity extends AppCompatActivity {
             dateFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
         }
 
+        // store dropdown selection (how we will sort the items)
         sortDropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -132,6 +145,7 @@ public class SortFilterActivity extends AppCompatActivity {
 
         });
 
+        // store ascending/descending selection. Serves as a toggle button. Default is ascending.
         ascDescButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -145,6 +159,7 @@ public class SortFilterActivity extends AppCompatActivity {
             }
         });
 
+        // use Calendar widget to prompt user for start/endDate
         startDateBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -221,6 +236,7 @@ public class SortFilterActivity extends AppCompatActivity {
             }
         });
 
+        // apply filter buttons act like toggle buttons (apply or don't apply)
         makeFilterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -272,6 +288,7 @@ public class SortFilterActivity extends AppCompatActivity {
             }
         });
 
+        // when going back, pass all relevant data to intent
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -282,6 +299,13 @@ public class SortFilterActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Put all fields where filter has been applied in intent.
+     * @param myIntent - intent to pass to MainActivity
+     * @param makePressed - true if "apply make filter" is toggled to on
+     * @param datePressed - true if "apply date filter" is toggled to on
+     * @param descriptionPressed - true if "apply description filter" is toggled to on
+     */
     private void putFieldsIntent(Intent myIntent, boolean makePressed,
                                  boolean datePressed, boolean descriptionPressed) {
         myIntent.putExtra("sortBy", dropdownSelection);
@@ -298,10 +322,21 @@ public class SortFilterActivity extends AppCompatActivity {
         }
     }
 
-    public static void applySorting(String selection, String sortOrder, ArrayAdapter<InventoryItem> adapter,
+    /**
+     * Perform sorting on the ArrayAdapter of Inventory items. Can be done in ascending
+     * or descending order. Implemented with the help of Comparator class.
+     * Changes are applied directly to the passed adapter.
+     * @param sortBy - user selection to sort the items by. Can be one of: "None", "Date",
+     *               "Description", "Make", "Estimated Value"
+     * @param sortOrder - either "ascending" or "descending"
+     * @param adapter - ArrayAdapter of InventoryItems to sort
+     * @param descendingText - the string "descending". Values in strings.xml cannot be
+     *                       accessed in static methods so it must be passed in
+     */
+    public static void applySorting(String sortBy, String sortOrder, ArrayAdapter<InventoryItem> adapter,
                                     String descendingText) {
         boolean descending = sortOrder.equals(descendingText);
-        switch (selection) {
+        switch (sortBy) {
             case "None":
                 break;
             case "Date":
@@ -340,6 +375,14 @@ public class SortFilterActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * Filter the adapter of InventoryItems by make. Will remove all InventoryItems that have a
+     * different make from the one supplied.
+     * Changes are applied directly to the passed adapter.
+     * don't have the corresponding make.
+     * @param make - make to filter the adpater of items by
+     * @param adapter - the adapter to filter
+     */
     public static void applyMakeFilter(String make, ArrayAdapter<InventoryItem> adapter) {
         ArrayList<InventoryItem> itemsToRemove = new ArrayList<InventoryItem>();
         for (int i = 0; i < adapter.getCount(); i++) {
@@ -354,6 +397,15 @@ public class SortFilterActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * Filter the adapter of InventoryItems by date. Will remove all InventoryItems that don't have
+     * date between startDate and endDate. Changes are applied directly to the passed adapter.
+     * @param startDate - starting bound for accepted dates. InventoryItems with date less than
+     *                  this are removed
+     * @param endDate - end bound for accepted dates. InventoryItems with date greater than
+     *      *                  this are removed
+     * @param adapter - the adapter to filter
+     */
     public static void applyDateFilter(ItemDate startDate, ItemDate endDate, ArrayAdapter<InventoryItem> adapter) {
         // remove item if before startDate or after endDate
         ArrayList<InventoryItem> itemsToRemove = new ArrayList<InventoryItem>();
@@ -369,6 +421,13 @@ public class SortFilterActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * Filter the adapter of InventoryItems by description keywords. Will remove InventoryItems
+     * from the adapter if their description doesn't contain at least one keyword.
+     * Changes are applied directly to the passed adapter.
+     * @param descriptionKeywords - string of space-separated keywords
+     * @param adapter - the adapter to filter
+     */
     public static void applyDescriptionFilter(String descriptionKeywords, ArrayAdapter<InventoryItem> adapter) {
         ArrayList<InventoryItem> itemsToRemove = new ArrayList<InventoryItem>();
         String[] keywords = descriptionKeywords.split(" ");
