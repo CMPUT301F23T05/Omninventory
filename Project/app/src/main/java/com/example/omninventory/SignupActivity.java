@@ -53,13 +53,7 @@ public class SignupActivity extends AppCompatActivity {
         // set title text
         titleText.setText(getString(R.string.signup_title_text));
 
-        // add taskbar
-        LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View taskbarLayout = taskbarInflater.inflate(R.layout.taskbar_main, null);
-        ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.taskbar_holder);
-        taskbarHolder.addView(taskbarLayout);
-
-        // === signup button callback function
+        // === signup button onclick function
         signupButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String name = nameEditText.getText().toString();
@@ -69,19 +63,17 @@ public class SignupActivity extends AppCompatActivity {
 
                 validateUserInput(name, username, password, confirmPassword, new ValidationResultCallback() {
                     @Override
-                    public void onValidationResult(boolean isValid, String message) {
+                    public void onValidationResult(boolean isValid, String message, User user) {
                         // === add user to database if their input passes all validation tests
                         if (isValid) {
-                            String name = nameEditText.getText().toString();
-                            String username = usernameEditText.getText().toString();
-                            String password = passwordEditText.getText().toString();
-                            String hashedPass = Utils.sha256(password);
                             InventoryRepository repo = new InventoryRepository();
-                            repo.addUser(new User(name, username, hashedPass, new ArrayList<String>()));
+                            repo.addUser(user);
                             // have user logged in and go back to main activity
                             Intent intent = new Intent(SignupActivity.this, MainActivity.class);
-                            intent.putExtra("loggedInUser", username);
+                            intent.putExtra("action", "log in");
+                            intent.putExtra("loggedInUser", user);
                             startActivity(intent);
+                            Log.d("SignUpActivity", "Signed up successfully");
                             finish();
                         } else if (message == "emptyName") {
                             nameEditText.setError("Please fill out this field");
@@ -112,28 +104,40 @@ public class SignupActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+    public User convertDocumentToUser(DocumentSnapshot doc) {
+        Log.d("Signup", "(convertDocumentToUser) converting to User");
+        User user = new User(
+                doc.getString("name"),
+                doc.getId(),
+                doc.getString("password"),
+                (ArrayList<String>) doc.get("ownedItems")
+        );
+        Log.d("Signup", "(convertDocumentToUser) done");
+        return user;
+    }
 
     private void validateUserInput(String name, String username, String password, String confirmPassword, ValidationResultCallback callback) {
         // check for empty input
         if (name.isEmpty()) {
-            callback.onValidationResult(false, "emptyName");
+            callback.onValidationResult(false, "emptyName", null);
         }
         else if (username.isEmpty()) {
-            callback.onValidationResult(false, "emptyUsername");
+            callback.onValidationResult(false, "emptyUsername", null);
         }
         else if (password.isEmpty()) {
-            callback.onValidationResult(false, "password");
+            callback.onValidationResult(false, "password", null);
         }
         else if (confirmPassword.isEmpty()) {
-            callback.onValidationResult(false, "emptyConfirmPassword");
+            callback.onValidationResult(false, "emptyConfirmPassword", null);
         }
-        else if (!Utils.validatePassword(password)) {
-            callback.onValidationResult(false, "weakPassword");
-        }
+//        else if (!Utils.validatePassword(password)) {
+//            callback.onValidationResult(false, "weakPassword");
+//        }
         else if (!password.equals(confirmPassword)) {
-            callback.onValidationResult(false, "unmatchedPasswords");
+            callback.onValidationResult(false, "unmatchedPasswords", null);
         }
         else {
+            Log.d("SignUpActivity", "checking if username exists");
             DocumentReference userDocRef = db.collection("users").document(username);
             userDocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -141,17 +145,17 @@ public class SignupActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
-                            Log.d("login", "username taken");
-                            callback.onValidationResult(false, "usernameTaken");
+                            Log.d("SignUpActivity", "username taken");
+                            callback.onValidationResult(false, "usernameTaken", null);
                         }
                         else {
-                            Log.d("login", "success");
-                            callback.onValidationResult(true, "valid");
+                            Log.d("SignUpActivity", "success");
+                            callback.onValidationResult(true, "valid", new User(name, username, Utils.sha256(password), new ArrayList<String>()));
                         }
                     }
                     else {
                         Log.d(TAG, "Failed with: ", task.getException());
-                        callback.onValidationResult(false, "error");
+                        callback.onValidationResult(false, "error", null);
                     }
                 }
             });

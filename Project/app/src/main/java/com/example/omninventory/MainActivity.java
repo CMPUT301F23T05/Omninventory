@@ -35,6 +35,10 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.DocumentSnapshot;
 
@@ -44,13 +48,12 @@ import java.util.ArrayList;
  * Main screen of the app. Holds list of inventory items and buttons
  * that take user to other screens.
  */
-public class MainActivity extends AppCompatActivity implements ItemListUpdateHandler {
+public class MainActivity extends AppCompatActivity implements ItemListUpdateHandler, GetItemListDataHandler {
 
     private InventoryRepository repo;
     private ArrayList<InventoryItem> itemListData;
     private ArrayList<InventoryItem> completeItemList;
     private InventoryItemAdapter itemListAdapter;
-    SharedPreferences sp;
     private String sortBy;
     private String sortOrder;
     private String filterMake;
@@ -70,6 +73,192 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
     private ArrayList<InventoryItem> selectedItems;
 
     private Dialog deleteDialog;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // check if user is logged in or out
+        if (getIntent().getExtras() != null)  {
+            if (getIntent().getExtras().getString("action").equals("log in")) {
+                // user just logged in
+                currentUser = (User) getIntent().getExtras().getSerializable("loggedInUser");
+                Log.d("MainActivity:login", "Logged in as: " + currentUser.getName());
+            }
+        }
+
+        // make sure user is logged in before giving them access to the rest of the app
+        if (currentUser == null) {
+            startLoginActivity();
+        }
+        // === set up database
+        repo = new InventoryRepository();
+
+        // Get references to views
+        itemList = findViewById(R.id.item_list);
+        titleText = findViewById(R.id.title_text);
+        totalValueText = findViewById(R.id.total_value_text);
+
+        // === UI setup
+        titleText.setText(getString(R.string.main_title_text)); // set title text
+
+        // add taskbar
+        LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View taskbarLayout = taskbarInflater.inflate(R.layout.taskbar_main, null);
+        ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.task_bar_main);
+        taskbarHolder.addView(taskbarLayout);
+
+        // get taskbar buttons
+        ImageButton sortFilterBtn = findViewById(R.id.sort_filter_button);
+        ImageButton addItemButton = findViewById(R.id.add_item_button);
+        ImageButton deleteItemButton = findViewById(R.id.delete_item_button);
+        ImageButton profileBtn = findViewById(R.id.profile_button);
+
+        // === set up itemList owned by logged in user
+        // TODO: this is a string array for now, fix
+//        currentUser = new User("John", "johndoe", "a6864eb339b0e1f6e00d75293a8840abf069a2c0fe82e6e53af6ac099793c1d5", new ArrayList<String>());
+        itemListData = new ArrayList<InventoryItem>();
+        Log.d("MainActivity:repo","getting items");
+        repo.getItemListData(currentUser.getOwnedItems(), this);
+        // retrieve data passed from SortFilterActivity: itemListData and sortBy
+        Intent intent = getIntent();
+        if (intent != null) {
+            if (intent.getSerializableExtra("itemListData") != null) {
+                itemListData = (ArrayList<InventoryItem>) intent.getSerializableExtra("itemListData");
+                completeItemList = (ArrayList<InventoryItem>) itemListData.clone();
+            }
+            if (intent.getStringExtra("sortBy") != null) {
+                sortBy = intent.getStringExtra("sortBy");
+            }
+            if (intent.getStringExtra("sortOrder") != null) {
+                sortOrder = intent.getStringExtra("sortOrder");
+            }
+            if (intent.getStringExtra("filterMake") != null) {
+                filterMake = intent.getStringExtra("filterMake");
+            }
+            if (intent.getSerializableExtra("filterStartDate") != null) {
+                filterStartDate = (ItemDate) intent.getSerializableExtra("filterStartDate");
+            }
+            if (intent.getSerializableExtra("filterEndDate") != null) {
+                filterEndDate = (ItemDate) intent.getSerializableExtra("filterEndDate");
+            }
+            if (intent.getStringExtra("filterDescription") != null) {
+                filterDescription = intent.getStringExtra("filterDescription");
+            }
+        }
+
+        // connect itemList to Firestore database
+        itemListAdapter = new InventoryItemAdapter(this, itemListData);
+        itemList.setAdapter(itemListAdapter);
+        ListenerRegistration registration = repo.setupInventoryItemList(itemListAdapter, this); // set up listener for getting Firestore data
+
+        if (sortBy != null && sortOrder != null) {
+            // should always trigger if coming from SortFilterActivity
+            registration.remove();
+            String ascendingText = getString(R.string.ascending);
+            String descendingText = getString(R.string.descending);
+            SortFilterActivity.applySorting(sortBy, sortOrder, itemListAdapter, descendingText);
+        }
+        if (filterMake != null) {
+            SortFilterActivity.applyMakeFilter(filterMake, itemListAdapter);
+        }
+        if (filterStartDate != null && filterEndDate != null) {
+            SortFilterActivity.applyDateFilter(filterStartDate, filterEndDate, itemListAdapter);
+        }
+        if (filterDescription != null) {
+            SortFilterActivity.applyDescriptionFilter(filterDescription, itemListAdapter);
+        }
+    
+        // Setup delete items dialog
+        deleteDialog = new Dialog(this);
+
+        // Setup selected items of inventory
+        selectedItems = new ArrayList<InventoryItem>();
+
+        calcValue(); // Get total estimated value
+
+        resetSelectedItems();
+
+        itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Log.d("MainActivity", "click");
+                Intent detailsIntent = new Intent(MainActivity.this, DetailsActivity.class);
+                detailsIntent.putExtra("item", itemListData.get(position));
+                detailsIntent.putExtra("user", currentUser);
+                resetSelectedItems();
+                startActivity(detailsIntent);
+            }
+        });
+
+        sortFilterBtn.setOnClickListener((v) -> {
+            Intent sortFilterIntent = new Intent(MainActivity.this, SortFilterActivity.class);
+            if (completeItemList == null) {
+                sortFilterIntent.putExtra("itemListData", itemListData);
+            }
+            else {
+                sortFilterIntent.putExtra("itemListData", completeItemList);
+            }
+            MainActivity.this.startActivity(sortFilterIntent);
+        });
+
+
+        addItemButton.setOnClickListener((v) -> {
+            Intent addIntent = new Intent(MainActivity.this, EditActivity.class);
+            // intent launched without an InventoryItem
+            addIntent.putExtra("user", currentUser);
+            startActivity(addIntent);
+        });
+
+
+        deleteItemButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (selectedItems.size() > 0) {
+                    deleteDialog();
+                }
+            }
+        });
+        
+        profileBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                intent.putExtra("loggedInUser", currentUser);
+                startActivity(intent);
+            }
+        });
+
+        itemList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+                InventoryItem item = itemListData.get(position);
+                if (item.isSelected()) {
+                    item.setSelected(false);
+                    selectedItems.remove(item);
+                } else {
+                    item.setSelected(true);
+                    selectedItems.add(item);
+                }
+                itemListAdapter.notifyDataSetChanged();
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Need to asynchronously call an update routine when items are added to the list, else
+     * value will be calculated before items
+     */
+    public void onItemListUpdate() {
+        this.calcValue();
+    }
+    private void startLoginActivity() {
+        Intent loginIntent = new Intent(this, LoginActivity.class);
+        startActivity(loginIntent);
+        finish();
+    }
 
     private void deleteDialog() {
         deleteDialog.setCancelable(false);
@@ -139,200 +328,9 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         selectedItems.clear();
         System.out.println("The number of selected items is: " + Integer.toString(selectedItems.size()));
     }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        // TODO: this is testing code, replace when merged with Rose's code
-        currentUser = new User("erika", "erikausername", "password", new ArrayList<String>());
-
-        // === set up database
-        repo = new InventoryRepository();
-
-        // Get references to views
-        itemList = findViewById(R.id.item_list);
-        titleText = findViewById(R.id.title_text);
-        totalValueText = findViewById(R.id.total_value_text);
-
-        // === UI setup
-        titleText.setText(getString(R.string.main_title_text)); // set title text
-
-        // add taskbar
-        LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View taskbarLayout = taskbarInflater.inflate(R.layout.taskbar_main, null);
-        ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.task_bar_main);
-        taskbarHolder.addView(taskbarLayout);
-
-
-        // === this will store user's login state to keep them logged in
-        sp = getSharedPreferences("login", MODE_PRIVATE);
-
-        // get taskbar buttons
-        final ImageButton profileBtn = findViewById(R.id.profile_button);
-
-        // check if user just logged in
-        if (getIntent().getExtras() != null)  {
-            // user just logged in
-            String user = getIntent().getExtras().getString("loggedInUser");
-            sp.edit().putBoolean("logged",true).apply();
-            sp.edit().putString("username",user).apply();
-            Log.d("login", "Logged in as: " + user);
-            // todo: for testing purposes only, will remove later
-            Toast.makeText(getApplicationContext(), "Logged in as , " + user, Toast.LENGTH_LONG).show();
-        }
-
-        // === set up itemList owned by logged in user
-        // TODO: this is a string array for now, fix
-        itemListData = new ArrayList<InventoryItem>();
-        // retrieve data passed from SortFilterActivity: itemListData and sortBy
-
-        Intent intent = getIntent();
-        if (intent != null) {
-            if (intent.getSerializableExtra("itemListData") != null) {
-                itemListData = (ArrayList<InventoryItem>) intent.getSerializableExtra("itemListData");
-                completeItemList = (ArrayList<InventoryItem>) itemListData.clone();
-            }
-            if (intent.getStringExtra("sortBy") != null) {
-                sortBy = intent.getStringExtra("sortBy");
-            }
-            if (intent.getStringExtra("sortOrder") != null) {
-                sortOrder = intent.getStringExtra("sortOrder");
-            }
-            if (intent.getStringExtra("filterMake") != null) {
-                filterMake = intent.getStringExtra("filterMake");
-            }
-            if (intent.getSerializableExtra("filterStartDate") != null) {
-                filterStartDate = (ItemDate) intent.getSerializableExtra("filterStartDate");
-            }
-            if (intent.getSerializableExtra("filterEndDate") != null) {
-                filterEndDate = (ItemDate) intent.getSerializableExtra("filterEndDate");
-            }
-            if (intent.getStringExtra("filterDescription") != null) {
-                filterDescription = intent.getStringExtra("filterDescription");
-            }
-        }
-
-        // connect itemList to Firestore database
-        itemListAdapter = new InventoryItemAdapter(this, itemListData);
-        itemList.setAdapter(itemListAdapter);
-        ListenerRegistration registration = repo.setupInventoryItemList(itemListAdapter, this); // set up listener for getting Firestore data
-
-        if (sortBy != null && sortOrder != null) {
-            // should always trigger if coming from SortFilterActivity
-            registration.remove();
-            String ascendingText = getString(R.string.ascending);
-            String descendingText = getString(R.string.descending);
-            SortFilterActivity.applySorting(sortBy, sortOrder, itemListAdapter, descendingText);
-        }
-        if (filterMake != null) {
-            SortFilterActivity.applyMakeFilter(filterMake, itemListAdapter);
-        }
-        if (filterStartDate != null && filterEndDate != null) {
-            SortFilterActivity.applyDateFilter(filterStartDate, filterEndDate, itemListAdapter);
-        }
-        if (filterDescription != null) {
-                SortFilterActivity.applyDescriptionFilter(filterDescription, itemListAdapter);
-        }
-    
-        // Setup delete items dialog
-        deleteDialog = new Dialog(this);
-
-        // Setup selected items of inventory
-        selectedItems = new ArrayList<InventoryItem>();
-
-        calcValue(); // Get total estimated value
-
-        // === Set up onClick actions
-        //itemListData.add(new InventoryItem("Cat"));
-
-        resetSelectedItems();
-
-        itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                Log.d("MainActivity", "click");
-                Intent detailsIntent = new Intent(MainActivity.this, DetailsActivity.class);
-                detailsIntent.putExtra("item", itemListData.get(position));
-                detailsIntent.putExtra("user", currentUser);
-                resetSelectedItems();
-                startActivity(detailsIntent);
-            }
-        });
-
-        ImageButton sortFilterBtn = findViewById(R.id.sort_filter_button);
-        sortFilterBtn.setOnClickListener((v) -> {
-            Intent sortFilterIntent = new Intent(MainActivity.this, SortFilterActivity.class);
-            if (completeItemList == null) {
-                sortFilterIntent.putExtra("itemListData", itemListData);
-            }
-            else {
-                sortFilterIntent.putExtra("itemListData", completeItemList);
-            }
-            MainActivity.this.startActivity(sortFilterIntent);
-        });
-
-        ImageButton addItemButton = findViewById(R.id.add_item_button);
-        addItemButton.setOnClickListener((v) -> {
-            Intent addIntent = new Intent(MainActivity.this, EditActivity.class);
-            // intent launched without an InventoryItem
-            addIntent.putExtra("user", currentUser);
-            startActivity(addIntent);
-        });
-
-        ImageButton deleteItemButton = findViewById(R.id.delete_item_button);
-        deleteItemButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (selectedItems.size() > 0) {
-                    deleteDialog();
-                }
-            }
-        });
-        
-        profileBtn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // todo: this logs out the current user, for testing only, will remove this later
-                sp.edit().putBoolean("logged",false).apply();
-                // check if user is logged in
-                if (!sp.getBoolean("logged",false)) {
-                    startLoginActivity();
-                }
-                else {
-                    // start ProfileActivity
-                }
-            }
-        });
-
-        itemList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
-                InventoryItem item = itemListData.get(position);
-                if (item.isSelected()) {
-                    item.setSelected(false);
-                    selectedItems.remove(item);
-                } else {
-                    item.setSelected(true);
-                    selectedItems.add(item);
-                }
-                itemListAdapter.notifyDataSetChanged();
-                return true;
-            }
-        });
+    public void onGetItemListData(InventoryItem item) {
+        itemListData.add(item);
     }
 
-    /**
-     * Need to asynchronously call an update routine when items are added to the list, else
-     * value will be calculated before items
-     */
-    public void onItemListUpdate() {
-        this.calcValue();
-    }
-    private void startLoginActivity() {
-        Intent loginIntent = new Intent(this, LoginActivity.class);
-        startActivity(loginIntent);
-        finish();
-    }
 }
             

@@ -23,6 +23,6 @@ public class User implements Serializable {
                 return username;
         }
         public String getPassword() { return password; }
-        public ArrayList<String> getItemsRefs() { return ownedItems; }
+        public ArrayList<String> getOwnedItems() { return ownedItems; }
 
 }

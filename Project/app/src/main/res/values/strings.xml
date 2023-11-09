@@ -9,6 +9,7 @@
     <string name="sort_filter_title_text">SORT AND FILTER</string>
     <string name="signup_title_text">SIGN UP</string>
     <string name="login_title_text">LOG IN</string>
+    <string name="profile_title_text">USER PROFILE</string>
 
     <string name="estimated_value_text">Total Estimated Value</string>
 
@@ -67,5 +68,6 @@
     <string name="delete_dialog">DELETE ITEMS</string>
     <string name="delete_dialog_button">DELETE</string>
     <string name="cancel_dialog_button">CANCEL</string>
+    <string name="profile_picture">Profile Picture</string>
 
 </resources>

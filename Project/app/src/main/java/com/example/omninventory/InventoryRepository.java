@@ -222,21 +222,6 @@ public class InventoryRepository {
         // remove item from user's ownedItems in users collection
         currentUserRef.update("ownedItems", FieldValue.arrayRemove(itemId));
         // remove from inventoryItems collection
-        usersRef.document(itemId)
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error deleting document", e);
-                    }
-                });
-
         inventoryItemsRef.document(itemId)
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -256,8 +241,9 @@ public class InventoryRepository {
 
     public void addUser(User user) {
         HashMap<String, Object> data = new HashMap<>();
+        data.put("name", user.getName());
         data.put("password", user.getPassword());
-        data.put("ownedItems", user.getItemsRefs());
+        data.put("ownedItems", user.getOwnedItems());
         usersRef.document(user.getUsername())
                 .set(data)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -269,27 +255,26 @@ public class InventoryRepository {
 
     };
 
-    public void getUserInventory(String username) {
-        usersRef.document(username).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot doc = task.getResult();
-                    if (doc.exists()) {
-                        Log.d(TAG, "DocumentSnapshot data: " + doc.getData());
-                        List<String> ownedItems = (List<String>) doc.get("ownedItems");
-                        ArrayList<InventoryItem> inventory = new ArrayList<InventoryItem>();
-                        // todo: get an array list of inventory items
-//                        for (String itemRef : ownedItems) {
-//
-//                        }
+    public void getItemListData(ArrayList<String> ownedItems, GetItemListDataHandler handler) {
+        for (String itemID : ownedItems) {
+            Log.d("getItemListData", "in");
+            DocumentReference itemRef = inventoryItemsRef.document(itemID);
+            itemRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot doc = task.getResult();
+                        if (doc.exists()) {
+                            Log.d("InventoryRepository", "(getItemListData) found item with document id=" + itemID);
+                            handler.onGetItemListData(convertDocumentToInventoryItem(doc)); // call handler function
+                        } else {
+                            Log.d("InventoryRepository", "(getItemListData) couldn't find document id=" + itemID);
+                        }
                     } else {
-                        Log.d(TAG, "Can't find user with username: " + username);
+                        Log.d("InventoryRepository", "(getItemListData) failed with ", task.getException());
                     }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
                 }
-            }
-        });
+            });
+        }
     }
 }
