@@ -9,6 +9,7 @@
     <string name="sort_filter_title_text">SORT AND FILTER</string>
     <string name="signup_title_text">SIGN UP</string>
     <string name="login_title_text">LOG IN</string>
+    <string name="manage_tags_title_text">MANAGE TAGS</string>
 
     <string name="estimated_value_text">Total Estimated Value</string>
 
@@ -21,6 +22,8 @@
     <string name="back_button_label">Back Button</string>
     <string name="edit_button_label">Edit Button</string>
     <string name="save_button_label">Save Button</string>
+    <string name="delete_tag_button_label">Delete Tag Button</string>
+    <string name="add_tag_button_label">Add Tag Button</string>
 
     <!-- Text in DetailsActivity and EditActivity -->
     <string name="item_name_head">Item Name</string>

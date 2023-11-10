@@ -13,28 +13,22 @@
         android:theme="@style/Theme.Omninventory"
         tools:targetApi="31">
         <activity
+            android:name=".ManageTagsActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".DetailsActivity">
-        </activity>
-        <activity
-            android:name=".EditActivity">
-        </activity>
-        <activity
-            android:name=".SortFilterActivity">
-        </activity>
-        <activity
-            android:name=".SignupActivity">
-        </activity>        
-        <activity
-            android:name=".LoginActivity">
-        </activity>
+        <activity android:name=".DetailsActivity"></activity>
+        <activity android:name=".EditActivity"></activity>
+        <activity android:name=".SortFilterActivity"></activity>
+        <activity android:name=".SignupActivity"></activity>
+        <activity android:name=".LoginActivity"></activity>
     </application>
 
 </manifest>

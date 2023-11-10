@@ -27,7 +27,9 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Encapsulate behaviours related to Firestore, going from Firestore document to InventoryItem and
@@ -37,6 +39,7 @@ public class InventoryRepository {
     private FirebaseFirestore db;
     private CollectionReference usersRef;
     private CollectionReference inventoryItemsRef;
+    private CollectionReference tagsRef;
 
     /**
      * Basic constructor that sets up connection to Firestore and references.
@@ -45,6 +48,7 @@ public class InventoryRepository {
         db = FirebaseFirestore.getInstance();
         usersRef = db.collection("users");
         inventoryItemsRef = db.collection("inventoryItems");
+        tagsRef = db.collection("tags");
     }
 
     /**
@@ -265,6 +269,53 @@ public class InventoryRepository {
                 });
     };
 
+    public void addTag(Tag tag) {
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("items", tag.getItemsRefs());
+        tagsRef
+                .document(tag.getName())
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("Firestore", "DocumentSnapshot successfully written!");
+                    }
+                });
+    }
+
+    public Tag convertDocumentToTag(DocumentSnapshot doc) {
+        Log.d("TagRepository", "convert called with document" + doc.getId());
+        Tag tag = new Tag(doc.getId());
+        List<DocumentReference> items = (List<DocumentReference>) doc.get("items");
+        ListIterator<DocumentReference> itemIterator = items.listIterator();
+        while (itemIterator.hasNext()) {
+            tag.addItem(itemIterator.next().toString());
+        }
+
+        return tag;
+    }
+
+    public ListenerRegistration setupTagList(TagAdapter adapter) {
+        // set up listener
+        ListenerRegistration registration = tagsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.d("TagRepository", error.toString());
+                    return;
+                }
+                if (snapshot != null) {
+                    adapter.clear(); // clear existing list data
+                    for (QueryDocumentSnapshot doc : snapshot) {
+                        // get each item returned by query and add to adapter
+                        Tag tag = convertDocumentToTag(doc);
+                        adapter.add(tag);
+                    }
+                }
+            }
+        });
+        return registration;
+    }
     public void addUser(User user) {
         HashMap<String, Object> data = new HashMap<>();
         data.put("password", user.getPassword());

@@ -136,6 +136,8 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         // TODO: this is testing code, replace when merged with Rose's code
         currentUser = new User("erika", "erikausername", "password", new ArrayList<String>());
 
+        selectedItems = new ArrayList<>();
+
         // === set up database
         repo = new InventoryRepository();
 
@@ -281,6 +283,19 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
                 }
                 else {
                     // start ProfileActivity
+                }
+            }
+        });
+
+        ImageButton tagButton = findViewById(R.id.tag_button);
+        tagButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (selectedItems.size() > 0) {
+                    // go to apply tags screen
+                } else {
+                    Intent manageTagsIntent = new Intent(MainActivity.this, ManageTagsActivity.class);
+                    startActivity(manageTagsIntent);
                 }
             }
         });
