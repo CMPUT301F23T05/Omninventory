@@ -249,7 +249,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
                     applyTagsIntent.putExtra("selectedItems", selectedItems);
 
                     // run in "apply" mode to apply changes upon activity exit
-                    applyTagsIntent.putExtra("action", "apply");
+                    applyTagsIntent.putExtra("apply", true);
                     startActivity(applyTagsIntent);
                 } else {
                     // if nothing selected, go to ManageTagsActivity
