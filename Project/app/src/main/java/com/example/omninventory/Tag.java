@@ -2,15 +2,21 @@ package com.example.omninventory;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.ListIterator;
 
+/**
+ * Stores tag name and list of items tagged with that tag
+ */
 public class Tag implements Serializable {
     private String name;
-    private ArrayList<String> items;
+    private ArrayList<String> itemIds;
 
+    /**
+     * Basic constructor to initialize a new tag that's not applied to anything yet.
+     * @param name
+     */
     public Tag(String name) {
         this.name = name;
-        this.items = new ArrayList<>();
+        this.itemIds = new ArrayList<>();
     }
 
     public String getName() {
@@ -21,16 +27,16 @@ public class Tag implements Serializable {
         this.name = name;
     }
 
-    public ArrayList<String> getItemsRefs() {
-        return items;
+    public ArrayList<String> getItemIds() {
+        return itemIds;
     }
 
     public int getItemCount() {
-        return items.size();
+        return itemIds.size();
     }
 
-    public void addItem(String item) {
-        items.add(item);
+    public void addItem(String itemId) {
+        itemIds.add(itemId);
     }
 
 

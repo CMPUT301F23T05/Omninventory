@@ -1,5 +1,7 @@
 package com.example.omninventory;
 
+import com.google.firebase.firestore.DocumentReference;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,7 +21,7 @@ public class InventoryItem implements Serializable {
     private String serialNo;
     private ItemValue value;
     private ItemDate date;
-    private ArrayList<Object> tags; // placeholder
+    private ArrayList<String> tags;
     private ArrayList<Object> images; // placeholder
 
     private boolean isSelected;
@@ -37,7 +39,8 @@ public class InventoryItem implements Serializable {
         this.serialNo = "";
         this.value = new ItemValue(0);
         this.date = new ItemDate(new Date());
-        // TODO: tags & images
+        this.tags = new ArrayList<>();
+        // TODO: images
 
         this.isSelected = false;
     }
@@ -58,7 +61,8 @@ public class InventoryItem implements Serializable {
         this.serialNo = "123";
         this.value = new ItemValue(0);
         this.date = new ItemDate(new Date());
-        // TODO: tags & images
+        this.tags = new ArrayList<>();
+        // TODO: images
 
         this.isSelected = false;
     }
@@ -76,7 +80,7 @@ public class InventoryItem implements Serializable {
      * @param date
      */
     public InventoryItem(String firebaseId, String name, String description, String comment,
-                         String make, String model, String serialNo, ItemValue value, ItemDate date) {
+                         String make, String model, String serialNo, ItemValue value, ItemDate date, ArrayList<String> tags) {
         // full constructor
         this.firebaseId = firebaseId;
         this.name = name;
@@ -87,8 +91,8 @@ public class InventoryItem implements Serializable {
         this.serialNo = serialNo;
         this.value = value;
         this.date = date;
-        // TODO: tags & images
-
+        this.tags = tags;
+        // TODO: images
         this.isSelected = false;
     }
 
@@ -107,6 +111,7 @@ public class InventoryItem implements Serializable {
         itemData.put("serialno", this.getSerialNo());
         itemData.put("value", this.getValue().toPrimitiveLong()); // convert ItemValue to long
         itemData.put("date", this.getDate().toDate()); // convert ItemDate to Date
+        itemData.put("tags", this.getTags());
         // TODO: tags and images
         return itemData;
     }
@@ -181,8 +186,21 @@ public class InventoryItem implements Serializable {
         this.date = date;
     }
 
+    public void addTag(String tagName) { tags.add(tagName); }
+    public void setTags(ArrayList<String> tags) { this.tags = tags; }
+
+    public ArrayList<String> getTags() { return tags; }
+
+    /**
+     * A method to generate a space-separated list of #-preceded tags as a single string for display
+     * @return A String in the form "#[tag_1_name] #[tag_2_name] etc
+     */
     public String getTagsString() {
-        return "#placeholder #tags";
+        String tagString = "";
+        for (int i = 0; i < tags.size(); i++) {
+            tagString = String.join(" ", tagString, String.format("#%s", tags.get(i)));
+        }
+        return tagString;
     }
 
     public boolean isSelected() {

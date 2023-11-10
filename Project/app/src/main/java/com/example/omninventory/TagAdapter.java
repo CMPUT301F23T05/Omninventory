@@ -1,12 +1,15 @@
 package com.example.omninventory;
 
 import android.content.Context;
+import android.content.res.Resources;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -29,16 +32,20 @@ public class TagAdapter extends ArrayAdapter<Tag>  {
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        // === setup view
         View view = convertView;
         if (view == null) {
             view = LayoutInflater.from(context).inflate(R.layout.tag_list_content, parent, false);
         }
 
+        // === find views
         TextView tagNameText = view.findViewById(R.id.tag_name_text);
         TextView tagDetailText = view.findViewById(R.id.tag_detail_text);
 
+        // === UI setup
         Tag tag = tagListData.get(position);
 
+        // set fields
         tagNameText.setText(tag.getName());
         tagDetailText.setText(String.format("Currently applied to %d items", tag.getItemCount()));
 

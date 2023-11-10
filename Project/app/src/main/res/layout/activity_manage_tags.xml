@@ -39,7 +39,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <include layout="@layout/taskbar_holder" />
-    <!--        add view_item_taskbar.xml layout to this in code -->
+    <!--        add apply_tags_taskbar.xml layout to this in code -->
 
 
 </LinearLayout>

@@ -10,6 +10,7 @@
     <string name="signup_title_text">SIGN UP</string>
     <string name="login_title_text">LOG IN</string>
     <string name="manage_tags_title_text">MANAGE TAGS</string>
+    <string name="apply_tags_title_text">APPLY TAGS</string>
 
     <string name="estimated_value_text">Total Estimated Value</string>
 
@@ -65,6 +66,10 @@
         <item>Make</item>
         <item>Estimated Value</item>
     </string-array>
+
+    <!-- Text in apply tags activity -->
+    <string name="applied_tags_header">APPLIED TAGS</string>
+    <string name="unapplied_tags_header">TAG LIST</string>
 
     <!-- Text in delete item dialog -->
     <string name="delete_dialog">DELETE ITEMS</string>

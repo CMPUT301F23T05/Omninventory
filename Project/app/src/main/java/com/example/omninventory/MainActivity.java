@@ -220,8 +220,15 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
             @Override
             public void onClick(View v) {
                 if (selectedItems.size() > 0) {
-                    // go to apply tags screen
+                    // if items are selected, go to ApplyTagsActivity
+                    Intent applyTagsIntent = new Intent(MainActivity.this, ApplyTagsActivity.class);
+                    applyTagsIntent.putExtra("selectedItems", selectedItems);
+
+                    // run in "apply" mode to apply changes upon activity exit
+                    applyTagsIntent.putExtra("action", "apply");
+                    startActivity(applyTagsIntent);
                 } else {
+                    // if nothing selected, go to ManageTagsActivity
                     Intent manageTagsIntent = new Intent(MainActivity.this, ManageTagsActivity.class);
                     startActivity(manageTagsIntent);
                 }
