@@ -27,6 +27,10 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
 
+/**
+ * Signup screen of the app. Allows a user to sign up with a new account.
+ * @author Rose
+ */
 public class SignupActivity extends AppCompatActivity {
     private EditText nameEditText;
     private EditText usernameEditText;
@@ -34,6 +38,12 @@ public class SignupActivity extends AppCompatActivity {
     private EditText confirmPasswordEditText;
     private FirebaseFirestore db;
 
+    /**
+     * Method called on Activity creation. Contains most of the logic of this Activity; programmatically
+     * modifying UI elements, creating Intents to move to other Activites, and setting up connection
+     * to the database.
+     * @param savedInstanceState Information about this Activity's saved state.
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
@@ -100,13 +110,16 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
-    // switch to login
-    public void onClickLogInLink(View v) {
-        Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
+    /**
+     * Validates the data in input fields on the signup screen. Requires ensuring all fields have
+     * contents, and checking that a User with the same username does not already exist in the
+     * database.
+     * @param name              Contents of 'Name' field.
+     * @param username          Contents of 'Username' field.
+     * @param password          Contents of 'Password' field.
+     * @param confirmPassword   Contents of 'confirm password' field.
+     * @param callback          A callback handler to run when validation is complete.
+     */
     private void validateUserInput(String name, String username, String password, String confirmPassword, ValidationResultCallback callback) {
         // check for empty input
         if (name.isEmpty()) {

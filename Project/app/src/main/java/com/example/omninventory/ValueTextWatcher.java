@@ -8,34 +8,53 @@ import android.widget.EditText;
 import java.lang.ref.WeakReference;
 
 /**
- * With help from:
- * https://stackoverflow.com/questions/5107901/better-way-to-format-currency-input-edittext
+ * Custom TextWatcher that reformats any input entered into an EditText intended to hold currency
+ * values, resulting in text that is a valid string representation of an ItemValue (see ItemValue
+ * class).
+ * @author Castor
  */
 public class ValueTextWatcher implements TextWatcher {
+    // with help/inspiration from: https://stackoverflow.com/questions/5107901/better-way-to-format-currency-input-edittext
     private final WeakReference<EditText> editTextWeakReference;
 
+    /**
+     * Constructor that sets up a reference to the EditText being watched.
+     * @param editText The EditText being watched.
+     */
     public ValueTextWatcher(EditText editText) {
         // initialize with reference to EditText to watch
         editTextWeakReference = new WeakReference<EditText>(editText);
-
-        // unnecessary
-        // this.afterTextChanged(Editable.Factory.getInstance().newEditable(editText.getText()));
     }
 
+    /**
+     * Unused method, necessary to implement TextWatcher.
+     * @param s     Unused.
+     * @param start Unused.
+     * @param count Unused.
+     * @param after Unused.
+     */
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
     }
 
+    /**
+     * Unused method, necessary to implement TextWatcher.
+     * @param s      Unused.
+     * @param start  Unused.
+     * @param before Unused.
+     * @param count  Unused.
+     */
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
     }
 
     /**
-     * Replace any text entered with a formatted currency value.
+     * Replace any text entered with a valid currency value.
      * @param editable
      */
     @Override
     public void afterTextChanged(Editable editable) {
+        // get text from watched EditText
         EditText editText = editTextWeakReference.get();
         if (editText == null) return;
 

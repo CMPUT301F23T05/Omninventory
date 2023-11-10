@@ -22,6 +22,10 @@ import org.junit.runner.RunWith;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 
+/**
+ * Tests for deleting an item.
+ * @author Kevin
+ */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class TestDeleteItemActivity {
@@ -64,7 +68,6 @@ public class TestDeleteItemActivity {
 
     /**
      * Test cases for deleting multiple items at once
-     * @author Kevin
      */
     @Test
     public void testDeleteMultipleItem(){
