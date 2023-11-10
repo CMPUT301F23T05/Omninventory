@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/taskbar_band"
+        android:layout_width="fill_parent"
+        android:layout_height="10dp"
+        android:background="@drawable/color_primary_draw" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:background="@drawable/color_secondary_draw"
+        android:orientation="horizontal">
+
+        <ImageButton style="@style/taskbar_button"
+            android:id="@+id/back_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:contentDescription="@string/back_button_label"
+            android:src="@drawable/taskbar_back" />
+
+        <!-- to keep spacing consistent with layout_weight -->
+        <LinearLayout
+            android:id="@+id/spacer"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="4"
+            android:orientation="horizontal"/>
+
+    </LinearLayout>
+
+</LinearLayout>

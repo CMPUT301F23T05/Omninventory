@@ -14,6 +14,7 @@ public class Utils {
      * Hash password using sha-256 algorithm
      */
     public static String sha256(String base) {
+        // sha256 algorithm implementation was based on: https://www.baeldung.com/sha-256-hashing-java
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             StringBuffer hexString = new StringBuffer();
@@ -33,7 +34,10 @@ public class Utils {
     }
 
     /**
-     * Check if password meets the requirements
+     * Performs validation to determine whether a password is acceptable, with constraints
+     * such as 'must contain a number' and 'must contain an uppercase letter'.
+     * @param password The String password to validate.
+     * @return         A boolean 'true' if validation succeeded, and 'false' if not.
      */
     public static boolean validatePassword(String password) {
         final String HAS_NUMBER = ".*[0-9].*";

@@ -37,6 +37,12 @@ public class LoginActivity extends AppCompatActivity {
     private EditText passwordEditText;
     private FirebaseFirestore db;
 
+    /**
+     * Method called on Activity creation. Contains most of the logic of this Activity; programmatically
+     * modifying UI elements, creating Intents to move to other Activites, and setting up connection
+     * to the database.
+     * @param savedInstanceState Information about this Activity's saved state.
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -53,7 +59,6 @@ public class LoginActivity extends AppCompatActivity {
         // === UI setup
         // set title text
         titleText.setText(getString(R.string.login_title_text));
-        
         loginButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String username = usernameEditText.getText().toString();
@@ -109,7 +114,12 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     /**
-     * Validate and authenticate user's login credentials
+     * Validates the data in input fields on the login screen. Requires querying the database and
+     * returning validation result asynchronously through a callback, using the
+     * ValidationResultCallback interface.
+     * @param username The contents of the Username field.
+     * @param password The contents of the Password field.
+     * @param callback A callback handler to run when validation is complete.
      */
     private void validateUserInput(String username, String password, ValidationResultCallback callback) {
         // checks for empty fields

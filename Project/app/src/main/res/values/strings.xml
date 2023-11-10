@@ -16,12 +16,14 @@
     <!-- Labels for buttons -->
     <string name="sort_button_label">Sort Button</string>
     <string name="tag_button_label">Tag Button</string>
-    <string name="add_button_label">Add Item Button</string>
+    <string name="add_button_label">Add Item Button123</string>
     <string name="delete_button_label">Delete Item Button</string>
     <string name="profile_button_label">Profile Button</string>
     <string name="back_button_label">Back Button</string>
     <string name="edit_button_label">Edit Button</string>
     <string name="save_button_label">Save Button</string>
+    <string name="delete_tag_button_label">Delete Tag Button</string>
+    <string name="add_tag_button_label">Add Tag Button</string>
 
     <!-- Text in DetailsActivity and EditActivity -->
     <string name="item_name_head">Item Name</string>
@@ -64,10 +66,19 @@
         <item>Estimated Value</item>
     </string-array>
 
+    <!-- Text in apply tags activity -->
+    <string name="applied_tags_header">APPLIED TAGS</string>
+    <string name="unapplied_tags_header">TAG LIST</string>
+
     <!-- Text in delete item dialog -->
     <string name="delete_dialog">DELETE ITEMS</string>
     <string name="delete_dialog_button">DELETE</string>
     <string name="cancel_dialog_button">CANCEL</string>
     <string name="profile_picture">Profile Picture</string>
+
+    <!-- Text in add tag dialog -->
+    <string name="add_tag_dialog">NEW TAG</string>
+    <string name="add_tag_dialog_button">ADD</string>
+    <string name="add_tag_dialog_hint">Tag Name</string>
 
 </resources>
