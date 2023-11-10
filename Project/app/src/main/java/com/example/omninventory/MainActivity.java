@@ -219,13 +219,12 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
                 InventoryItem item = itemListData.get(position);
                 if (item.isSelected()) {
                     item.setSelected(false);
-                    view.setBackgroundColor(Color.WHITE);
                     selectedItems.remove(item);
                 } else {
                     item.setSelected(true);
-                    view.setBackgroundColor(Color.LTGRAY);
                     selectedItems.add(item);
                 }
+                // colours are set to reflect selection in InventoryItemAdapter
                 itemListAdapter.notifyDataSetChanged();
                 return true;
             }
