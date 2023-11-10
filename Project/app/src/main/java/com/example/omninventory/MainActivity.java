@@ -150,25 +150,6 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         itemList.setAdapter(itemListAdapter);
         ListenerRegistration registration = repo.setupInventoryItemList(itemListAdapter, this); // set up listener for getting Firestore data
 
-        // ============== APPLY SORT/FILTER ================
-
-        if (sortBy != null && sortOrder != null) {
-            // should always trigger if coming from SortFilterActivity
-            registration.remove();
-            String ascendingText = getString(R.string.ascending);
-            String descendingText = getString(R.string.descending);
-            SortFilterActivity.applySorting(sortBy, sortOrder, itemListAdapter, descendingText);
-        }
-        if (filterMake != null) {
-            SortFilterActivity.applyMakeFilter(filterMake, itemListAdapter);
-        }
-        if (filterStartDate != null && filterEndDate != null) {
-            SortFilterActivity.applyDateFilter(filterStartDate, filterEndDate, itemListAdapter);
-        }
-        if (filterDescription != null) {
-            SortFilterActivity.applyDescriptionFilter(filterDescription, itemListAdapter);
-        }
-
         // ============== SELECT/DELETE SETUP ================
 
         // Setup delete items dialog
