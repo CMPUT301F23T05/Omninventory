@@ -29,7 +29,7 @@ import java.util.ListIterator;
 public class ApplyTagsActivity extends AppCompatActivity  {
     private InventoryRepository repo;
     private ArrayList<InventoryItem> selectedItems;
-    private String action;
+    private Boolean apply;
 
     private ArrayList<Tag> appliedTagsListData;
     private ArrayList<Tag> unappliedTagsListData;
@@ -70,7 +70,7 @@ public class ApplyTagsActivity extends AppCompatActivity  {
 
         // === load info passed in from previous activity
         selectedItems = (ArrayList<InventoryItem>) getIntent().getExtras().get("selectedItems");
-        action = (String) getIntent().getExtras().get("action"); // "return" or "apply", controls what to do on return
+        apply = (Boolean) getIntent().getExtras().get("apply"); // "return" or "apply", controls what to do on return
 
         // === set up the ListViews, Adapters, etc
         appliedTagsListData = new ArrayList<>();
@@ -115,7 +115,7 @@ public class ApplyTagsActivity extends AppCompatActivity  {
                 toast.show();
 
                 // if in "return" mode we return the same item we were passed
-                if (action.equals("return")) {
+                if (!apply) {
                     Intent itemReturn = new Intent();
                     itemReturn.putExtra("taggedItem", selectedItems.get(0));
                     setResult(RESULT_OK, itemReturn);
@@ -134,7 +134,7 @@ public class ApplyTagsActivity extends AppCompatActivity  {
         });
 
         // if in "return" mode, the confirm button should apply the tags to a local InventoryItem and return it
-        if (action.equals("return")) {
+        if (!apply) {
             confirmTagsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
