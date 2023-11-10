@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_activated="true" android:drawable="@color/black" />
+    <item android:state_checked="true" android:drawable="@color/dark_blue_1" />
+    <item android:state_pressed="true" android:drawable="@color/dark_purple_1" />
+    <item android:state_selected="true" android:drawable="@color/material_dynamic_primary30" />
+    <item android:state_checkable="true" android:drawable="@color/design_default_color_error" />
+    <item android:state_active="true" android:drawable="@color/material_dynamic_neutral80" />
+    <item android:state_enabled="true" android:drawable="@color/material_dynamic_primary30" />
+    <item android:drawable="@color/light_pink_1"/>
+</selector>

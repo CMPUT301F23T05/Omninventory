@@ -1,15 +1,19 @@
 package com.example.omninventory;
 
+import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.Context;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +24,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.color.MaterialColors;
 import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.ArrayList;
@@ -144,10 +149,13 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         // Setup delete items dialog
         deleteDialog = new Dialog(this);
 
+        // Setup selected items of inventory
+        selectedItems = new ArrayList<InventoryItem>();
+        resetSelectedItems();
+
         calcValue(); // Get total estimated value
 
         // === Set up onClick actions
-        //itemListData.add(new InventoryItem("Cat"));
 
         itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -156,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
                 Intent detailsIntent = new Intent(MainActivity.this, DetailsActivity.class);
                 detailsIntent.putExtra("item", itemListData.get(position));
                 detailsIntent.putExtra("user", currentUser);
+                resetSelectedItems();
                 startActivity(detailsIntent);
             }
         });
@@ -163,12 +172,12 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         ImageButton sortFilterBtn = findViewById(R.id.sort_filter_button);
         sortFilterBtn.setOnClickListener((v) -> {
             Intent sortFilterIntent = new Intent(MainActivity.this, SortFilterActivity.class);
-            if (completeItemList == null) {
-                sortFilterIntent.putExtra("itemListData", itemListData);
-            }
-            else {
-                sortFilterIntent.putExtra("itemListData", completeItemList);
-            }
+            sortFilterIntent.putExtra("sortBy", sortBy);
+            sortFilterIntent.putExtra("sortOrder", sortOrder);
+            sortFilterIntent.putExtra("filterMake", filterMake);
+            sortFilterIntent.putExtra("filterStartDate", filterStartDate);
+            sortFilterIntent.putExtra("filterEndDate", filterEndDate);
+            sortFilterIntent.putExtra("filterDescription", filterDescription);
             MainActivity.this.startActivity(sortFilterIntent);
         });
 
@@ -184,7 +193,9 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         deleteItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (selectedItems.size() > 0) { deleteDialog();}
+                if (selectedItems.size() > 0) {
+                    deleteDialog();
+                }
             }
         });
         
@@ -248,11 +259,14 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
             @Override
             public void onClick(View view) {
                 for (InventoryItem selectedItem : selectedItems) {
-                    // TODO: this needs to remove the item from the database as well
+                    if (selectedItem != null) {
+                        repo.deleteInventoryItem(currentUser, selectedItem.getFirebaseId());
+                    }
                     itemListData.remove(selectedItem);
                     itemListAdapter.notifyDataSetChanged();
                 }
                 calcValue();
+                resetSelectedItems();
                 deleteDialog.dismiss();
             }
         });
@@ -260,6 +274,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                resetSelectedItems();
                 deleteDialog.dismiss();
             }
         });
@@ -278,13 +293,41 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         totalValueText.setText(formattedValue);
     }
 
+    private void resetSelectedItems() {
+        for (InventoryItem selectedItem: selectedItems) {
+            selectedItem.setSelected(false);
+        }
+        selectedItems.clear();
+        System.out.println("The number of selected items is: " + Integer.toString(selectedItems.size()));
+    }
+
     /**
      * Need to asynchronously call an update routine when items are added to the list, else
      * value will be calculated before items
      */
     public void onItemListUpdate() {
+
         this.calcValue();
+        this.sortAndFilter();
     }
+
+    public void sortAndFilter() {
+        if (sortBy != null && sortOrder != null) {
+            // should always trigger if coming from SortFilterActivity
+            String descendingText = getString(R.string.descending);
+            SortFilterActivity.applySorting(sortBy, sortOrder, itemListAdapter, descendingText);
+        }
+        if (filterMake != null) {
+            SortFilterActivity.applyMakeFilter(filterMake, itemListAdapter);
+        }
+        if (filterStartDate != null && filterEndDate != null) {
+            SortFilterActivity.applyDateFilter(filterStartDate, filterEndDate, itemListAdapter);
+        }
+        if (filterDescription != null) {
+            SortFilterActivity.applyDescriptionFilter(filterDescription, itemListAdapter);
+        }
+    }
+
     private void startLoginActivity() {
         Intent loginIntent = new Intent(this, LoginActivity.class);
         startActivity(loginIntent);

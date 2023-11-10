@@ -14,8 +14,16 @@
         <item name="colorOnTertiary">@color/white</item>
 
         <item name="colorSurface">@color/dark_gray_1</item>
-        <item name="colorOnSurface">@color/white</item>
+        <item name="colorOnSurface">@color/light_gray_1</item>
 
-        <item name="colorOnSurfaceVariant">@color/dark_gray_2</item>
+        <item name="android:colorBackground">@color/dark_gray_1</item>
+        <item name="colorOnBackground">@color/light_gray_1</item>
+
+
+
+        <item name="colorSurfaceVariant">@color/dark_gray_2</item>
+        <item name="colorOnSurfaceVariant">@color/light_gray_1</item>
+
+<!--        <item name="android:activatedBackgroundIndicator">@drawable/list_item_selector</item>-->
     </style>
 </resources>
