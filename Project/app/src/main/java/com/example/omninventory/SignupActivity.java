@@ -26,7 +26,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
-
+/**
+ * Activity for creating a new account
+ *
+ * @author Rose Nguyen
+ */
 public class SignupActivity extends AppCompatActivity {
     private EditText nameEditText;
     private EditText usernameEditText;
@@ -98,12 +102,18 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
-    // switch to login
+    /**
+     * Go to the login screen if user clicks on the login link
+     */
     public void onClickLogInLink(View v) {
         Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
         startActivity(intent);
         finish();
     }
+
+    /**
+     * Convert a document from the "users" collection in the database to a User object
+     */
     public User convertDocumentToUser(DocumentSnapshot doc) {
         Log.d("Signup", "(convertDocumentToUser) converting to User");
         User user = new User(
@@ -116,6 +126,9 @@ public class SignupActivity extends AppCompatActivity {
         return user;
     }
 
+    /**
+     * Validate and authenticate user's signup credentials
+     */
     private void validateUserInput(String name, String username, String password, String confirmPassword, ValidationResultCallback callback) {
         // check for empty input
         if (name.isEmpty()) {
@@ -130,9 +143,9 @@ public class SignupActivity extends AppCompatActivity {
         else if (confirmPassword.isEmpty()) {
             callback.onValidationResult(false, "emptyConfirmPassword", null);
         }
-//        else if (!Utils.validatePassword(password)) {
-//            callback.onValidationResult(false, "weakPassword");
-//        }
+        else if (!Utils.validatePassword(password)) {
+            callback.onValidationResult(false, "weakPassword", null);
+        }
         else if (!password.equals(confirmPassword)) {
             callback.onValidationResult(false, "unmatchedPasswords", null);
         }

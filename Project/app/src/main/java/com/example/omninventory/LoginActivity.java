@@ -27,7 +27,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
-
+/**
+ * Activity for logging into the app
+ *
+ * @author Rose Nguyen
+ */
 public class LoginActivity extends AppCompatActivity {
     private EditText usernameEditText;
     private EditText passwordEditText;
@@ -80,12 +84,18 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+    /**
+     * Go to the signup screen if user clicks on the signup link
+     */
     public void onClickSignUpLink(View v) {
         Intent intent = new Intent(this, SignupActivity.class);
         startActivity(intent);
         finish();
     }
 
+    /**
+     * Convert a document from the "users" collection in the database to a User object
+     */
     public User convertDocumentToUser(DocumentSnapshot doc) {
         Log.d("Login", "(convertDocumentToUser) converting to User");
         User user = new User(
@@ -98,6 +108,9 @@ public class LoginActivity extends AppCompatActivity {
         return user;
     }
 
+    /**
+     * Validate and authenticate user's login credentials
+     */
     private void validateUserInput(String username, String password, ValidationResultCallback callback) {
         // checks for empty fields
         if (username.isEmpty()) {

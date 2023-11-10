@@ -48,7 +48,7 @@ import java.util.ArrayList;
  * Main screen of the app. Holds list of inventory items and buttons
  * that take user to other screens.
  */
-public class MainActivity extends AppCompatActivity implements ItemListUpdateHandler, GetItemListDataHandler {
+public class MainActivity extends AppCompatActivity implements ItemListUpdateHandler {
 
     private InventoryRepository repo;
     private ArrayList<InventoryItem> itemListData;
@@ -90,15 +90,14 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
 
         // make sure user is logged in before giving them access to the rest of the app
         if (currentUser == null) {
-            Log.d("main", "need to login");
             Intent loginIntent = new Intent(this, LoginActivity.class);
             startActivity(loginIntent);
             finish();
         }
         else {
-            Log.d("main", "setting database");
+            // === set up database
             repo = new InventoryRepository(currentUser.getUsername());
-        // === set up database
+
 
         // Get references to views
         itemList = findViewById(R.id.item_list);
@@ -244,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
                 itemListAdapter.notifyDataSetChanged();
                 return true;
             }
-        }); }
+        });}
     }
 
     /**
@@ -323,6 +322,9 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         selectedItems.clear();
         System.out.println("The number of selected items is: " + Integer.toString(selectedItems.size()));
     }
+    /**
+     * Add an inventory item retrieved from the database to the data list
+     */
     public void onGetItemListData(InventoryItem item) {
         itemListData.add(item);
     }

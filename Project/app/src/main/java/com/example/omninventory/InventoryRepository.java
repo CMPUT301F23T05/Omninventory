@@ -266,27 +266,4 @@ public class InventoryRepository {
                 });
 
     };
-
-    public void getItemListData(ArrayList<String> ownedItems, GetItemListDataHandler handler) {
-        for (String itemID : ownedItems) {
-            Log.d("getItemListData", itemID);
-            DocumentReference itemRef = inventoryItemsRef.document(itemID);
-            itemRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if (task.isSuccessful()) {
-                        DocumentSnapshot doc = task.getResult();
-                        if (doc.exists()) {
-                            Log.d("InventoryRepository", "(getItemListData) found item with document id=" + itemID);
-                            handler.onGetItemListData(convertDocumentToInventoryItem(doc)); // call handler function
-                        } else {
-                            Log.d("InventoryRepository", "(getItemListData) couldn't find document id=" + itemID);
-                        }
-                    } else {
-                        Log.d("InventoryRepository", "(getItemListData) failed with ", task.getException());
-                    }
-                }
-            });
-        }
-    }
 }

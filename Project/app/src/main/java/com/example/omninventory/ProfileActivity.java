@@ -15,7 +15,11 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-
+/**
+ * Activity for displaying user's profile
+ *
+ * @author Rose Nguyen
+ */
 public class ProfileActivity extends AppCompatActivity {
     private TextView titleText;
     private TextView profileName;
@@ -37,12 +41,6 @@ public class ProfileActivity extends AppCompatActivity {
         profileName.setText(currentUser.getName());
         profileUsername.setText("@" + currentUser.getUsername());
 
-        // add taskbar
-//        LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        View taskbarLayout = taskbarInflater.inflate(R.layout.taskbar_profile, null);
-//        ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.taskbar_holder);
-//        taskbarHolder.addView(taskbarLayout);
-
         // back button
         ImageButton backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -53,6 +51,9 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Logs user out when they click the logout button
+     */
      public void onClickLogOutButton(View v) {
          Log.d("logout", "logging out");
          Intent intent = new Intent(ProfileActivity.this, MainActivity.class);

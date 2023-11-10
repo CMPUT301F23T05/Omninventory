@@ -3,8 +3,16 @@ package com.example.omninventory;
 import java.security.MessageDigest;
 import java.util.regex.Pattern;
 
-// sha256 algorithm implementation was based on: https://www.baeldung.com/sha-256-hashing-java
+/**
+ * A class containing utilities methods including hashing passwords and validating password
+ *
+ * @author Nhung Nguyen
+ */
+
 public class Utils {
+    /**
+     * Hash password using sha-256 algorithm
+     */
     public static String sha256(String base) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -23,6 +31,10 @@ public class Utils {
             throw new RuntimeException(ex);
         }
     }
+
+    /**
+     * Check if password meets the requirements
+     */
     public static boolean validatePassword(String password) {
         final String HAS_NUMBER = ".*[0-9].*";
         final String HAS_UPPERCASE = ".*[A-Z].*";
