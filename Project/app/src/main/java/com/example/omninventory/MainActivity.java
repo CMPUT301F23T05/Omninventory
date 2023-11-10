@@ -133,7 +133,6 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         // === apply sort and filter
         if (sortBy != null && sortOrder != null) {
             // should always trigger if coming from SortFilterActivity
-            registration.remove();
             String ascendingText = getString(R.string.ascending);
             String descendingText = getString(R.string.descending);
             SortFilterActivity.applySorting(sortBy, sortOrder, itemListAdapter, descendingText);
