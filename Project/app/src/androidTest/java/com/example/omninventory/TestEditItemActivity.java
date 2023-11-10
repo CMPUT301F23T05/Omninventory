@@ -54,11 +54,11 @@ public class TestEditItemActivity {
         onView(withId(R.id.save_button)).perform(click());
 
         //validate in the inventory screen that the item was edited
-        onView(withText("Hello world")).check(matches(isDisplayed()));
+        onView(withText("Hello World")).check(matches(isDisplayed()));
 
         //click the back button and check the list view
         onView(withId(R.id.back_button)).perform(click());
-        onView(withText("Hello world")).check(matches(isDisplayed()));
+        onView(withText("Hello World")).check(matches(isDisplayed()));
 
         testItems.wipeTestItems();
     }
