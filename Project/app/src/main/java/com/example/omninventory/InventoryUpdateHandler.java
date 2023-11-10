@@ -1,5 +1,5 @@
 package com.example.omninventory;
 
-public interface ItemListUpdateHandler {
+public interface InventoryUpdateHandler {
     void onItemListUpdate();
 }

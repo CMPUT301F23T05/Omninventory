@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".DetailsActivity"
-    android:background="@color/gray_background">
+    android:background="?attr/colorSurface">
 
     <include layout="@layout/title_bar"/>
 
@@ -204,7 +204,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-    <include layout="@layout/taskbar_holder"/>
+    <include layout="@layout/taskbar_details"/>
     <!--        add view_item_taskbar.xml layout to this in code -->
 
 </LinearLayout>

@@ -7,7 +7,7 @@
         <item name="android:layout_height">wrap_content</item>
     </style>
     <style name="item_details_text" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="android:textSize">20sp</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
@@ -16,26 +16,47 @@
     <style name="item_edit_textinputlayout" parent="Widget.Design.TextInputLayout">
         <item name="errorTextAppearance">@style/error_text_appearance</item>
         <item name="hintTextAppearance">@style/hint_text_appearance</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
     </style>
 
-    <style name="item_edit_edittext" parent="Theme.AppCompat.Light">
+    <style name="item_edit_edittext">
+        <item name="android:textColor">?attr/colorOnSurface</item>
         <!-- Inactive underline color-->
-        <item name="colorControlNormal">@color/gray_banner</item>
-
+        <item name="colorControlNormal">?attr/colorOnSurfaceVariant</item>
         <!-- Cursor and Active underline color, uses colorAccent by default if not defined-->
-        <item name="colorControlActivated">@color/blue_banner</item>
+        <item name="colorControlActivated">?attr/colorSecondary</item>
     </style>
 
     <style name="hint_text_appearance" parent="TextAppearance.Design.Hint">
         <!-- Inactive and Active label color, pointing to a selector-->
-        <item name="android:textColor">@color/blue_banner</item>
+        <item name="android:textColor">?attr/colorSecondary</item>
     </style>
 
     <style name="error_text_appearance" parent="TextAppearance.Design.Error">
         <!-- Error text color-->
-        <item name="android:textColor">@color/salmon_banner</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 
 <!--    https://www.ekchang.com/tutorial/2018/03/25/styling_textinputlayout.html -->
+
+<!--    taskbar buttons -->
+    <style name="taskbar_button" parent="Widget.AppCompat.ImageButton">
+        <item name="android:tint">?attr/colorOnSecondary</item>
+        <item name="android:cropToPadding">false</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:background">@drawable/taskbar_button_selector</item>
+    </style>
+
+    <style name="pink_bar" parent="Widget.AppCompat.TextView">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">10dp</item>
+        <item name="android:background">@drawable/color_primary_draw</item>
+    </style>
+    <style name="blue_bar" parent="Widget.AppCompat.TextView">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">10dp</item>
+        <item name="android:background">@drawable/color_secondary_draw</item>
+    </style>
 
 </resources>
