@@ -42,7 +42,7 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
         // === get references to Views
         final TextView titleText = findViewById(R.id.title_text);
         itemNameText = findViewById(R.id.item_name_text);
-        itemDescriptionText = findViewById(R.id.item_description_text);
+        itemDescriptionText = findViewById  (R.id.item_description_text);
         itemCommentText = findViewById(R.id.item_comment_text);
         itemMakeText = findViewById(R.id.item_make_text);
         itemModelText = findViewById(R.id.item_model_text);

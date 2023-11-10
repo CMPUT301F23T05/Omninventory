@@ -65,6 +65,8 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         // TODO: this is testing code, replace when merged with Rose's code
         currentUser = new User("erika", "erikausername", "password", new ArrayList<String>());
 
+        selectedItems = new ArrayList<>();
+
         // === set up database
         repo = new InventoryRepository();
 
@@ -209,6 +211,26 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
                 }
                 else {
                     // start ProfileActivity
+                }
+            }
+        });
+
+        ImageButton tagButton = findViewById(R.id.tag_button);
+        tagButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (selectedItems.size() > 0) {
+                    // if items are selected, go to ApplyTagsActivity
+                    Intent applyTagsIntent = new Intent(MainActivity.this, ApplyTagsActivity.class);
+                    applyTagsIntent.putExtra("selectedItems", selectedItems);
+
+                    // run in "apply" mode to apply changes upon activity exit
+                    applyTagsIntent.putExtra("action", "apply");
+                    startActivity(applyTagsIntent);
+                } else {
+                    // if nothing selected, go to ManageTagsActivity
+                    Intent manageTagsIntent = new Intent(MainActivity.this, ManageTagsActivity.class);
+                    startActivity(manageTagsIntent);
                 }
             }
         });

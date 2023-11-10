@@ -2,6 +2,7 @@ package com.example.omninventory;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,10 +14,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.firestore.DocumentReference;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -38,10 +46,22 @@ public class EditActivity extends AppCompatActivity  {
     private TextInputEditText itemSerialEditText;
     private TextInputEditText itemValueEditText;
     private TextView itemDateText;
-    // TODO: tags, images
+
+    private TextView itemTagsText;
+    // TODO: images
 
     private ValueTextWatcher itemValueTextWatcher;
 
+    // ActivityResultLauncher to launch the ApplyTagsActivity for result, to define tags for the edited item
+    ActivityResultLauncher<Intent> mDefineTags = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    // Get the tagged item back from ApplyTagsActivity and repopulate fields
+                    currentItem = (InventoryItem) result.getData().getExtras().get("taggedItem");
+                    setFields(currentItem);
+                }
+            });
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +73,7 @@ public class EditActivity extends AppCompatActivity  {
         // === get references to Views
         final TextView titleText = findViewById(R.id.title_text);
         itemDateText = findViewById(R.id.item_date_text);
+        itemTagsText = findViewById(R.id.item_tags_text);
 
         itemNameEditText = findViewById(R.id.item_name_edittext);
         itemDescriptionEditText = findViewById(R.id.item_description_edittext);
@@ -128,6 +149,25 @@ public class EditActivity extends AppCompatActivity  {
 
                 // return without changing any item fields
                 finish();
+            }
+        });
+
+        // tagButton should launch the ApplyTagsActivity for result
+        final ImageButton tagButton = findViewById(R.id.item_tags_button);
+        tagButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // create an item from the current fields without data validation (just to repopulate them after)
+                currentItem = makeInventoryItem();
+                Intent applyTagsIntent = new Intent(EditActivity.this, ApplyTagsActivity.class);
+                ArrayList<InventoryItem> itemList = new ArrayList<>();
+                itemList.add(currentItem);
+
+                // pass the current item to ApplyTagsActivity in "return" mode
+                // this makes sure we get it back instead of writing it to the db
+                applyTagsIntent.putExtra("selectedItems", itemList);
+                applyTagsIntent.putExtra("action", "return");
+                mDefineTags.launch(applyTagsIntent);
             }
         });
 
@@ -211,7 +251,7 @@ public class EditActivity extends AppCompatActivity  {
         itemSerialEditText.setText(item.getSerialNo());
         itemValueEditText.setText(item.getValue().toString()); // convert ItemValue to String
         itemDateText.setText(item.getDate().toString()); // convert ItemDate to String. note this is a TextView, not EditText
-//        itemTagsEditText.setText(item.getTagsString());
+        itemTagsText.setText(item.getTagsString());
     }
 
     /**
@@ -241,7 +281,7 @@ public class EditActivity extends AppCompatActivity  {
         // assume validateFields has already been run and inputs are OK
 
         // TODO: this is not complete, need Date & others
-        // all fields are new except for firebaseId
+        // all fields are new except for firebaseId & tags (which is set in a separate activity)
         return new InventoryItem(
             currentItem.getFirebaseId(),
             itemNameEditText.getText().toString(),
@@ -251,7 +291,9 @@ public class EditActivity extends AppCompatActivity  {
             itemModelEditText.getText().toString(),
             itemSerialEditText.getText().toString(),
             new ItemValue(itemValueEditText.getText().toString()),
-            new ItemDate(itemDateText.getText().toString())
+            new ItemDate(itemDateText.getText().toString()),
+            currentItem.getTags()
         );
     }
+
 }
