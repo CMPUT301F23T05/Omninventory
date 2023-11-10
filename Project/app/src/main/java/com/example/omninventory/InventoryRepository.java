@@ -257,7 +257,7 @@ public class InventoryRepository {
 
     public void getItemListData(ArrayList<String> ownedItems, GetItemListDataHandler handler) {
         for (String itemID : ownedItems) {
-            Log.d("getItemListData", "in");
+            Log.d("getItemListData", itemID);
             DocumentReference itemRef = inventoryItemsRef.document(itemID);
             itemRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override

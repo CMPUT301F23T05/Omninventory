@@ -57,7 +57,6 @@ public class ProfileActivity extends AppCompatActivity {
          Log.d("logout", "logging out");
          Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
          intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-         Log.d("logout", "logging out2");
          startActivity(intent);
     }
 }

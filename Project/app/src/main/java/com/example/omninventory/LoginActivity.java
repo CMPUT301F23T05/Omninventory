@@ -59,6 +59,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onValidationResult(boolean isValid, String message, User user) {
                         if (isValid) {
                             // User is valid, log in and return to MainActivity
+                            Log.d("login", "logging in");
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             intent.putExtra("action", "log in");
                             intent.putExtra("loggedInUser", user);
@@ -122,6 +123,7 @@ public class LoginActivity extends AppCompatActivity {
                             callback.onValidationResult(false, "invalidInput", null);
                             Log.d(TAG, "invalid password", task.getException());
                         } else {
+                            Log.d("login", "valid user");
                             User user = convertDocumentToUser(document);
                             callback.onValidationResult(true, "valid", user);
                         }

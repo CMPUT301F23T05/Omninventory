@@ -84,12 +84,14 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
             if (getIntent().getExtras().getString("action").equals("log in")) {
                 // user just logged in
                 currentUser = (User) getIntent().getExtras().getSerializable("loggedInUser");
-                Log.d("MainActivity:login", "Logged in as: " + currentUser.getName());
+                Log.d("main", "Logged in as: " + currentUser.getName());
             }
         }
 
         // make sure user is logged in before giving them access to the rest of the app
+//        currentUser = new User("John", "johndoe", "a", new ArrayList<String>());
         if (currentUser == null) {
+            Log.d("main", "need to login");
             startLoginActivity();
         }
         // === set up database
@@ -117,9 +119,8 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
 
         // === set up itemList owned by logged in user
         // TODO: this is a string array for now, fix
-//        currentUser = new User("John", "johndoe", "a6864eb339b0e1f6e00d75293a8840abf069a2c0fe82e6e53af6ac099793c1d5", new ArrayList<String>());
         itemListData = new ArrayList<InventoryItem>();
-        Log.d("MainActivity:repo","getting items");
+        Log.d("MainActivity:repo",currentUser.getUsername() + "'s items: " + currentUser.getOwnedItems());
         repo.getItemListData(currentUser.getOwnedItems(), this);
         // retrieve data passed from SortFilterActivity: itemListData and sortBy
         Intent intent = getIntent();
@@ -330,6 +331,7 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
     }
     public void onGetItemListData(InventoryItem item) {
         itemListData.add(item);
+        Log.d("onGetItemListData", "added item. total number: " + itemListData.size());
     }
 
 }
