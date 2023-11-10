@@ -2,11 +2,14 @@ package com.example.omninventory;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -14,7 +17,10 @@ import android.widget.Toast;
 
 import com.google.firebase.firestore.ListenerRegistration;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 public class ManageTagsActivity extends AppCompatActivity {
 
@@ -23,8 +29,60 @@ public class ManageTagsActivity extends AppCompatActivity {
     private TagAdapter tagListAdapter;
     private ListView tagList;
     private TextView titleText;
+    private Dialog addTagDialog;
+
+    private void addTagDialog() {
+
+        addTagDialog.setCancelable(false);
+        addTagDialog.setContentView(R.layout.add_tag_dialog);
+
+        EditText tagNameEditText = addTagDialog.findViewById(R.id.new_tag_name_editText);
+        Button addTagDialogButton = addTagDialog.findViewById(R.id.add_tag_dialog_button);
+        Button cancelDialogButton = addTagDialog.findViewById(R.id.cancel_dialog_button);
+
+        addTagDialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String tagName = tagNameEditText.getText().toString();
+                if (tagName.isEmpty()) {
+                    CharSequence toastText = "Tag name cannot be empty!";
+                    Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
+                    toast.show();
+                    return;
+                }
+                boolean duplicate = false;
+                ListIterator<Tag> tagIter = tagListData.listIterator();
+                while (tagIter.hasNext()) {
+                    Tag nextTag = tagIter.next();
+                    if (tagName.equals(nextTag.getName())) {
+                        duplicate = true;
+                    }
+                }
+                if (duplicate) {
+                    CharSequence toastText = "This tag already exists!";
+                    Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
+                    toast.show();
+                    return;
+                }
+
+                repo.addTag(new Tag(tagName));
+                CharSequence toastText = "Tag added successfully!";
+                Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
+                toast.show();
+                addTagDialog.dismiss();
 
 
+            }
+        });
+        cancelDialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addTagDialog.dismiss();
+            }
+        });
+
+        addTagDialog.show();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +116,7 @@ public class ManageTagsActivity extends AppCompatActivity {
 
         ListenerRegistration registration = repo.setupTagList(tagListAdapter);
 
+        addTagDialog = new Dialog(this);
 
 
         // set up click actions
@@ -70,6 +129,12 @@ public class ManageTagsActivity extends AppCompatActivity {
 
                 // return without changing any item fields
                 finish();
+            }
+        });
+
+        addTagButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                addTagDialog();
             }
         });
 

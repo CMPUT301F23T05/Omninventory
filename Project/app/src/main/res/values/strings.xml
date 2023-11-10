@@ -71,4 +71,9 @@
     <string name="delete_dialog_button">DELETE</string>
     <string name="cancel_dialog_button">CANCEL</string>
 
+    <!-- Text in add tag dialog -->
+    <string name="add_tag_dialog">NEW TAG</string>
+    <string name="add_tag_dialog_button">ADD</string>
+    <string name="add_tag_dialog_hint">Tag Name</string>
+
 </resources>
