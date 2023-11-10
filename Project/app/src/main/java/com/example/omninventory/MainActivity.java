@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
 
     private InventoryRepository repo;
     private ArrayList<InventoryItem> itemListData;
-    private ArrayList<InventoryItem> completeItemList;
     private InventoryItemAdapter itemListAdapter;
     SharedPreferences sp;
     private String sortBy;
@@ -98,11 +97,14 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
             @Override
             public void onClick(View view) {
                 for (InventoryItem selectedItem : selectedItems) {
-                    // TODO: this needs to remove the item from the database as well
+                    if (selectedItem != null) {
+                        repo.deleteInventoryItem(currentUser, selectedItem.getFirebaseId());
+                    }
                     itemListData.remove(selectedItem);
                     itemListAdapter.notifyDataSetChanged();
                 }
                 calcValue();
+                resetSelectedItems();
                 deleteDialog.dismiss();
             }
         });
@@ -110,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                resetSelectedItems();
                 deleteDialog.dismiss();
             }
         });
@@ -126,6 +129,14 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         }
         String formattedValue = ItemValue.numToString(totalValue);
         totalValueText.setText(formattedValue);
+    }
+
+    private void resetSelectedItems() {
+        for (InventoryItem selectedItem: selectedItems) {
+            selectedItem.setSelected(false);
+        }
+        selectedItems.clear();
+        System.out.println("The number of selected items is: " + Integer.toString(selectedItems.size()));
     }
 
     @Override
@@ -180,10 +191,6 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
 
         Intent intent = getIntent();
         if (intent != null) {
-            if (intent.getSerializableExtra("itemListData") != null) {
-                itemListData = (ArrayList<InventoryItem>) intent.getSerializableExtra("itemListData");
-                completeItemList = (ArrayList<InventoryItem>) itemListData.clone();
-            }
             if (intent.getStringExtra("sortBy") != null) {
                 sortBy = intent.getStringExtra("sortBy");
             }
@@ -208,31 +215,19 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         itemListAdapter = new InventoryItemAdapter(this, itemListData);
         itemList.setAdapter(itemListAdapter);
         ListenerRegistration registration = repo.setupInventoryItemList(itemListAdapter, this); // set up listener for getting Firestore data
-
-        if (sortBy != null && sortOrder != null) {
-            // should always trigger if coming from SortFilterActivity
-            registration.remove();
-            String ascendingText = getString(R.string.ascending);
-            String descendingText = getString(R.string.descending);
-            SortFilterActivity.applySorting(sortBy, sortOrder, itemListAdapter, descendingText);
-        }
-        if (filterMake != null) {
-            SortFilterActivity.applyMakeFilter(filterMake, itemListAdapter);
-        }
-        if (filterStartDate != null && filterEndDate != null) {
-            SortFilterActivity.applyDateFilter(filterStartDate, filterEndDate, itemListAdapter);
-        }
-        if (filterDescription != null) {
-                SortFilterActivity.applyDescriptionFilter(filterDescription, itemListAdapter);
-        }
     
         // Setup delete items dialog
         deleteDialog = new Dialog(this);
+
+        // Setup selected items of inventory
+        selectedItems = new ArrayList<InventoryItem>();
 
         calcValue(); // Get total estimated value
 
         // === Set up onClick actions
         //itemListData.add(new InventoryItem("Cat"));
+
+        resetSelectedItems();
 
         itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -241,6 +236,7 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
                 Intent detailsIntent = new Intent(MainActivity.this, DetailsActivity.class);
                 detailsIntent.putExtra("item", itemListData.get(position));
                 detailsIntent.putExtra("user", currentUser);
+                resetSelectedItems();
                 startActivity(detailsIntent);
             }
         });
@@ -248,12 +244,12 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         ImageButton sortFilterBtn = findViewById(R.id.sort_filter_button);
         sortFilterBtn.setOnClickListener((v) -> {
             Intent sortFilterIntent = new Intent(MainActivity.this, SortFilterActivity.class);
-            if (completeItemList == null) {
-                sortFilterIntent.putExtra("itemListData", itemListData);
-            }
-            else {
-                sortFilterIntent.putExtra("itemListData", completeItemList);
-            }
+            sortFilterIntent.putExtra("sortBy", sortBy);
+            sortFilterIntent.putExtra("sortOrder", sortOrder);
+            sortFilterIntent.putExtra("filterMake", filterMake);
+            sortFilterIntent.putExtra("filterStartDate", filterStartDate);
+            sortFilterIntent.putExtra("filterEndDate", filterEndDate);
+            sortFilterIntent.putExtra("filterDescription", filterDescription);
             MainActivity.this.startActivity(sortFilterIntent);
         });
 
@@ -269,7 +265,9 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         deleteItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (selectedItems.size() > 0) { deleteDialog();}
+                if (selectedItems.size() > 0) {
+                    deleteDialog();
+                }
             }
         });
         
@@ -306,11 +304,9 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
                 InventoryItem item = itemListData.get(position);
                 if (item.isSelected()) {
                     item.setSelected(false);
-                    view.setBackgroundColor(Color.WHITE);
                     selectedItems.remove(item);
                 } else {
                     item.setSelected(true);
-                    view.setBackgroundColor(Color.LTGRAY);
                     selectedItems.add(item);
                 }
                 itemListAdapter.notifyDataSetChanged();
@@ -324,8 +320,28 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
      * value will be calculated before items
      */
     public void onItemListUpdate() {
+
         this.calcValue();
+        this.sortAndFilter();
     }
+
+    public void sortAndFilter() {
+        if (sortBy != null && sortOrder != null) {
+            // should always trigger if coming from SortFilterActivity
+            String descendingText = getString(R.string.descending);
+            SortFilterActivity.applySorting(sortBy, sortOrder, itemListAdapter, descendingText);
+        }
+        if (filterMake != null) {
+            SortFilterActivity.applyMakeFilter(filterMake, itemListAdapter);
+        }
+        if (filterStartDate != null && filterEndDate != null) {
+            SortFilterActivity.applyDateFilter(filterStartDate, filterEndDate, itemListAdapter);
+        }
+        if (filterDescription != null) {
+            SortFilterActivity.applyDescriptionFilter(filterDescription, itemListAdapter);
+        }
+    }
+
     private void startLoginActivity() {
         Intent loginIntent = new Intent(this, LoginActivity.class);
         startActivity(loginIntent);
