@@ -13,7 +13,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 /**
- * Activity for viewing an item's fields in detail.
+ * Activity for viewing the contents of all of an InventoryItem's fields.
+ * @author Castor
  */
 public class DetailsActivity extends AppCompatActivity implements GetInventoryItemHandler {
 
@@ -31,6 +32,12 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
     private TextView itemDateText;
     private TextView itemTagsText;
 
+    /**
+     * Method called on Activity creation. Contains most of the logic of this Activity; programmatically
+     * modifying UI elements, creating Intents to move to other Activites, and setting up connection
+     * to the database.
+     * @param savedInstanceState Information about this Activity's saved state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +48,8 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
 
         // === get references to Views
         final TextView titleText = findViewById(R.id.title_text);
+        final ImageButton backButton = findViewById(R.id.back_button);
+        final ImageButton editButton = findViewById(R.id.edit_button);
         itemNameText = findViewById(R.id.item_name_text);
         itemDescriptionText = findViewById(R.id.item_description_text);
         itemCommentText = findViewById(R.id.item_comment_text);
@@ -51,8 +60,10 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
         itemDateText = findViewById(R.id.item_date_text);
         itemTagsText = findViewById(R.id.item_tags_text);
 
-        // === load info passed from MainActivity (hopefully)
+        // ============== RETRIEVE DATA ================
+
         if (getIntent().getExtras() != null) {
+            // get InventoryItem
             if (getIntent().getExtras().getSerializable("item") == null) {
                 // creating a new item; initialize with no fields
                 Log.d("DetailsActivity", "DetailsActivity opened without an InventoryItem; concerning");
@@ -63,6 +74,7 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
                 currentItem = (InventoryItem) getIntent().getExtras().getSerializable("item");
             }
 
+            // get User
             if (getIntent().getExtras().getSerializable("user") == null) {
                 Log.d("DetailsActivity", "DetailsActivity opened without a User; concerning");
             }
@@ -75,12 +87,13 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
             throw new RuntimeException("DetailsActivity opened without any extra data");
         }
 
-        // === UI setup
-        titleText.setText(getString(R.string.details_title_text)); // set title text
-        setFields(currentItem); // set item fields
+        // ============== UI SETUP ================
 
-        // === set up click actions
-        final ImageButton backButton = findViewById(R.id.back_button);
+        titleText.setText(getString(R.string.details_title_text)); // set title text
+        setFields(currentItem); // set item fields to contain data from InventoryItem passed in
+
+        // ============== ONCLICK ACTIONS ================
+
         backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // return to MainActivity
@@ -88,7 +101,6 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
             }
         });
 
-        final ImageButton editButton = findViewById(R.id.edit_button);
         editButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // start a new EditActivity to edit this item
@@ -116,6 +128,13 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
         itemTagsText.setText(item.getTagsString());
     }
 
+    /**
+     * Called when Activity is resumed from another Activity. Necessary because we use this to update
+     * the fields of an item; if an item is modified in EditActivity, fields must be updated after
+     * EditActivity calls finish() and DetailsActivity is resumed. This makes a call to a method in
+     * InventoryRepository, which then calls DetailsActivity.onGetInventoryItem to actually
+     * update the fields.
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -132,12 +151,10 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
 
     /**
      * Implement behaviour when InventoryItem is read by InventoryRepository. This is a callback to
-     * receive Firebase data from repo.getInventoryItemInto when onResume is called. It is
-     * necessary because if you go to EditActivity, edit item fields, and then save and return to
-     * DetailsActivity, the item fields will still display as they were before the edit if not
-     * refreshed somehow.
+     * receive Firebase data from repo.getInventoryItemInto(), which is called in
+     * DetailsActivity.onResume().
      * TODO: come back to this later, consider making method of InventoryItem instead
-     * @param item InventoryItem received
+     * @param item InventoryItem received.
      */
     public void onGetInventoryItem(InventoryItem item) {
         // update fields for the new item

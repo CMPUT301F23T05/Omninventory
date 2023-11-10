@@ -19,18 +19,32 @@ import java.util.ArrayList;
 /**
  * A custom ArrayAdapter that works with InventoryItem objects. Uses item_list_content.xml
  * for layout display of InventoryItems in a ListView.
+ *
+ * @author Castor
  */
 public class InventoryItemAdapter extends ArrayAdapter<InventoryItem> {
 
     private ArrayList<InventoryItem> itemListData;
     private Context context;
 
+    /**
+     * Constructor that takes in necessary parameters for an ArrayAdapter.
+     * @param context Context for the ArrayAdapter.
+     * @param items   ArrayList to use to set up the ArrayAdapter.
+     */
     public InventoryItemAdapter(Context context, ArrayList<InventoryItem> items) {
         super(context, 0, items);
         this.itemListData = items;
         this.context = context;
     }
 
+    /**
+     * Sets up the UI for a list element in the ArrayAdapter.
+     * @param position
+     * @param convertView
+     * @param parent
+     * @return The View for this list element.
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -46,6 +60,8 @@ public class InventoryItemAdapter extends ArrayAdapter<InventoryItem> {
 
         // === UI setup
         InventoryItem item = itemListData.get(position); // get item at this position
+
+        // === set up colours
 
         // get colours so selection works with theme
         Resources.Theme theme = context.getTheme();
@@ -64,7 +80,7 @@ public class InventoryItemAdapter extends ArrayAdapter<InventoryItem> {
             view.setBackgroundColor(colorNotSelected);
         }
 
-        // set fields
+        // === set fields for this item
         itemNameText.setText(item.getName());
         itemDescriptionText.setText(item.getDescription());
 

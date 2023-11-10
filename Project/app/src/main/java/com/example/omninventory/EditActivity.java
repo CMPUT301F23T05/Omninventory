@@ -20,7 +20,14 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.Calendar;
 
 /**
- * Activity for editing an item's fields.
+ * Activity for editing an item's fields. It has a flag which determines whether we treat the item
+ * as an existing item or a new item (changes how we call database methods).
+ *
+ * The changing functionality could have been implemented with inheritance, but there would be a large
+ * amount of functionality that would have to be implemented as overridable methods; in this case
+ * it is much more simple and understandable to implement with a simple toggle flag.
+ *
+ * @author Castor
  */
 public class EditActivity extends AppCompatActivity  {
 
@@ -62,7 +69,12 @@ public class EditActivity extends AppCompatActivity  {
         itemSerialEditText = findViewById(R.id.item_serial_edittext);
         itemValueEditText = findViewById(R.id.item_value_edittext);
 
-        // === load info passed from DetailsActivity (hopefully)
+        final ImageButton backButton = findViewById(R.id.back_button);
+        final ImageButton itemDateButton = findViewById(R.id.item_date_button);
+        final ImageButton saveButton = findViewById(R.id.save_button);
+
+        // ============== RETRIEVE DATA ================
+
         final boolean newItemFlag; // true if we are creating a new item, false if editing existing item
 
         if (getIntent().getExtras() != null) {
@@ -90,7 +102,7 @@ public class EditActivity extends AppCompatActivity  {
             throw new RuntimeException("EditActivity opened without any extra data");
         }
 
-        // === UI setup
+        // ============== UI SETUP ================
 
         // set title text
         if (newItemFlag) {
@@ -109,10 +121,9 @@ public class EditActivity extends AppCompatActivity  {
         // initial text modified by TextWatcher will be from currentItem, as EditText contents were just set by setFields
         itemValueEditText.addTextChangedListener(new ValueTextWatcher(itemValueEditText));
 
-        // === set up click actions
+        // ============== CLICK ACTIONS ================
 
         // back button should take us back to DetailsActivity without saving any item data on click
-        final ImageButton backButton = findViewById(R.id.back_button);
         backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // display an exit message
@@ -132,7 +143,6 @@ public class EditActivity extends AppCompatActivity  {
         });
 
         // itemDateButton should open a DatePickerDialog to choose date
-        final ImageButton itemDateButton = findViewById(R.id.item_date_button);
         itemDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -162,7 +172,6 @@ public class EditActivity extends AppCompatActivity  {
         });
 
         // saveButton should send data to Firebase and return to DetailsActivity
-        final ImageButton saveButton = findViewById(R.id.save_button);
         saveButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // TODO: implement this
@@ -199,7 +208,7 @@ public class EditActivity extends AppCompatActivity  {
 
     /**
      * Set fields in this activity's layout to the field values of an InventoryItem.
-     * @param item
+     * @param item The InventoryItem to display.
      */
     private void setFields(InventoryItem item) {
         // add item details to each field
@@ -215,7 +224,10 @@ public class EditActivity extends AppCompatActivity  {
     }
 
     /**
-     * Handles input validation for fields on this screen.
+     * Handles input validation for fields on this screen. Currently only imposes restrictions on
+     * the item name (that is, it must exist), but in the future might be necessary to add more
+     * complex restrictions on more fields.
+     * @return A Boolean; 'true' if validation succeeded, otherwise 'false'.
      */
     private boolean validateFields() {
         // === get references to Views
@@ -236,11 +248,12 @@ public class EditActivity extends AppCompatActivity  {
 
     /**
      * Creates an InventoryItem from the fields on screen.
+     * @return The new InventoryItem.
      */
     private InventoryItem makeInventoryItem() {
         // assume validateFields has already been run and inputs are OK
 
-        // TODO: this is not complete, need Date & others
+        // TODO: this is not complete, need Tags
         // all fields are new except for firebaseId
         return new InventoryItem(
             currentItem.getFirebaseId(),

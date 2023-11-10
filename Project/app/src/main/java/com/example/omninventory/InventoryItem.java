@@ -6,7 +6,11 @@ import java.util.Date;
 import java.util.HashMap;
 
 /**
- * Holds all data stored in fields for each inventory item.
+ * Class representing an item stored in the inventory. Holds all data stored in fields for each
+ * inventory item.
+ * @author Aron
+ * @author Castor
+ * @author Rose
  */
 public class InventoryItem implements Serializable {
 
@@ -44,8 +48,8 @@ public class InventoryItem implements Serializable {
 
     /**
      * Placeholder constructor for testing that initializes fields with just a name and description.
-     * @param name
-     * @param description
+     * @param name The name of the item.
+     * @param description A short description of the item.
      */
     public InventoryItem(String FirebaseId, String name, String description, String comment,
                          String make, String model, String serialno, Integer value, Date date) {
@@ -94,7 +98,8 @@ public class InventoryItem implements Serializable {
 
     /**
      * Convert fields of an InventoryItem into a HashMap for writing to Firebase.
-     * Note that item.firebaseId is not stored in the HashMap.
+     * Note that item.firebaseId is not stored in the HashMap, as it is not written with the item
+     * data.
      * @return A HashMap representing this InventoryItem that may be written to Firebase.
      */
     public HashMap<String, Object> convertToHashMap() {
@@ -112,7 +117,6 @@ public class InventoryItem implements Serializable {
     }
 
     // ============== getters and setters ================
-
     public String getFirebaseId() {
         return firebaseId;
     }

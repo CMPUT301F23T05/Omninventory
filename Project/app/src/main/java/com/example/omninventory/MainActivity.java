@@ -32,6 +32,12 @@ import java.util.ArrayList;
 /**
  * Main screen of the app. Holds list of inventory items and buttons
  * that take user to other screens.
+ * @author Aron
+ * @author Castor
+ * @author Kevin
+ * @author Patrick
+ * @author Rose
+ * @author Zachary
  */
 public class MainActivity extends AppCompatActivity implements InventoryUpdateHandler {
 
@@ -57,6 +63,12 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
 
     private Dialog deleteDialog;
 
+    /**
+     * Method called on Activity creation. Contains most of the logic of this Activity; programmatically
+     * modifying UI elements, creating Intents to move to other Activites, and setting up connection
+     * to the database (necessary for updating the ListView displayed in this Activity).
+     * @param savedInstanceState Information about this Activity's saved state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,22 +77,22 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         // TODO: this is testing code, replace when merged with Rose's code
         currentUser = new User("erika", "erikausername", "password", new ArrayList<String>());
 
-        // === set up database
-        repo = new InventoryRepository();
-
         // Get references to views
         itemList = findViewById(R.id.item_list);
         titleText = findViewById(R.id.title_text);
         totalValueText = findViewById(R.id.total_value_text);
+        ImageButton profileBtn = findViewById(R.id.profile_button); // get taskbar buttons
+        ImageButton sortFilterBtn = findViewById(R.id.sort_filter_button);
+        ImageButton addItemButton = findViewById(R.id.add_item_button);
+        ImageButton deleteItemButton = findViewById(R.id.delete_item_button);
 
-        // === UI setup
+        // UI setup
         titleText.setText(getString(R.string.main_title_text)); // set title text
+
+        // ============== USER SETUP ================
 
         // this will store user's login state to keep them logged in
         sharedPrefs = getSharedPreferences("login", MODE_PRIVATE);
-
-        // get taskbar buttons
-        final ImageButton profileBtn = findViewById(R.id.profile_button);
 
         // check if user just logged in
         if (getIntent().getExtras() != null)  {
@@ -93,8 +105,10 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
             Toast.makeText(getApplicationContext(), "Logged in as , " + user, Toast.LENGTH_LONG).show();
         }
 
-        // === set up itemList owned by logged in user
+        // set up itemList owned by logged in user
         itemListData = new ArrayList<InventoryItem>();
+
+        // ============== RETRIEVE DATA ================
 
         // retrieve data passed from SortFilterActivity: itemListData and sortBy
         Intent intent = getIntent();
@@ -123,12 +137,15 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
             }
         }
 
-        // === connect itemList to Firestore database
+        // ============== DATABASE SETUP ================
+
+        repo = new InventoryRepository();
         itemListAdapter = new InventoryItemAdapter(this, itemListData);
         itemList.setAdapter(itemListAdapter);
         ListenerRegistration registration = repo.setupInventoryItemList(itemListAdapter, this); // set up listener for getting Firestore data
 
-        // === apply sort and filter
+        // ============== APPLY SORT/FILTER ================
+
         if (sortBy != null && sortOrder != null) {
             // should always trigger if coming from SortFilterActivity
             registration.remove();
@@ -145,7 +162,9 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         if (filterDescription != null) {
             SortFilterActivity.applyDescriptionFilter(filterDescription, itemListAdapter);
         }
-    
+
+        // ============== SELECT/DELETE SETUP ================
+
         // Setup delete items dialog
         deleteDialog = new Dialog(this);
 
@@ -153,10 +172,11 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         selectedItems = new ArrayList<InventoryItem>();
         resetSelectedItems();
 
-        calcValue(); // Get total estimated value
+        calcValue(); // Get total estimated value of list items
 
-        // === Set up onClick actions
+        // ============== ONCLICK ACTIONS ================
 
+        // on item list click, go to DetailsActivity for this item
         itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
@@ -169,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
             }
         });
 
-        ImageButton sortFilterBtn = findViewById(R.id.sort_filter_button);
+        // on sort/filter button click, go to SortFilterActivity with existing sort information
         sortFilterBtn.setOnClickListener((v) -> {
             Intent sortFilterIntent = new Intent(MainActivity.this, SortFilterActivity.class);
             sortFilterIntent.putExtra("sortBy", sortBy);
@@ -181,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
             MainActivity.this.startActivity(sortFilterIntent);
         });
 
-        ImageButton addItemButton = findViewById(R.id.add_item_button);
+        // on add button click, go to EditActivity for editing a new item
         addItemButton.setOnClickListener((v) -> {
             Intent addIntent = new Intent(MainActivity.this, EditActivity.class);
             // intent launched without an InventoryItem
@@ -189,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
             startActivity(addIntent);
         });
 
-        ImageButton deleteItemButton = findViewById(R.id.delete_item_button);
+        // on delete button click, open the delete dialog
         deleteItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -198,7 +218,8 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
                 }
             }
         });
-        
+
+        // on profile button click, go to LoginActivity
         profileBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // todo: this logs out the current user, for testing only, will remove this later
@@ -213,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
             }
         });
 
+        // on long press on item list, select item
         itemList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -231,6 +253,10 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         });
     }
 
+    /**
+     * Dialog shown once the delete button is clicked. Gives the user options to either delete the
+     * items currently selected or to cancel the deletion.
+     */
     private void deleteDialog() {
         deleteDialog.setCancelable(false);
         deleteDialog.setContentView(R.layout.delete_dialog);
@@ -281,8 +307,11 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         deleteDialog.show();
     }
 
+    /**
+     * Calculates the sum of the 'value' fields of all items currently displayed in the ListView.
+     */
     private void calcValue() {
-        // TODO: this has overflow issues
+        // this may have overflow issues; we checked with our TA that they weren't necessary to handle for now
         Log.d("MainActivity", String.format("calcValue called, number of items in list is %d", itemListData.size()));
         totalValue = 0L;
         for (InventoryItem item : itemListData) {
@@ -292,6 +321,9 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         totalValueText.setText(formattedValue);
     }
 
+    /**
+     * Deselect all currently selected items in the ListView.
+     */
     private void resetSelectedItems() {
         for (InventoryItem selectedItem: selectedItems) {
             selectedItem.setSelected(false);
@@ -301,15 +333,18 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
     }
 
     /**
-     * Need to asynchronously call an update routine when items are added to the list, else
-     * value will be calculated before items
+     * An update function that should be called whenever the contents of the ListView may be changed
+     * or loaded by InventoryRepository. This is necessary so that the total value and sort/filter
+     * are updated when items are actually loaded in asynchronously from Firestore.
      */
     public void onItemListUpdate() {
-
         this.calcValue();
         this.sortAndFilter();
     }
 
+    /**
+     * Calls static SortFilterActivity methods to apply sort and filter to list of items.
+     */
     public void sortAndFilter() {
         if (sortBy != null && sortOrder != null) {
             // should always trigger if coming from SortFilterActivity
@@ -327,6 +362,9 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         }
     }
 
+    /**
+     * Starts LoginActivity in order to log in a new user.
+     */
     private void startLoginActivity() {
         Intent loginIntent = new Intent(this, LoginActivity.class);
         startActivity(loginIntent);
