@@ -24,6 +24,6 @@
     <color name="dark_purple_1">#9B4F96</color>
 
     <color name="ascending_descending_button">#306F71</color>
-    <color name="unclicked_filter_button">#6E44BA</color>
+    <color name="unclicked_filter_button">#9FE0F3</color> <!-- Same as blue button -->
     <color name="clicked_filter_button">#59AE3A</color>
 </resources>

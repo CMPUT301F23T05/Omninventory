@@ -37,6 +37,13 @@
         <item name="android:textColor">?attr/colorPrimary</item>
     </style>
 
+    <style name="blue_button" parent="Widget.AppCompat.Button">
+        <item name="backgroundTint">@color/blue_banner</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18dp</item>
+        <item name="cornerRadius">20dp</item>
+    </style>
 <!--    https://www.ekchang.com/tutorial/2018/03/25/styling_textinputlayout.html -->
 
 <!--    taskbar buttons -->
