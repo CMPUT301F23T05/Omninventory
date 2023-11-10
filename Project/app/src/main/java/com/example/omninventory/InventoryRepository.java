@@ -53,7 +53,7 @@ public class InventoryRepository {
      * @param adapter An InventoryItemAdapter to set up to track contents of database.
      * @return
      */
-    public ListenerRegistration setupInventoryItemList(InventoryItemAdapter adapter, ItemListUpdateHandler handler) {
+    public ListenerRegistration setupInventoryItemList(InventoryItemAdapter adapter, InventoryUpdateHandler handler) {
         // set up listener
         inventoryItemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
