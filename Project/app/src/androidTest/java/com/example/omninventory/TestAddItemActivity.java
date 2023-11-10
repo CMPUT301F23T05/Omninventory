@@ -64,10 +64,13 @@ public class TestAddItemActivity {
 
         //validate in the inventory screen that the item was added
         //may crash if the database is not reset before hand.
+        //todo: update to check with onData instead
         onView(withText("AddItemTest")).check(matches(isDisplayed()));
 
         cleanup();
     }
+
+    //todo: add test case for more detailed item description to cover all fields (outside of ones listed below)
 
     @Test
     public void testAddItemWithTag(){
