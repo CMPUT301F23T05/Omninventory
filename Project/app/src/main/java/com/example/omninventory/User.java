@@ -51,11 +51,6 @@ public class User implements Serializable {
          * @return The User's password.
          */
         public String getPassword() { return password; }
-
-        /**
-         * Getter for the User's list of owned items.
-         * @return The User's list of owned items, as an ArrayList of InventoryItem IDs.
-         */
-        public ArrayList<String> getItemsRefs() { return ownedItems; }
+        public ArrayList<String> getOwnedItems() { return ownedItems; }
 
 }

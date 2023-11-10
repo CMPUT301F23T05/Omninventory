@@ -24,7 +24,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.color.MaterialColors;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.ArrayList;
@@ -45,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
     private ArrayList<InventoryItem> itemListData;
     private ArrayList<InventoryItem> completeItemList;
     private InventoryItemAdapter itemListAdapter;
-    SharedPreferences sharedPrefs;
     private String sortBy;
     private String sortOrder;
     private String filterMake;
@@ -73,14 +80,25 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Intent intent = getIntent();
+        // check if user is logged in or out
+        if (intent.getExtras() != null)  {
+            if (intent.getStringExtra("login") != null) {
+                // user just logged in
+                currentUser = (User) getIntent().getSerializableExtra("loggedInUser");
+                Log.d("main", "Logged in as: " + currentUser.getName());
+            }
+        }
 
-        // TODO: this is testing code, replace when merged with Rose's code
-        currentUser = new User("erika", "erikausername", "password", new ArrayList<String>());
-
-        selectedItems = new ArrayList<>();
-
-        // === set up database
-        repo = new InventoryRepository();
+        // make sure user is logged in before giving them access to the rest of the app
+        if (currentUser == null) {
+            Intent loginIntent = new Intent(this, LoginActivity.class);
+            startActivity(loginIntent);
+            finish();
+        }
+        else {
+            // === set up database
+            repo = new InventoryRepository();
 
         // Get references to views
         itemList = findViewById(R.id.item_list);
@@ -95,29 +113,21 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         // UI setup
         titleText.setText(getString(R.string.main_title_text)); // set title text
 
-        // ============== USER SETUP ================
+        // add taskbar
+        LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View taskbarLayout = taskbarInflater.inflate(R.layout.taskbar_main, null);
+        ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.task_bar_main);
+        taskbarHolder.addView(taskbarLayout);
 
-        // this will store user's login state to keep them logged in
-        sharedPrefs = getSharedPreferences("login", MODE_PRIVATE);
-
-        // check if user just logged in
-        if (getIntent().getExtras() != null)  {
-            // user just logged in
-            String user = getIntent().getExtras().getString("loggedInUser");
-            sharedPrefs.edit().putBoolean("logged", true).apply();
-            sharedPrefs.edit().putString("username", user).apply();
-            Log.d("login", "Logged in as: " + user);
-            // todo: for testing purposes only, will remove later
-            Toast.makeText(getApplicationContext(), "Logged in as , " + user, Toast.LENGTH_LONG).show();
-        }
+        // get taskbar buttons
+        ImageButton sortFilterBtn = findViewById(R.id.sort_filter_button);
+        ImageButton addItemButton = findViewById(R.id.add_item_button);
+        ImageButton deleteItemButton = findViewById(R.id.delete_item_button);
+        ImageButton profileBtn = findViewById(R.id.profile_button);
 
         // set up itemList owned by logged in user
         itemListData = new ArrayList<InventoryItem>();
-
-        // ============== RETRIEVE DATA ================
-
         // retrieve data passed from SortFilterActivity: itemListData and sortBy
-        Intent intent = getIntent();
         if (intent != null) {
             if (intent.getSerializableExtra("itemListData") != null) {
                 itemListData = (ArrayList<InventoryItem>) intent.getSerializableExtra("itemListData");
@@ -150,8 +160,22 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         itemList.setAdapter(itemListAdapter);
         ListenerRegistration registration = repo.setupInventoryItemList(itemListAdapter, this); // set up listener for getting Firestore data
 
-        // ============== SELECT/DELETE SETUP ================
-
+        if (sortBy != null && sortOrder != null) {
+            // should always trigger if coming from SortFilterActivity
+            String ascendingText = getString(R.string.ascending);
+            String descendingText = getString(R.string.descending);
+            SortFilterActivity.applySorting(sortBy, sortOrder, itemListAdapter, descendingText);
+        }
+        if (filterMake != null) {
+            SortFilterActivity.applyMakeFilter(filterMake, itemListAdapter);
+        }
+        if (filterStartDate != null && filterEndDate != null) {
+            SortFilterActivity.applyDateFilter(filterStartDate, filterEndDate, itemListAdapter);
+        }
+        if (filterDescription != null) {
+            SortFilterActivity.applyDescriptionFilter(filterDescription, itemListAdapter);
+        }
+    
         // Setup delete items dialog
         deleteDialog = new Dialog(this);
 
@@ -159,9 +183,11 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         selectedItems = new ArrayList<InventoryItem>();
         resetSelectedItems();
 
-        calcValue(); // Get total estimated value of list items
+        calcValue(); // Get total estimated value
 
-        // ============== ONCLICK ACTIONS ================
+        resetSelectedItems();
+
+        calcValue(); // Get total estimated value of list items
 
         // on item list click, go to DetailsActivity for this item
         itemList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -176,7 +202,6 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
             }
         });
 
-        // on sort/filter button click, go to SortFilterActivity with existing sort information
         sortFilterBtn.setOnClickListener((v) -> {
             Intent sortFilterIntent = new Intent(MainActivity.this, SortFilterActivity.class);
             sortFilterIntent.putExtra("sortBy", sortBy);
@@ -208,16 +233,11 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
 
         // on profile button click, go to LoginActivity
         profileBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
-                // todo: this logs out the current user, for testing only, will remove this later
-                sharedPrefs.edit().putBoolean("logged",false).apply();
-                // check if user is logged in
-                if (!sharedPrefs.getBoolean("logged",false)) {
-                    startLoginActivity();
-                }
-                else {
-                    // start ProfileActivity
-                }
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                intent.putExtra("loggedInUser", currentUser);
+                startActivity(intent);
             }
         });
 
@@ -237,27 +257,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
                 itemListAdapter.notifyDataSetChanged();
                 return true;
             }
-        });
-
-        // on tag button click, go to ManageTagsActivity
-        tagButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (selectedItems.size() > 0) {
-                    // if items are selected, go to ApplyTagsActivity
-                    Intent applyTagsIntent = new Intent(MainActivity.this, ApplyTagsActivity.class);
-                    applyTagsIntent.putExtra("selectedItems", selectedItems);
-
-                    // run in "apply" mode to apply changes upon activity exit
-                    applyTagsIntent.putExtra("action", "apply");
-                    startActivity(applyTagsIntent);
-                } else {
-                    // if nothing selected, go to ManageTagsActivity
-                    Intent manageTagsIntent = new Intent(MainActivity.this, ManageTagsActivity.class);
-                    startActivity(manageTagsIntent);
-                }
-            }
-        });
+        });}
     }
 
     /**
@@ -349,33 +349,75 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         this.sortAndFilter();
     }
 
-    /**
-     * Calls static SortFilterActivity methods to apply sort and filter to list of items.
-     */
-    public void sortAndFilter() {
-        if (sortBy != null && sortOrder != null) {
-            // should always trigger if coming from SortFilterActivity
-            String descendingText = getString(R.string.descending);
-            SortFilterActivity.applySorting(sortBy, sortOrder, itemListAdapter, descendingText);
+    private void deleteDialog() {
+        deleteDialog.setCancelable(false);
+        deleteDialog.setContentView(R.layout.delete_dialog);
+
+        // UI Elements of Dialog
+        TextView deleteItemsText = deleteDialog.findViewById(R.id.delete_message);
+        Button deleteButton = deleteDialog.findViewById(R.id.delete_dialog_button);
+        Button cancelButton = deleteDialog.findViewById(R.id.cancel_dialog_button);
+
+        // Fill out TextView with information
+        String defaultText = "Are you sure you would like to delete the selected items (";
+        int index = 0;
+        for (InventoryItem selectedItem : selectedItems) {
+            defaultText += selectedItem.getName();
+            if (index == selectedItems.size() - 1) {
+                defaultText += ")";
+            } else {
+                defaultText += ", ";
+            }
+            index += 1;
         }
-        if (filterMake != null) {
-            SortFilterActivity.applyMakeFilter(filterMake, itemListAdapter);
-        }
-        if (filterStartDate != null && filterEndDate != null) {
-            SortFilterActivity.applyDateFilter(filterStartDate, filterEndDate, itemListAdapter);
-        }
-        if (filterDescription != null) {
-            SortFilterActivity.applyDescriptionFilter(filterDescription, itemListAdapter);
-        }
+        deleteItemsText.setText(defaultText);
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                for (InventoryItem selectedItem : selectedItems) {
+                    if (selectedItem != null) {
+                        repo.deleteInventoryItem(currentUser, selectedItem.getFirebaseId());
+                    }
+                    itemListData.remove(selectedItem);
+                    itemListAdapter.notifyDataSetChanged();
+                }
+                calcValue();
+                resetSelectedItems();
+                deleteDialog.dismiss();
+            }
+        });
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resetSelectedItems();
+                deleteDialog.dismiss();
+            }
+        });
+
+        deleteDialog.show();
     }
 
-    /**
-     * Starts LoginActivity in order to log in a new user.
-     */
-    private void startLoginActivity() {
-        Intent loginIntent = new Intent(this, LoginActivity.class);
-        startActivity(loginIntent);
-        finish();
+    private void calcValue() {
+        // TODO: this has overflow issues
+        Log.d("MainActivity", String.format("calcValue called, number of items in list is %d", itemListData.size()));
+        totalValue = 0L;
+        for (InventoryItem item : itemListData) {
+            totalValue += item.getValue().toPrimitiveLong();
+        }
+        String formattedValue = ItemValue.numToString(totalValue);
+        totalValueText.setText(formattedValue);
     }
+
+    private void resetSelectedItems() {
+        for (InventoryItem selectedItem: selectedItems) {
+            selectedItem.setSelected(false);
+        }
+        selectedItems.clear();
+        System.out.println("The number of selected items is: " + Integer.toString(selectedItems.size()));
+    }
+
+
 }
             

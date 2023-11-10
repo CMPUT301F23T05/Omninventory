@@ -81,9 +81,6 @@ public class EditActivity extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
 
-        // === set up database
-        repo = new InventoryRepository();
-
         // === get references to Views
         final TextView titleText = findViewById(R.id.title_text);
         itemDateText = findViewById(R.id.item_date_text);
@@ -130,6 +127,7 @@ public class EditActivity extends AppCompatActivity  {
             throw new RuntimeException("EditActivity opened without any extra data");
         }
 
+        repo = new InventoryRepository();
         // ============== UI SETUP ================
 
         // set title text

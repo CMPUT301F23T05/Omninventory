@@ -71,6 +71,7 @@ public class InventoryRepository {
                 }
                 if (snapshot != null) {
                     adapter.clear(); // clear existing list data
+
                     for (QueryDocumentSnapshot doc : snapshot) {
                         // get each item returned by query and add to adapter
                         InventoryItem item = convertDocumentToInventoryItem(doc);
@@ -143,7 +144,7 @@ public class InventoryRepository {
         DocumentReference currentUserRef = usersRef.document(currentUser.getUsername());
 
         // add new inventoryItem reference to currentUser's list of ownedItems
-        Object[] arrayToAdd = {newItemRef};
+        Object[] arrayToAdd = {newItemRef.getId()};
 
         currentUserRef
             .update("ownedItems", FieldValue.arrayUnion(arrayToAdd))
@@ -282,21 +283,6 @@ public class InventoryRepository {
         // remove item from user's ownedItems in users collection
         currentUserRef.update("ownedItems", FieldValue.arrayRemove(itemId));
         // remove from inventoryItems collection
-        usersRef.document(itemId)
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error deleting document", e);
-                    }
-                });
-
         inventoryItemsRef.document(itemId)
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -473,8 +459,9 @@ public class InventoryRepository {
      */
     public void addUser(User user) {
         HashMap<String, Object> data = new HashMap<>();
+        data.put("name", user.getName());
         data.put("password", user.getPassword());
-        data.put("ownedItems", user.getItemsRefs());
+        data.put("ownedItems", user.getOwnedItems());
         usersRef.document(user.getUsername())
                 .set(data)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -485,7 +472,6 @@ public class InventoryRepository {
                 });
 
     };
-
     /**
      * Retrieve the contents of the User's inventory.
      * @param username The username (ID) of the currently signed-in user.

@@ -10,28 +10,33 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Base.Theme.Omninventory"
+        android:theme="@style/Theme.Omninventory"
         tools:targetApi="31">
-        <activity
-            android:name=".ApplyTagsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ManageTagsActivity"
-            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DetailsActivity" />
-        <activity android:name=".EditActivity" />
-        <activity android:name=".SortFilterActivity" />
-        <activity android:name=".SignupActivity" />
-        <activity android:name=".LoginActivity" />
+        <activity
+            android:name=".DetailsActivity">
+        </activity>
+        <activity
+            android:name=".EditActivity">
+        </activity>
+        <activity
+            android:name=".SortFilterActivity">
+        </activity>
+        <activity
+            android:name=".SignupActivity">
+        </activity>        
+        <activity
+            android:name=".LoginActivity">
+        </activity>
+        <activity
+            android:name=".ProfileActivity">
+        </activity>
     </application>
-
 </manifest>

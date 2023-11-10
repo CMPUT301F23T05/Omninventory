@@ -1,19 +1,10 @@
 package com.example.omninventory;
 
 /**
- * For validating user's login credentials without running into logical issues due to Firebase's
- * asynchronous operations. Used by LoginActivity, which needs it to return the result of validation
- * after querying the database (see LoginActivity.validateUserInput()). Similar usage as
- * GetInventoryItemHandler and InventoryUpdateHandler.
- * @author Rose
+ * Interface used by LoginActivity and SignupActivity to validate and authenticate login/signup credentials
+ *
+ * @author Rose Nguyen
  */
 public interface ValidationResultCallback {
-    /**
-     * Interface function to be called when validation is completed by
-     * LoginActivity.validateUserInput().
-     * @param isValid The result of the validation.
-     * @param message An error message or some other description to be handled by the implementing
-     *                class.
-     */
-    void onValidationResult(boolean isValid, String message);
+    public abstract void onValidationResult(boolean isValid, String message, User user);
 }

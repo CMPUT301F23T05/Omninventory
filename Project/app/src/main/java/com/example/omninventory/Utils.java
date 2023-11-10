@@ -4,15 +4,14 @@ import java.security.MessageDigest;
 import java.util.regex.Pattern;
 
 /**
- * A class containing utility functions used in the app, currently for password hashing and
- * validation.
- * @author Rose
+ * A class containing utilities methods including hashing passwords and validating password
+ *
+ * @author Nhung Nguyen
  */
+
 public class Utils {
     /**
-     * Implements SHA256 hashing for a String parameter.
-     * @param base The String to hash.
-     * @return     A hash of the String.
+     * Hash password using sha-256 algorithm
      */
     public static String sha256(String base) {
         // sha256 algorithm implementation was based on: https://www.baeldung.com/sha-256-hashing-java

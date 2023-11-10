@@ -9,8 +9,7 @@
     <string name="sort_filter_title_text">SORT AND FILTER</string>
     <string name="signup_title_text">SIGN UP</string>
     <string name="login_title_text">LOG IN</string>
-    <string name="manage_tags_title_text">MANAGE TAGS</string>
-    <string name="apply_tags_title_text">APPLY TAGS</string>
+    <string name="profile_title_text">USER PROFILE</string>
 
     <string name="estimated_value_text">Total Estimated Value</string>
 
@@ -75,6 +74,7 @@
     <string name="delete_dialog">DELETE ITEMS</string>
     <string name="delete_dialog_button">DELETE</string>
     <string name="cancel_dialog_button">CANCEL</string>
+    <string name="profile_picture">Profile Picture</string>
 
     <!-- Text in add tag dialog -->
     <string name="add_tag_dialog">NEW TAG</string>

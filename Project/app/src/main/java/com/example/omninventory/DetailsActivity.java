@@ -43,9 +43,6 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
-        // === set up database
-        repo = new InventoryRepository();
-
         // === get references to Views
         final TextView titleText = findViewById(R.id.title_text);
         final ImageButton backButton = findViewById(R.id.back_button);
@@ -87,8 +84,10 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
             throw new RuntimeException("DetailsActivity opened without any extra data");
         }
 
-        // ============== UI SETUP ================
+        // === set up database
+        repo = new InventoryRepository();
 
+        // ============== UI SETUP ================
         titleText.setText(getString(R.string.details_title_text)); // set title text
         setFields(currentItem); // set item fields to contain data from InventoryItem passed in
 
