@@ -45,14 +45,14 @@
         </TextView>
 
         <EditText
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
             android:id="@+id/make_filter_edit_text"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:theme="@style/item_edit_edittext"
+            android:layout_marginTop="5dp"
             android:autofillHints="@string/make"
-            android:layout_marginTop="5dp">
-        </EditText>
+            android:hint="Enter make filter here"
+            android:theme="@style/item_edit_edittext"></EditText>
 
         <Button
             android:layout_gravity="center"
@@ -81,11 +81,10 @@
                 <TextView
 
                     android:id="@+id/start_date_text"
-                    android:text="yyy-mm-dd"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_weight="10">
-                </TextView>
+                    android:layout_weight="10"
+                    android:text="yyyy-mm-dd"></TextView>
 
                 <!-- change to image button later -->
                 <Button
@@ -150,13 +149,13 @@
         </Button>
 
         <EditText
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
             android:id="@+id/description_filter_edit_text"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:autofillHints="@string/description_keywords_autofill"
-            android:layout_marginTop="10dp">
-        </EditText>
+            android:hint="Enter description filter here"></EditText>
 
         <Button
             android:layout_gravity="center"
