@@ -14,7 +14,8 @@
             android:layout_gravity="center"
             android:layout_marginRight="20dp"
             android:textSize="30sp"
-            android:text="Item">
+            android:text="Item"
+            android:textColor="?attr/colorOnSurface">
         </TextView>
 
         <TextView
@@ -23,6 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="Short description"
-            android:textSize="15sp">
+            android:textSize="15sp"
+            android:textColor="?attr/colorOnSurface">
         </TextView>
 </LinearLayout>

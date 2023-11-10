@@ -1,13 +1,16 @@
 package com.example.omninventory;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -44,10 +47,21 @@ public class InventoryItemAdapter extends ArrayAdapter<InventoryItem> {
         // === UI setup
         InventoryItem item = itemListData.get(position); // get item at this position
 
+        // get colours so selection works with theme
+        Resources.Theme theme = context.getTheme();
+        TypedValue typedValue = new TypedValue();
+
+        theme.resolveAttribute(com.google.android.material.R.attr.colorSurface, typedValue, true);
+        @ColorInt int colorNotSelected = typedValue.data;
+
+        theme.resolveAttribute(com.google.android.material.R.attr.colorSurfaceVariant, typedValue, true);
+        @ColorInt int colorSelected = typedValue.data;
+
+        // set colour to reflect selection
         if (item.isSelected()) {
-            view.setBackgroundColor(Color.LTGRAY);
+            view.setBackgroundColor(colorSelected);
         } else {
-            view.setBackgroundColor(Color.WHITE);
+            view.setBackgroundColor(colorNotSelected);
         }
 
         // set fields

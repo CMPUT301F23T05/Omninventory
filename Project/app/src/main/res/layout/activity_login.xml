@@ -13,7 +13,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@color/design_default_color_surface"
+        android:background="?attr/colorSurface"
         android:orientation="vertical">
 
         <LinearLayout
@@ -31,7 +31,7 @@
                 android:layout_marginBottom="20dp"
                 android:gravity="center_horizontal"
                 android:text="Please log in to continue"
-                android:textColor="@color/black"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="18dp" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -74,7 +74,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:text="Don't have an account?"
-                    android:textColor="@color/black"
+                    android:textColor="?attr/colorOnSurface"
                     android:textSize="18dp" />
 
                 <TextView
@@ -85,7 +85,7 @@
                     android:onClick="onClickSignUpLink"
                     android:padding="3dp"
                     android:text="Sign Up"
-                    android:textColor="@color/salmon_banner"
+                    android:textColor="?attr/colorPrimary"
                     android:textSize="18dp"
                     android:textStyle="bold" />
 
@@ -98,16 +98,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
-                android:backgroundTint="@color/blue_banner"
+                android:backgroundTint="?attr/colorSecondary"
                 android:text="Log in"
-                android:textColor="@color/white"
+                android:textColor="?attr/colorOnSecondary"
                 android:textSize="18dp"
                 android:textStyle="bold"
                 app:cornerRadius="20dp" />
 
         </LinearLayout>
 
-        <include layout="@layout/taskbar_holder"/>
+        <include layout="@layout/taskbar_main"/>
 
 
 <!--        <TextView-->

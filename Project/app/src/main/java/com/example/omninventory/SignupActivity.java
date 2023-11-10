@@ -53,12 +53,6 @@ public class SignupActivity extends AppCompatActivity {
         // set title text
         titleText.setText(getString(R.string.signup_title_text));
 
-        // add taskbar
-        LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View taskbarLayout = taskbarInflater.inflate(R.layout.taskbar_main, null);
-        ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.taskbar_holder);
-        taskbarHolder.addView(taskbarLayout);
-
         // === signup button callback function
         signupButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
