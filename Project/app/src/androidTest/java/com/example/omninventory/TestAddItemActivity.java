@@ -21,6 +21,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+/**
+ * Tests for adding an item.
+ * @author Kevin
+ */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class TestAddItemActivity {
@@ -36,7 +40,6 @@ public class TestAddItemActivity {
 
     /**
      * Clean up for the item added during test
-     * @author Kevin
      */
     private void cleanup(){
         onView(withText("AddItemTest")).perform(longClick());
@@ -47,7 +50,6 @@ public class TestAddItemActivity {
 
     /**
      * Test for the base case of adding an item
-     * @author kevin
      */
     @Test
     public void testAddItemBase() throws InterruptedException {

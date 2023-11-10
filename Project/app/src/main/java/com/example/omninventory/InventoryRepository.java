@@ -32,10 +32,7 @@ import java.util.ListIterator;
  * Encapsulate behaviours related to Firestore, going from Firestore document to InventoryItem and
  * vice-versa, etc.
  * @author Castor
-<<<<<<< HEAD
-=======
  * @author Patrick
->>>>>>> origin/develop
  * @author Rose
  */
 public class InventoryRepository {

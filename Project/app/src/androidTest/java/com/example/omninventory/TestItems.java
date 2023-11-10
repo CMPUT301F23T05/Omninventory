@@ -11,6 +11,10 @@ import static org.hamcrest.Matchers.allOf;
 
 import androidx.test.espresso.action.ViewActions;
 
+/**
+ * Test class that sets up default database InventoryItem data for testing.
+ * @author Kevin
+ */
 public class TestItems {
 
     /**
@@ -49,7 +53,6 @@ public class TestItems {
 
     /**
      * Deletes test items generated for test cases
-     * @author Kevin
      */
     public void wipeTestItems(){
         //todo: change to delete item if it exists

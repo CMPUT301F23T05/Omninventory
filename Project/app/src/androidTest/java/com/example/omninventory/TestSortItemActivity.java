@@ -7,6 +7,10 @@ import androidx.test.filters.LargeTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+/**
+ * Tests for sorting the list of items.
+ * @author Kevin
+ */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class TestSortItemActivity {

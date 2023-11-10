@@ -16,6 +16,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+/**
+ * Tests for logging into the app.
+ * @author Kevin
+ */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class TestLoginActivity {
@@ -38,8 +42,6 @@ public class TestLoginActivity {
      * Base test case for signing up as a user
      * IMPORTANT: User needs to be deleted from database before running this test case
      * IMPORTANT: Incomplete test case (since functionality is not complete yet)
-     *
-     * @author: Kevin
      */
     @Test
     public void testSignup(){

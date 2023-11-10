@@ -17,6 +17,10 @@ import androidx.test.filters.LargeTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+/**
+ * Tests for editing an item.
+ * @author Kevin
+ */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class TestEditItemActivity {
@@ -26,7 +30,6 @@ public class TestEditItemActivity {
 
     /**
      * Test case for base level edit item (only description)
-     * @author Kevin
      */
     @Test
     public void testEditItemBase(){
