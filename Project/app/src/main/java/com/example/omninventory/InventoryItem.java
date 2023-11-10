@@ -1,5 +1,7 @@
 package com.example.omninventory;
 
+import com.google.firebase.firestore.DocumentReference;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,7 +25,7 @@ public class InventoryItem implements Serializable {
     private String serialNo;
     private ItemValue value;
     private ItemDate date;
-    private ArrayList<Object> tags; // placeholder
+    private ArrayList<String> tags;
     private ArrayList<Object> images; // placeholder
 
     private boolean isSelected;
@@ -41,7 +43,8 @@ public class InventoryItem implements Serializable {
         this.serialNo = "";
         this.value = new ItemValue(0);
         this.date = new ItemDate(new Date());
-        // TODO: tags & images
+        this.tags = new ArrayList<>();
+        // TODO: images
 
         this.isSelected = false;
     }
@@ -59,7 +62,7 @@ public class InventoryItem implements Serializable {
      * @param date         Date of purchase of item to create (an ItemDate).
      */
     public InventoryItem(String firebaseId, String name, String description, String comment,
-                         String make, String model, String serialNo, ItemValue value, ItemDate date) {
+                         String make, String model, String serialNo, ItemValue value, ItemDate date, ArrayList<String> tags) {
         // full constructor
         this.firebaseId = firebaseId;
         this.name = name;
@@ -70,8 +73,8 @@ public class InventoryItem implements Serializable {
         this.serialNo = serialNo;
         this.value = value;
         this.date = date;
-        // TODO: tags & images
-
+        this.tags = tags;
+        // TODO: images
         this.isSelected = false;
     }
 
@@ -91,8 +94,44 @@ public class InventoryItem implements Serializable {
         itemData.put("serialno", this.getSerialNo());
         itemData.put("value", this.getValue().toPrimitiveLong()); // convert ItemValue to long
         itemData.put("date", this.getDate().toDate()); // convert ItemDate to Date
+        itemData.put("tags", this.getTags());
         // TODO: tags and images
         return itemData;
+    }
+
+    /**
+     * A method to generate a space-separated list of #-preceded tags as a single string for display
+     * @return A String in the form "#[tag_1_name] #[tag_2_name] etc
+     */
+    public String getTagsString() {
+        String tagString = "";
+        for (int i = 0; i < tags.size(); i++) {
+            tagString = String.join(" ", tagString, String.format("#%s", tags.get(i)));
+        }
+        return tagString;
+    }
+
+    /**
+     * Adds a new tag to this InventoryItem's ArrayList of tags.
+     * @param tagName The tag to add.
+     */
+    public void addTag(String tagName) { tags.add(tagName); }
+
+    /**
+     * For InventoryItems in the MainActivity item list, this returns a flag describing whether or
+     * not the item is currently selected (on a long press from the user).
+     * @return A Boolean, 'true' if the item is selected, 'false' if not.
+     */
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    /**
+     * Sets the flag describing whether or not the item is currently selected in the list.
+     * @param isSelected A Boolean, 'true' if the item is selected, 'false' if not.
+     */
+    public void setSelected(boolean isSelected) {
+        this.isSelected = isSelected;
     }
 
     // ============== getters and setters ================
@@ -234,27 +273,14 @@ public class InventoryItem implements Serializable {
     }
 
     /**
-     * Placeholder method that returns tags as a String.
-     * @return A string representing the Item's tags.
+     * Setter for the InventoryItem's tags.
+     * @param tags New tags.
      */
-    public String getTagsString() {
-        return "#placeholder #tags";
-    }
+    public void setTags(ArrayList<String> tags) { this.tags = tags; }
 
     /**
-     * For InventoryItems in the MainActivity item list, this returns a flag describing whether or
-     * not the item is currently selected (on a long press from the user).
-     * @return A Boolean, 'true' if the item is selected, 'false' if not.
+     * Getter for the InventoryItem's tags.
+     * @return InventoryItem's tags (an ArrayList of String objects)
      */
-    public boolean isSelected() {
-        return isSelected;
-    }
-
-    /**
-     * Sets the flag describing whether or not the item is currently selected in the list.
-     * @param isSelected A Boolean, 'true' if the item is selected, 'false' if not.
-     */
-    public void setSelected(boolean isSelected) {
-        this.isSelected = isSelected;
-    }
+    public ArrayList<String> getTags() { return tags; }
 }

@@ -51,7 +51,7 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
         final ImageButton backButton = findViewById(R.id.back_button);
         final ImageButton editButton = findViewById(R.id.edit_button);
         itemNameText = findViewById(R.id.item_name_text);
-        itemDescriptionText = findViewById(R.id.item_description_text);
+        itemDescriptionText = findViewById  (R.id.item_description_text);
         itemCommentText = findViewById(R.id.item_comment_text);
         itemMakeText = findViewById(R.id.item_make_text);
         itemModelText = findViewById(R.id.item_model_text);

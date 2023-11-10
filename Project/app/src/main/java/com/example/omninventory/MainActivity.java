@@ -77,6 +77,11 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         // TODO: this is testing code, replace when merged with Rose's code
         currentUser = new User("erika", "erikausername", "password", new ArrayList<String>());
 
+        selectedItems = new ArrayList<>();
+
+        // === set up database
+        repo = new InventoryRepository();
+
         // Get references to views
         itemList = findViewById(R.id.item_list);
         titleText = findViewById(R.id.title_text);
@@ -85,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         ImageButton sortFilterBtn = findViewById(R.id.sort_filter_button);
         ImageButton addItemButton = findViewById(R.id.add_item_button);
         ImageButton deleteItemButton = findViewById(R.id.delete_item_button);
+        ImageButton tagButton = findViewById(R.id.tag_button);
 
         // UI setup
         titleText.setText(getString(R.string.main_title_text)); // set title text
@@ -249,6 +255,26 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
                 // colours are set to reflect selection in InventoryItemAdapter
                 itemListAdapter.notifyDataSetChanged();
                 return true;
+            }
+        });
+
+        // on tag button click, go to ManageTagsActivity
+        tagButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (selectedItems.size() > 0) {
+                    // if items are selected, go to ApplyTagsActivity
+                    Intent applyTagsIntent = new Intent(MainActivity.this, ApplyTagsActivity.class);
+                    applyTagsIntent.putExtra("selectedItems", selectedItems);
+
+                    // run in "apply" mode to apply changes upon activity exit
+                    applyTagsIntent.putExtra("action", "apply");
+                    startActivity(applyTagsIntent);
+                } else {
+                    // if nothing selected, go to ManageTagsActivity
+                    Intent manageTagsIntent = new Intent(MainActivity.this, ManageTagsActivity.class);
+                    startActivity(manageTagsIntent);
+                }
             }
         });
     }
