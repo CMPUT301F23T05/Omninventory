@@ -40,6 +40,7 @@ import java.util.List;
  * are passed back to MainActivity and will be restored when coming back to this Activity.
  * Static methods are provided for the actual sorting/filtering so they can be accessed from
  * anywhere. Sorting is done with the help of Comparator class.
+ * @author Zachary
  */
 public class SortFilterActivity extends AppCompatActivity {
     private String dropdownSelection;

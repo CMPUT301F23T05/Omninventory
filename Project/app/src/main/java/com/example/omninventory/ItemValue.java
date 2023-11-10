@@ -62,6 +62,22 @@ public class ItemValue implements Serializable {
     }
 
     /**
+     * Compares two ItemValue objects, and returns 0 if same value.
+     * If this object value > ie's value, return 1.
+     * If this object's value < ie's value, return -1.
+     * @param ie The ItemVlue object to compare to
+     * @return 1 if value > ie.value, 0 if value == ie.value, -1 if value < ie.value
+     */
+    public int compare(ItemValue ie) {
+        if (value.equals(ie.value))
+            return 0;
+        else if (value > ie.value)
+            return 1;
+        else
+            return -1;
+    }
+
+    /**
      * Convert a Long value of cents to a String representation of a currency value.
      * @param x The Long value of cents.
      * @return  A String representing the currency value.
@@ -82,22 +98,6 @@ public class ItemValue implements Serializable {
         Log.d("InventoryItemValue", String.format("Formatting values: %d, %d", dollarsNum, centsNum));
 
         return String.format(Locale.CANADA, "$%d.%02d", dollarsNum, centsNum);
-    }
-
-    /**
-     * Compares two ItemValue objects, and returns 0 if same value.
-     * If this object value > ie's value, return 1.
-     * If this object's value < ie's value, return -1.
-     * @param ie The ItemVlue object to compare to
-     * @return 1 if value > ie.value, 0 if value == ie.value, -1 if value < ie.value
-     */
-    public int compare(ItemValue ie) {
-        if (value.equals(ie.value))
-            return 0;
-        else if (value > ie.value)
-            return 1;
-        else
-            return -1;
     }
 
     /**

@@ -27,11 +27,21 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * Login screen of the app. Allows a user to log in, and provides a button to sign up instead.
+ * @author Rose
+ */
 public class LoginActivity extends AppCompatActivity {
     private EditText usernameEditText;
     private EditText passwordEditText;
     private FirebaseFirestore db;
 
+    /**
+     * Method called on Activity creation. Contains most of the logic of this Activity; programmatically
+     * modifying UI elements, creating Intents to move to other Activites, and setting up connection
+     * to the database.
+     * @param savedInstanceState Information about this Activity's saved state.
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
@@ -77,12 +87,15 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-    public void onClickSignUpLink(View v) {
-        Intent intent = new Intent(this, SignupActivity.class);
-        startActivity(intent);
-        finish();
-    }
 
+    /**
+     * Validates the data in input fields on the login screen. Requires querying the database and
+     * returning validation result asynchronously through a callback, using the
+     * ValidationResultCallback interface.
+     * @param username The contents of the Username field.
+     * @param password The contents of the Password field.
+     * @param callback A callback handler to run when validation is complete.
+     */
     private void validateUserInput(String username, String password, ValidationResultCallback callback) {
         // checks for empty fields
         if (username.isEmpty()) {

@@ -19,7 +19,6 @@ import java.util.ArrayList;
 /**
  * A custom ArrayAdapter that works with InventoryItem objects. Uses item_list_content.xml
  * for layout display of InventoryItems in a ListView.
- *
  * @author Castor
  */
 public class InventoryItemAdapter extends ArrayAdapter<InventoryItem> {

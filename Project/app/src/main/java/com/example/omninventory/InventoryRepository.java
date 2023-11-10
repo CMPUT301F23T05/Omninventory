@@ -29,7 +29,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 /**
  * Encapsulate behaviours related to Firestore, going from Firestore document to InventoryItem and
  * vice-versa, etc.
- *
  * @author Castor
  * @author Rose
  */

@@ -7,5 +7,10 @@ package com.example.omninventory;
  * @author Castor
  */
 public interface GetInventoryItemHandler {
+    /**
+     * Interface function to be called when an InventoryItem is received by
+     * InventoryRepository.getInventoryItem().
+     * @param item Item to send to implementing class.
+     */
     void onGetInventoryItem(InventoryItem item);
 }
