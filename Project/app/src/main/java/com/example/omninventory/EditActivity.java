@@ -49,6 +49,12 @@ public class EditActivity extends AppCompatActivity  {
 
     private ValueTextWatcher itemValueTextWatcher;
 
+    /**
+     * Method called on Activity creation. Contains most of the logic of this Activity; programmatically
+     * modifying UI elements, creating Intents to move to other Activites, and setting up connection
+     * to the database.
+     * @param savedInstanceState Information about this Activity's saved state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

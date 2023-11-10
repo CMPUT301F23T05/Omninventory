@@ -28,10 +28,10 @@ public class ValueTextWatcher implements TextWatcher {
 
     /**
      * Unused method, necessary to implement TextWatcher.
-     * @param s
-     * @param start
-     * @param count
-     * @param after
+     * @param s     Unused.
+     * @param start Unused.
+     * @param count Unused.
+     * @param after Unused.
      */
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -39,10 +39,10 @@ public class ValueTextWatcher implements TextWatcher {
 
     /**
      * Unused method, necessary to implement TextWatcher.
-     * @param s
-     * @param start
-     * @param before
-     * @param count
+     * @param s      Unused.
+     * @param start  Unused.
+     * @param before Unused.
+     * @param count  Unused.
      */
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {

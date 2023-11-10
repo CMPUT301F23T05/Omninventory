@@ -451,6 +451,11 @@ public class SortFilterActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * Placeholder method to be implemented in Part 4.
+     * @param tags    Placeholder.
+     * @param adapter Placeholder.
+     */
     public static void applyTagsFilter(Tag[] tags, ArrayAdapter<InventoryItem> adapter) {
         // do nothing for now, implemented in part 4
     }

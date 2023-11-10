@@ -21,16 +21,26 @@ public class ItemValue implements Serializable {
 
     private Long value; // the number of cents in the currency value
 
+    /**
+     * Constructor that creates an ItemValue from a String representing a currency value. Performs
+     * strict input validation using ItemValue.stringToNum().
+     * @param x
+     */
     public ItemValue(String x) {
         this.value = stringToNum(x);
     }
 
+    /**
+     * Constructor that creates an ItemValue from a long representing the number of cents.
+     * @param x The long object.
+     */
     public ItemValue(long x) {
         this.value = x;
     }
 
     /**
-     * Constructor for non-primitive Long that checks for null pointer.
+     * Constructor that creates an ItemValue from a Long representing the number of cents. Uses 0L
+     * as the value if the Long given is a null pointer.
      * @param x The Long object.
      */
     public ItemValue(Long x) {
@@ -63,10 +73,10 @@ public class ItemValue implements Serializable {
 
     /**
      * Compares two ItemValue objects, and returns 0 if same value.
-     * If this object value > ie's value, return 1.
-     * If this object's value < ie's value, return -1.
+     * If this object value greater than ie's value, return 1.
+     * If this object's value less than ie's value, return -1.
      * @param ie The ItemVlue object to compare to
-     * @return 1 if value > ie.value, 0 if value == ie.value, -1 if value < ie.value
+     * @return 1 if value greater than ie.value, 0 if value == ie.value, -1 if value less than ie.value
      */
     public int compare(ItemValue ie) {
         if (value.equals(ie.value))

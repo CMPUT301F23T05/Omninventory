@@ -39,9 +39,9 @@ public class InventoryItemAdapter extends ArrayAdapter<InventoryItem> {
 
     /**
      * Sets up the UI for a list element in the ArrayAdapter.
-     * @param position
-     * @param convertView
-     * @param parent
+     * @param position     Position of list element.
+     * @param convertView  View to inflate.
+     * @param parent       Parent ViewGroup of this view.
      * @return The View for this list element.
      */
     @NonNull

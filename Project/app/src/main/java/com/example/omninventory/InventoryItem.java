@@ -47,37 +47,16 @@ public class InventoryItem implements Serializable {
     }
 
     /**
-     * Placeholder constructor for testing that initializes fields with just a name and description.
-     * @param name The name of the item.
-     * @param description A short description of the item.
-     */
-    public InventoryItem(String FirebaseId, String name, String description, String comment,
-                         String make, String model, String serialno, Integer value, Date date) {
-        // placeholder constructor for testing, just has name
-        this.name = name;
-        this.description = description;
-        this.comment = "comment";
-        this.make = "make";
-        this.model = "model";
-        this.serialNo = "123";
-        this.value = new ItemValue(0);
-        this.date = new ItemDate(new Date());
-        // TODO: tags & images
-
-        this.isSelected = false;
-    }
-
-    /**
-     * Full constructor.
-     * @param firebaseId
-     * @param name
-     * @param description
-     * @param comment
-     * @param make
-     * @param model
-     * @param serialNo
-     * @param value
-     * @param date
+     * Full constructor that initializes all fields of item.
+     * @param firebaseId   ID of item to create.
+     * @param name         Name of item to create.
+     * @param description  Description of item to create.
+     * @param comment      Comment of item to create.
+     * @param make         Make of item to create.
+     * @param model        Model of item to create.
+     * @param serialNo     Serial number of item to create.
+     * @param value        Estimated value of item to create (an ItemValue).
+     * @param date         Date of purchase of item to create (an ItemDate).
      */
     public InventoryItem(String firebaseId, String name, String description, String comment,
                          String make, String model, String serialNo, ItemValue value, ItemDate date) {
@@ -117,82 +96,164 @@ public class InventoryItem implements Serializable {
     }
 
     // ============== getters and setters ================
+
+    /**
+     * Getter for the InventoryItem's ID in firebase (a randomly-generated string).
+     * @return InventoryItem's ID.
+     */
     public String getFirebaseId() {
         return firebaseId;
     }
 
+    /**
+     * Getter for the InventoryItem's name.
+     * @return InventoryItem's name.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Setter for the InventoryItem's name.
+     * @param name New name to use.
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Getter for the InventoryItem's description.
+     * @return InventoryItem's description.
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Setter for the InventoryItem's description.
+     * @param description New description to use.
+     */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     * Getter for the InventoryItem's comment.
+     * @return InventoryItem's comment.
+     */
     public String getComment() {
         return comment;
     }
 
+    /**
+     * Setter for the InventoryItem's comment.
+     * @param comment New comment to use.
+     */
     public void setComment(String comment) {
         this.comment = comment;
     }
 
+    /**
+     * Getter for the InventoryItem's make.
+     * @return InventoryItem's make.
+     */
     public String getMake() {
         return make;
     }
 
+    /**
+     * Setter for the InventoryItem's make.
+     * @param make New make to use.
+     */
     public void setMake(String make) {
         this.make = make;
     }
 
+    /**
+     * Getter for the InventoryItem's model.
+     * @return InventoryItem's model.
+     */
     public String getModel() {
         return model;
     }
 
+    /**
+     * Setter for the InventoryItem's model.
+     * @param model New model to use.
+     */
     public void setModel(String model) {
         this.model = model;
     }
 
+    /**
+     * Getter for the InventoryItem's serial number.
+     * @return InventoryItem's serial number.
+     */
     public String getSerialNo() {
         return serialNo;
     }
 
+    /**
+     * Setter for the InventoryItem's serial number.
+     * @param serialNo New serial number to use.
+     */
     public void setSerialNo(String serialNo) {
         this.serialNo = serialNo;
     }
 
+    /**
+     * Getter for the InventoryItem's estimated value.
+     * @return InventoryItem's estimated value (an ItemValue).
+     */
     public ItemValue getValue() {
         return value;
     }
 
+    /**
+     * Setter for the InventoryItem's value.
+     * @param value New value to use (an ItemValue).
+     */
     public void setValue(ItemValue value) {
         this.value = value;
     }
 
+    /**
+     * Getter for the InventoryItem's date of purchase.
+     * @return InventoryItem's date of purchase (an ItemDate).
+     */
     public ItemDate getDate() {
         return date;
     }
 
+    /**
+     * Setter for the InventoryItem's date.
+     * @param date New date to use (an ItemDate).
+     */
     public void setDate(ItemDate date) {
         this.date = date;
     }
 
+    /**
+     * Placeholder method that returns tags as a String.
+     * @return A string representing the Item's tags.
+     */
     public String getTagsString() {
         return "#placeholder #tags";
     }
 
+    /**
+     * For InventoryItems in the MainActivity item list, this returns a flag describing whether or
+     * not the item is currently selected (on a long press from the user).
+     * @return A Boolean, 'true' if the item is selected, 'false' if not.
+     */
     public boolean isSelected() {
         return isSelected;
     }
 
+    /**
+     * Sets the flag describing whether or not the item is currently selected in the list.
+     * @param isSelected A Boolean, 'true' if the item is selected, 'false' if not.
+     */
     public void setSelected(boolean isSelected) {
         this.isSelected = isSelected;
     }
