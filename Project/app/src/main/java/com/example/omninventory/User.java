@@ -4,6 +4,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Class representing a user of the app. Holds all data stored in fields for each user.
+ *
+ * @author Rose
+ */
 public class User implements Serializable {
 
         private String name;
