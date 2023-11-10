@@ -61,9 +61,9 @@ public class LoginActivity extends AppCompatActivity {
                             // User is valid, log in and return to MainActivity
                             Log.d("login", "logging in");
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            intent.putExtra("action", "log in");
+                            intent.putExtra("login", "login");
                             intent.putExtra("loggedInUser", user);
-                            Log.d("login", "starting main");
+                            Log.d("login", "starting main: " + user.getName());
                             startActivity(intent);
                             finish();
                         } else if (message == "invalidInput") {
@@ -94,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                 doc.getString("password"),
                 (ArrayList<String>) doc.get("ownedItems")
         );
-        Log.d("Login", "(convertDocumentToUser) done");
+        Log.d("Login", "(convertDocumentToUser) done, name: " + user.getUsername());
         return user;
     }
 
@@ -125,7 +125,6 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG, "invalid password", task.getException());
                         } else {
                             User user = convertDocumentToUser(document);
-                            Log.d("login", user.getName());
                             callback.onValidationResult(true, "valid", user);
                         }
                     } else {

@@ -78,24 +78,27 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        Intent intent = getIntent();
         // check if user is logged in or out
-        if (getIntent().getExtras() != null)  {
-            if (getIntent().getExtras().getString("action").equals("log in")) {
+        if (intent.getExtras() != null)  {
+            if (intent.getStringExtra("login") != null) {
                 // user just logged in
-                currentUser = (User) getIntent().getExtras().getSerializable("loggedInUser");
+                currentUser = (User) getIntent().getSerializableExtra("loggedInUser");
                 Log.d("main", "Logged in as: " + currentUser.getName());
             }
         }
 
         // make sure user is logged in before giving them access to the rest of the app
-//        currentUser = new User("John", "johndoe", "a", new ArrayList<String>());
         if (currentUser == null) {
             Log.d("main", "need to login");
-            startLoginActivity();
+            Intent loginIntent = new Intent(this, LoginActivity.class);
+            startActivity(loginIntent);
+            finish();
         }
+        else {
+            Log.d("main", "setting database");
+            repo = new InventoryRepository(currentUser.getUsername());
         // === set up database
-        repo = new InventoryRepository();
 
         // Get references to views
         itemList = findViewById(R.id.item_list);
@@ -120,10 +123,7 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         // === set up itemList owned by logged in user
         // TODO: this is a string array for now, fix
         itemListData = new ArrayList<InventoryItem>();
-        Log.d("MainActivity:repo",currentUser.getUsername() + "'s items: " + currentUser.getOwnedItems());
-        repo.getItemListData(currentUser.getOwnedItems(), this);
         // retrieve data passed from SortFilterActivity: itemListData and sortBy
-        Intent intent = getIntent();
         if (intent != null) {
             if (intent.getSerializableExtra("itemListData") != null) {
                 itemListData = (ArrayList<InventoryItem>) intent.getSerializableExtra("itemListData");
@@ -156,7 +156,6 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
 
         if (sortBy != null && sortOrder != null) {
             // should always trigger if coming from SortFilterActivity
-            registration.remove();
             String ascendingText = getString(R.string.ascending);
             String descendingText = getString(R.string.descending);
             SortFilterActivity.applySorting(sortBy, sortOrder, itemListAdapter, descendingText);
@@ -245,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
                 itemListAdapter.notifyDataSetChanged();
                 return true;
             }
-        });
+        }); }
     }
 
     /**
@@ -254,11 +253,6 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
      */
     public void onItemListUpdate() {
         this.calcValue();
-    }
-    private void startLoginActivity() {
-        Intent loginIntent = new Intent(this, LoginActivity.class);
-        startActivity(loginIntent);
-        finish();
     }
 
     private void deleteDialog() {
@@ -331,7 +325,6 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
     }
     public void onGetItemListData(InventoryItem item) {
         itemListData.add(item);
-        Log.d("onGetItemListData", "added item. total number: " + itemListData.size());
     }
 
 }

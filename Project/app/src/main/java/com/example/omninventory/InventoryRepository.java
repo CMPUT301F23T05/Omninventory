@@ -35,14 +35,16 @@ public class InventoryRepository {
     private FirebaseFirestore db;
     private CollectionReference usersRef;
     private CollectionReference inventoryItemsRef;
+    private String username;
 
     /**
      * Constructor that sets up connection to Firestore and references.
      */
-    public InventoryRepository() {
+    public InventoryRepository(String username) {
         db = FirebaseFirestore.getInstance();
         usersRef = db.collection("users");
         inventoryItemsRef = db.collection("inventoryItems");
+        this.username = username;
     }
 
     /**
@@ -67,8 +69,11 @@ public class InventoryRepository {
                     adapter.clear(); // clear existing list data
                     for (QueryDocumentSnapshot doc : snapshot) {
                         // get each item returned by query and add to adapter
-                        InventoryItem item = convertDocumentToInventoryItem(doc);
-                        adapter.add(item);
+                        if (doc.getString("owner").equals(username)) {
+                            Log.d("InventoryRepository", "doc id: " + doc.getId());
+                            InventoryItem item = convertDocumentToInventoryItem(doc);
+                            adapter.add(item);
+                        }
                     }
                 }
                 adapter.notifyDataSetChanged(); // TODO: is this necessary?
@@ -77,6 +82,10 @@ public class InventoryRepository {
             }
         });
         return null;
+//        adapter.notifyDataSetChanged(); // TODO: is this necessary?
+//        Log.d("InventoryRepository", "onItemListUpdate was called");
+//        handler.onItemListUpdate();
+//        return null;
     }
 
     /**
@@ -97,7 +106,8 @@ public class InventoryRepository {
             doc.getString("model"),
             doc.getString("serialno"),
             new ItemValue(doc.getLong("value")), // convert to ItemValue
-            new ItemDate(doc.getDate("date")) // convert to ItemDate
+            new ItemDate(doc.getDate("date")), // convert to ItemDate
+            username
         );
 
         return item;
@@ -136,7 +146,7 @@ public class InventoryRepository {
         DocumentReference currentUserRef = usersRef.document(currentUser.getUsername());
 
         // add new inventoryItem reference to currentUser's list of ownedItems
-        Object[] arrayToAdd = {newItemRef};
+        Object[] arrayToAdd = {newItemRef.getId()};
 
         currentUserRef
             .update("ownedItems", FieldValue.arrayUnion(arrayToAdd))

@@ -36,9 +36,6 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
-        // === set up database
-        repo = new InventoryRepository();
-
         // === get references to Views
         final TextView titleText = findViewById(R.id.title_text);
         itemNameText = findViewById(R.id.item_name_text);
@@ -74,6 +71,9 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
             // this shouldn't happen
             throw new RuntimeException("DetailsActivity opened without any extra data");
         }
+
+        // === set up database
+        repo = new InventoryRepository(currentUser.getUsername());
 
         // === UI setup
         titleText.setText(getString(R.string.details_title_text)); // set title text
