@@ -32,7 +32,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/ascending"
-            android:layout_marginTop="5dp">
+            android:layout_marginTop="5dp"
+            android:backgroundTint="@color/ascending_descending_button">
         </Button>
 
         <TextView
@@ -59,7 +60,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="@string/make_filter_button_text"></Button>
+            android:text="@string/make_filter_button_text"
+            android:backgroundTint="@color/unclicked_filter_button"></Button>
 
         <LinearLayout
             android:id="@+id/date_button_layout"
@@ -89,6 +91,7 @@
                     android:id="@+id/start_date_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@color/unclicked_filter_button"
                     android:text="@string/start_date_button"
                     android:layout_marginStart="10dp">
                 </Button>
@@ -117,12 +120,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/end_date_button"
+                    android:backgroundTint="@color/unclicked_filter_button"
                     app:layout_constraintTop_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="10dp">
                 </Button>
 
             </LinearLayout>
+
 
         </LinearLayout>
 
@@ -131,6 +136,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/date_filter_button_text"
+            android:backgroundTint="@color/unclicked_filter_button"
             app:layout_constraintTop_toBottomOf="@+id/date_button_layout"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="10dp">
@@ -151,6 +157,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/description_filter_button_text"
+            android:backgroundTint="@color/unclicked_filter_button"
             app:layout_constraintTop_toBottomOf="@+id/description_filter_edit_text"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="10dp">
@@ -161,6 +168,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/filter_by_tags_button_text"
+            android:backgroundTint="@color/unclicked_filter_button"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent">
         </Button>

@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
 
     private InventoryRepository repo;
     private ArrayList<InventoryItem> itemListData;
-    private ArrayList<InventoryItem> completeItemList;
     private InventoryItemAdapter itemListAdapter;
     SharedPreferences sp;
     private String sortBy;
@@ -190,10 +189,6 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
 
         Intent intent = getIntent();
         if (intent != null) {
-            if (intent.getSerializableExtra("itemListData") != null) {
-                itemListData = (ArrayList<InventoryItem>) intent.getSerializableExtra("itemListData");
-                completeItemList = (ArrayList<InventoryItem>) itemListData.clone();
-            }
             if (intent.getStringExtra("sortBy") != null) {
                 sortBy = intent.getStringExtra("sortBy");
             }
@@ -218,23 +213,6 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         itemListAdapter = new InventoryItemAdapter(this, itemListData);
         itemList.setAdapter(itemListAdapter);
         ListenerRegistration registration = repo.setupInventoryItemList(itemListAdapter, this); // set up listener for getting Firestore data
-
-        if (sortBy != null && sortOrder != null) {
-            // should always trigger if coming from SortFilterActivity
-            registration.remove();
-            String ascendingText = getString(R.string.ascending);
-            String descendingText = getString(R.string.descending);
-            SortFilterActivity.applySorting(sortBy, sortOrder, itemListAdapter, descendingText);
-        }
-        if (filterMake != null) {
-            SortFilterActivity.applyMakeFilter(filterMake, itemListAdapter);
-        }
-        if (filterStartDate != null && filterEndDate != null) {
-            SortFilterActivity.applyDateFilter(filterStartDate, filterEndDate, itemListAdapter);
-        }
-        if (filterDescription != null) {
-                SortFilterActivity.applyDescriptionFilter(filterDescription, itemListAdapter);
-        }
     
         // Setup delete items dialog
         deleteDialog = new Dialog(this);
@@ -264,12 +242,12 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         ImageButton sortFilterBtn = findViewById(R.id.sort_filter_button);
         sortFilterBtn.setOnClickListener((v) -> {
             Intent sortFilterIntent = new Intent(MainActivity.this, SortFilterActivity.class);
-            if (completeItemList == null) {
-                sortFilterIntent.putExtra("itemListData", itemListData);
-            }
-            else {
-                sortFilterIntent.putExtra("itemListData", completeItemList);
-            }
+            sortFilterIntent.putExtra("sortBy", sortBy);
+            sortFilterIntent.putExtra("sortOrder", sortOrder);
+            sortFilterIntent.putExtra("filterMake", filterMake);
+            sortFilterIntent.putExtra("filterStartDate", filterStartDate);
+            sortFilterIntent.putExtra("filterEndDate", filterEndDate);
+            sortFilterIntent.putExtra("filterDescription", filterDescription);
             MainActivity.this.startActivity(sortFilterIntent);
         });
 
@@ -328,8 +306,28 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
      * value will be calculated before items
      */
     public void onItemListUpdate() {
+
         this.calcValue();
+        this.sortAndFilter();
     }
+
+    public void sortAndFilter() {
+        if (sortBy != null && sortOrder != null) {
+            // should always trigger if coming from SortFilterActivity
+            String descendingText = getString(R.string.descending);
+            SortFilterActivity.applySorting(sortBy, sortOrder, itemListAdapter, descendingText);
+        }
+        if (filterMake != null) {
+            SortFilterActivity.applyMakeFilter(filterMake, itemListAdapter);
+        }
+        if (filterStartDate != null && filterEndDate != null) {
+            SortFilterActivity.applyDateFilter(filterStartDate, filterEndDate, itemListAdapter);
+        }
+        if (filterDescription != null) {
+            SortFilterActivity.applyDescriptionFilter(filterDescription, itemListAdapter);
+        }
+    }
+
     private void startLoginActivity() {
         Intent loginIntent = new Intent(this, LoginActivity.class);
         startActivity(loginIntent);
