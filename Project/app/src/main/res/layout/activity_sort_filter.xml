@@ -45,6 +45,7 @@
         </TextView>
 
         <EditText
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
             android:id="@+id/make_filter_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -56,12 +57,12 @@
         <Button
             android:layout_gravity="center"
             android:id="@+id/add_make_filter_button"
-            style="@style/blue_button"
+            android:backgroundTint="@color/unclicked_filter_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:text="@string/make_filter_button_text"
-            android:backgroundTint="@color/unclicked_filter_button"></Button>
+            ></Button>
 
         <LinearLayout
             android:id="@+id/date_button_layout"
@@ -74,25 +75,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
 
                 <TextView
 
                     android:id="@+id/start_date_text"
                     android:text="yyy-mm-dd"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="10">
                 </TextView>
 
+                <!-- change to image button later -->
                 <Button
                     android:layout_gravity="center"
-                    style="@style/blue_button"
                     android:id="@+id/start_date_button"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/unclicked_filter_button"
-                    android:text="@string/start_date_button"
+                    android:text="SD"
                     android:layout_marginStart="10dp">
                 </Button>
 
@@ -103,28 +107,30 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/end_date_text"
-                    android:text="yyy-mm-dd"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp">
+                    android:text="yyyy-mm-dd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="5">
                 </TextView>
 
                 <Button
-                    android:layout_gravity="center"
-                    style="@style/blue_button"
                     android:id="@+id/end_date_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/end_date_button"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="10dp"
+                    android:layout_weight="1"
                     android:backgroundTint="@color/unclicked_filter_button"
-                    app:layout_constraintTop_toBottomOf="parent"
+                    android:text="ED"
                     app:layout_constraintStart_toStartOf="parent"
-                    android:layout_marginStart="10dp">
-                </Button>
+                    app:layout_constraintTop_toBottomOf="parent"></Button>
 
             </LinearLayout>
 
@@ -132,6 +138,7 @@
         </LinearLayout>
 
         <Button
+            android:layout_gravity="center"
             android:id="@+id/add_date_filter_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -143,34 +150,32 @@
         </Button>
 
         <EditText
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
             android:id="@+id/description_filter_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/add_date_filter_button"
-            app:layout_constraintStart_toStartOf="parent"
             android:autofillHints="@string/description_keywords_autofill"
             android:layout_marginTop="10dp">
         </EditText>
 
         <Button
+            android:layout_gravity="center"
             android:id="@+id/add_description_filter_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/description_filter_button_text"
             android:backgroundTint="@color/unclicked_filter_button"
-            app:layout_constraintTop_toBottomOf="@+id/description_filter_edit_text"
-            app:layout_constraintStart_toStartOf="parent"
             android:layout_marginTop="10dp">
         </Button>
 
         <Button
+            android:layout_gravity="center"
             android:id="@+id/filter_by_tags_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/filter_by_tags_button_text"
             android:backgroundTint="@color/unclicked_filter_button"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            android:layout_marginTop="10dp">
         </Button>
 
     </LinearLayout>
