@@ -11,28 +11,28 @@
     <!--Override the android:text attribute in Activity code to "SORT AND FILTER"-->
     <include layout="@layout/title_bar"/>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_weight="100"
-        android:layout_gravity="center">
+        android:layout_gravity="center"
+        android:orientation="vertical">
 
         <Spinner
             android:id="@+id/sort_dropdown_spinner"
+            android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:spinnerMode="dropdown"/>
+            android:spinnerMode="dropdown"
+            android:layout_marginTop="5dp"/>
 
         <Button
             android:id="@+id/asc_desc_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="@string/ascending"
-            app:layout_constraintTop_toBottomOf="@+id/sort_dropdown_spinner"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="5dp">
         </Button>
 
         <TextView
@@ -47,64 +47,82 @@
             android:id="@+id/make_filter_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/make_text"
-            app:layout_constraintStart_toStartOf="parent"
+            android:theme="@style/item_edit_edittext"
             android:autofillHints="@string/make"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="5dp">
         </EditText>
 
         <Button
+            android:layout_gravity="center"
             android:id="@+id/add_make_filter_button"
+            style="@style/blue_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/make_filter_button_text"
-            app:layout_constraintTop_toBottomOf="@+id/make_filter_edit_text"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="10dp">
-        </Button>
+            android:layout_marginTop="5dp"
+            android:text="@string/make_filter_button_text"></Button>
 
         <LinearLayout
             android:id="@+id/date_button_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/add_make_filter_button"
             android:orientation="horizontal"
             android:layout_marginTop="10dp">
 
-            <TextView
-                android:id="@+id/start_date_text"
-                android:text="yyy-mm-dd"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </TextView>
-
-            <Button
-                android:id="@+id/start_date_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/start_date_button"
-                app:layout_constraintTop_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="10dp">
-            </Button>
-
-            <TextView
-                android:id="@+id/end_date_text"
-                android:text="yyy-mm-dd"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp">
-            </TextView>
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <Button
-                android:id="@+id/end_date_button"
-                android:layout_width="wrap_content"
+
+                <TextView
+
+                    android:id="@+id/start_date_text"
+                    android:text="yyy-mm-dd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                </TextView>
+
+                <Button
+                    android:layout_gravity="center"
+                    style="@style/blue_button"
+                    android:id="@+id/start_date_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/start_date_button"
+                    android:layout_marginStart="10dp">
+                </Button>
+
+            </LinearLayout>
+
+            <LinearLayout
+
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/end_date_button"
-                app:layout_constraintTop_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginStart="10dp">
-            </Button>
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/end_date_text"
+                    android:text="yyy-mm-dd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp">
+                </TextView>
+
+                <Button
+                    android:layout_gravity="center"
+                    style="@style/blue_button"
+                    android:id="@+id/end_date_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/end_date_button"
+                    app:layout_constraintTop_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="10dp">
+                </Button>
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -147,7 +165,7 @@
             app:layout_constraintStart_toStartOf="parent">
         </Button>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"

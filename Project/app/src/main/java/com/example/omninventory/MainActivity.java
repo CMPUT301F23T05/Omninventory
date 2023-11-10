@@ -300,6 +300,7 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
                     startLoginActivity();
                 }
                 else {
+
                     // start ProfileActivity
                 }
             }
