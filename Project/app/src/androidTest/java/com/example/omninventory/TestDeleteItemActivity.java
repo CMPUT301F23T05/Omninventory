@@ -3,6 +3,7 @@ package com.example.omninventory;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.longClick;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -14,6 +15,10 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 
@@ -21,7 +26,11 @@ import org.junit.runner.RunWith;
 @LargeTest
 public class TestDeleteItemActivity {
 
-    TestItems testItems;
+    TestItems testItems = new TestItems();
+
+    /**
+     * Todo: May need to revamp the test cases to test onData instead
+     */
 
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new
@@ -30,6 +39,7 @@ public class TestDeleteItemActivity {
     /**
      * Base test case for deleting item from database
      */
+    @Test
     public void testDeleteItem(){
         //add an item to the inventory screen
         onView(allOf(withId(R.id.add_item_button), isDisplayed())).perform(click());
@@ -48,8 +58,7 @@ public class TestDeleteItemActivity {
         onView(withId(R.id.delete_dialog_button)).perform(click());
 
         //validate the item is deleted
-        //todo: update to is not displayed
-        onView(withText("DeleteText")).check(matches(isDisplayed()));
+        onView(withText("DeleteText")).check(doesNotExist());
 
     }
 
@@ -57,6 +66,7 @@ public class TestDeleteItemActivity {
      * Test cases for deleting multiple items at once
      * @author Kevin
      */
+    @Test
     public void testDeleteMultipleItem(){
         testItems.generateTestItems();
         //In the inventory screen select multiple items, test items generated from testItem class
@@ -71,9 +81,9 @@ public class TestDeleteItemActivity {
 
         //validate the items are deleted.
         //todo: change to check for not displayed
-        onView(withText("TestItem1")).check(matches(isDisplayed()));
-        onView(withText("TestItem2")).check(matches(isDisplayed()));
-        onView(withText("TestItem3")).check(matches(isDisplayed()));
+        onView(withText("TestItem1")).check(doesNotExist());
+        onView(withText("TestItem2")).check(doesNotExist());
+        onView(withText("TestItem3")).check(doesNotExist());
 
     }
 

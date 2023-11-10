@@ -42,7 +42,7 @@ public class TestItems {
         onView(allOf(withId(R.id.add_item_button), isDisplayed())).perform(click());
         //Item1 information
         onView(withId(R.id.item_name_edittext)).perform(ViewActions.
-                typeText("TestItem2"));
+                typeText("TestItem3"));
 
         onView(withId(R.id.save_button)).perform(click());
     }
