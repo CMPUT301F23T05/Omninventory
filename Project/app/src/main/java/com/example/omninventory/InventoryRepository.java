@@ -55,6 +55,7 @@ public class InventoryRepository {
      */
     public ListenerRegistration setupInventoryItemList(InventoryItemAdapter adapter, ItemListUpdateHandler handler) {
         // set up listener
+        Log.d("InventoryRepository", "setupInventoryItemList was called");
         inventoryItemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException error) {
@@ -71,6 +72,7 @@ public class InventoryRepository {
                     }
                 }
                 adapter.notifyDataSetChanged(); // TODO: is this necessary?
+                Log.d("InventoryRepository", "onItemListUpdate was called");
                 handler.onItemListUpdate();
             }
         });

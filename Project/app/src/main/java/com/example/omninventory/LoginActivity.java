@@ -63,6 +63,7 @@ public class LoginActivity extends AppCompatActivity {
                             Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                             intent.putExtra("action", "log in");
                             intent.putExtra("loggedInUser", user);
+                            Log.d("login", "starting main");
                             startActivity(intent);
                             finish();
                         } else if (message == "invalidInput") {
@@ -123,8 +124,8 @@ public class LoginActivity extends AppCompatActivity {
                             callback.onValidationResult(false, "invalidInput", null);
                             Log.d(TAG, "invalid password", task.getException());
                         } else {
-                            Log.d("login", "valid user");
                             User user = convertDocumentToUser(document);
+                            Log.d("login", user.getName());
                             callback.onValidationResult(true, "valid", user);
                         }
                     } else {
