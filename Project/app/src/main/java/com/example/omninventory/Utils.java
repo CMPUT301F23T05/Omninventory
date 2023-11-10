@@ -3,9 +3,19 @@ package com.example.omninventory;
 import java.security.MessageDigest;
 import java.util.regex.Pattern;
 
-// sha256 algorithm implementation was based on: https://www.baeldung.com/sha-256-hashing-java
+/**
+ * A class containing utility functions used in the app, currently for password hashing and
+ * validation.
+ * @author Rose
+ */
 public class Utils {
+    /**
+     * Implements SHA256 hashing for a String parameter.
+     * @param base The String to hash.
+     * @return     A hash of the String.
+     */
     public static String sha256(String base) {
+        // sha256 algorithm implementation was based on: https://www.baeldung.com/sha-256-hashing-java
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             StringBuffer hexString = new StringBuffer();
@@ -23,6 +33,13 @@ public class Utils {
             throw new RuntimeException(ex);
         }
     }
+
+    /**
+     * Performs validation to determine whether a password is acceptable, with constraints
+     * such as 'must contain a number' and 'must contain an uppercase letter'.
+     * @param password The String password to validate.
+     * @return         A boolean 'true' if validation succeeded, and 'false' if not.
+     */
     public static boolean validatePassword(String password) {
         final String HAS_NUMBER = ".*[0-9].*";
         final String HAS_UPPERCASE = ".*[A-Z].*";

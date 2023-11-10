@@ -18,17 +18,30 @@ import java.util.ArrayList;
 /**
  * A custom ArrayAdapter that works with Tag objects. Uses tag_list_content.xml
  * for layout display of Tags in a ListView.
+ * @author Patrick
  */
 public class TagAdapter extends ArrayAdapter<Tag>  {
     private ArrayList<Tag> tagListData;
     private Context context;
 
+    /**
+     * Constructor that takes in necessary parameters for an ArrayAdapter.
+     * @param context Context for the ArrayAdapter.
+     * @param tags    ArrayList to use to set up the ArrayAdapter.
+     */
     public TagAdapter(Context context, ArrayList<Tag> tags)  {
         super(context, 0, tags);
         this.tagListData = tags;
         this.context = context;
     }
 
+    /**
+     * Sets up the UI for a list element in the ArrayAdapter.
+     * @param position     Position of list element.
+     * @param convertView  View to inflate.
+     * @param parent       Parent ViewGroup of this view.
+     * @return The View for this list element.
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

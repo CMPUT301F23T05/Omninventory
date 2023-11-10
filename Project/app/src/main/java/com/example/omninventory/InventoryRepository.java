@@ -87,7 +87,7 @@ public class InventoryRepository {
     /**
      * Convert fields of a DocumentSnapshot from the inventoryItem collection to an InventoryItem.
      * @param doc DocumentSnapshot to convert.
-     * @return
+     * @return    An InventoryItem whose fields match the DocumentSnapshot.
      */
     public InventoryItem convertDocumentToInventoryItem(DocumentSnapshot doc) {
         Log.d("InventoryRepository", "convert called with document id=" + doc.getId());
@@ -114,7 +114,7 @@ public class InventoryRepository {
      * Add a new InventoryItem to the inventoryItem collection. Also adds reference to the current
      * User's list of owned items.
      * @param currentUser User currently signed in.
-     * @param item InventoryItem to add to currentUser's owned items.
+     * @param item        InventoryItem to add to currentUser's owned items.
      */
     public void addInventoryItem(User currentUser, InventoryItem item) {
         // create data for new item document
@@ -237,12 +237,12 @@ public class InventoryRepository {
     }
 
     /**
-     * Bit of a roundabout way to update the DetailsActivity with an InventoryItem on update.
+     * A rather roundabout way to update the DetailsActivity with an InventoryItem on update.
      * This sends the InventoryItem from Firebase into the onGetInventoryItem method of the handler,
      * which must implement the GetInventoryItemHandler interface.
      * @param firebaseId ID of item to get.
-     * @param handler GetInventoryItemHandler that implements function to call with InventoryItem
-     *                data, once received.
+     * @param handler    GetInventoryItemHandler that implements function to call with InventoryItem
+     *                   data, once received.
      */
     public void getInventoryItemInto(String firebaseId, GetInventoryItemHandler handler) {
         Log.d("InventoryRepository", "getInventoryItem called with id=" + firebaseId);
@@ -271,6 +271,11 @@ public class InventoryRepository {
     }
 
 
+    /**
+     * Deletes an InventoryItem from the database.
+     * @param currentUser The User currently signed in (to whom the item belongs).
+     * @param itemId      The ID of the item to delete.
+     */
     public void deleteInventoryItem(User currentUser, String itemId) {
         // get document for currentUser (id is username)
         DocumentReference currentUserRef = usersRef.document(currentUser.getUsername());
@@ -461,6 +466,11 @@ public class InventoryRepository {
         }
 
     }
+
+    /**
+     * Adds a new User to the database.
+     * @param user The User to add.
+     */
     public void addUser(User user) {
         HashMap<String, Object> data = new HashMap<>();
         data.put("password", user.getPassword());
@@ -476,6 +486,10 @@ public class InventoryRepository {
 
     };
 
+    /**
+     * Retrieve the contents of the User's inventory.
+     * @param username The username (ID) of the currently signed-in user.
+     */
     public void getUserInventory(String username) {
         usersRef.document(username).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override

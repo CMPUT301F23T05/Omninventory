@@ -8,7 +8,11 @@ import java.util.Date;
 import java.util.HashMap;
 
 /**
- * Holds all data stored in fields for each inventory item.
+ * Class representing an item stored in the inventory. Holds all data stored in fields for each
+ * inventory item.
+ * @author Aron
+ * @author Castor
+ * @author Rose
  */
 public class InventoryItem implements Serializable {
 
@@ -46,38 +50,16 @@ public class InventoryItem implements Serializable {
     }
 
     /**
-     * Placeholder constructor for testing that initializes fields with just a name and description.
-     * @param name
-     * @param description
-     */
-    public InventoryItem(String FirebaseId, String name, String description, String comment,
-                         String make, String model, String serialno, Integer value, Date date) {
-        // placeholder constructor for testing, just has name
-        this.name = name;
-        this.description = description;
-        this.comment = "comment";
-        this.make = "make";
-        this.model = "model";
-        this.serialNo = "123";
-        this.value = new ItemValue(0);
-        this.date = new ItemDate(new Date());
-        this.tags = new ArrayList<>();
-        // TODO: images
-
-        this.isSelected = false;
-    }
-
-    /**
-     * Full constructor.
-     * @param firebaseId
-     * @param name
-     * @param description
-     * @param comment
-     * @param make
-     * @param model
-     * @param serialNo
-     * @param value
-     * @param date
+     * Full constructor that initializes all fields of item.
+     * @param firebaseId   ID of item to create.
+     * @param name         Name of item to create.
+     * @param description  Description of item to create.
+     * @param comment      Comment of item to create.
+     * @param make         Make of item to create.
+     * @param model        Model of item to create.
+     * @param serialNo     Serial number of item to create.
+     * @param value        Estimated value of item to create (an ItemValue).
+     * @param date         Date of purchase of item to create (an ItemDate).
      */
     public InventoryItem(String firebaseId, String name, String description, String comment,
                          String make, String model, String serialNo, ItemValue value, ItemDate date, ArrayList<String> tags) {
@@ -98,7 +80,8 @@ public class InventoryItem implements Serializable {
 
     /**
      * Convert fields of an InventoryItem into a HashMap for writing to Firebase.
-     * Note that item.firebaseId is not stored in the HashMap.
+     * Note that item.firebaseId is not stored in the HashMap, as it is not written with the item
+     * data.
      * @return A HashMap representing this InventoryItem that may be written to Firebase.
      */
     public HashMap<String, Object> convertToHashMap() {
@@ -116,81 +99,6 @@ public class InventoryItem implements Serializable {
         return itemData;
     }
 
-    // ============== getters and setters ================
-
-    public String getFirebaseId() {
-        return firebaseId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public String getMake() {
-        return make;
-    }
-
-    public void setMake(String make) {
-        this.make = make;
-    }
-
-    public String getModel() {
-        return model;
-    }
-
-    public void setModel(String model) {
-        this.model = model;
-    }
-
-    public String getSerialNo() {
-        return serialNo;
-    }
-
-    public void setSerialNo(String serialNo) {
-        this.serialNo = serialNo;
-    }
-
-    public ItemValue getValue() {
-        return value;
-    }
-
-    public void setValue(ItemValue value) {
-        this.value = value;
-    }
-
-    public ItemDate getDate() {
-        return date;
-    }
-
-    public void setDate(ItemDate date) {
-        this.date = date;
-    }
-
-    public void addTag(String tagName) { tags.add(tagName); }
-    public void setTags(ArrayList<String> tags) { this.tags = tags; }
-
-    public ArrayList<String> getTags() { return tags; }
-
     /**
      * A method to generate a space-separated list of #-preceded tags as a single string for display
      * @return A String in the form "#[tag_1_name] #[tag_2_name] etc
@@ -203,11 +111,176 @@ public class InventoryItem implements Serializable {
         return tagString;
     }
 
+    /**
+     * Adds a new tag to this InventoryItem's ArrayList of tags.
+     * @param tagName The tag to add.
+     */
+    public void addTag(String tagName) { tags.add(tagName); }
+
+    /**
+     * For InventoryItems in the MainActivity item list, this returns a flag describing whether or
+     * not the item is currently selected (on a long press from the user).
+     * @return A Boolean, 'true' if the item is selected, 'false' if not.
+     */
     public boolean isSelected() {
         return isSelected;
     }
 
+    /**
+     * Sets the flag describing whether or not the item is currently selected in the list.
+     * @param isSelected A Boolean, 'true' if the item is selected, 'false' if not.
+     */
     public void setSelected(boolean isSelected) {
         this.isSelected = isSelected;
     }
+
+    // ============== getters and setters ================
+
+    /**
+     * Getter for the InventoryItem's ID in firebase (a randomly-generated string).
+     * @return InventoryItem's ID.
+     */
+    public String getFirebaseId() {
+        return firebaseId;
+    }
+
+    /**
+     * Getter for the InventoryItem's name.
+     * @return InventoryItem's name.
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Setter for the InventoryItem's name.
+     * @param name New name to use.
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Getter for the InventoryItem's description.
+     * @return InventoryItem's description.
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Setter for the InventoryItem's description.
+     * @param description New description to use.
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * Getter for the InventoryItem's comment.
+     * @return InventoryItem's comment.
+     */
+    public String getComment() {
+        return comment;
+    }
+
+    /**
+     * Setter for the InventoryItem's comment.
+     * @param comment New comment to use.
+     */
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    /**
+     * Getter for the InventoryItem's make.
+     * @return InventoryItem's make.
+     */
+    public String getMake() {
+        return make;
+    }
+
+    /**
+     * Setter for the InventoryItem's make.
+     * @param make New make to use.
+     */
+    public void setMake(String make) {
+        this.make = make;
+    }
+
+    /**
+     * Getter for the InventoryItem's model.
+     * @return InventoryItem's model.
+     */
+    public String getModel() {
+        return model;
+    }
+
+    /**
+     * Setter for the InventoryItem's model.
+     * @param model New model to use.
+     */
+    public void setModel(String model) {
+        this.model = model;
+    }
+
+    /**
+     * Getter for the InventoryItem's serial number.
+     * @return InventoryItem's serial number.
+     */
+    public String getSerialNo() {
+        return serialNo;
+    }
+
+    /**
+     * Setter for the InventoryItem's serial number.
+     * @param serialNo New serial number to use.
+     */
+    public void setSerialNo(String serialNo) {
+        this.serialNo = serialNo;
+    }
+
+    /**
+     * Getter for the InventoryItem's estimated value.
+     * @return InventoryItem's estimated value (an ItemValue).
+     */
+    public ItemValue getValue() {
+        return value;
+    }
+
+    /**
+     * Setter for the InventoryItem's value.
+     * @param value New value to use (an ItemValue).
+     */
+    public void setValue(ItemValue value) {
+        this.value = value;
+    }
+
+    /**
+     * Getter for the InventoryItem's date of purchase.
+     * @return InventoryItem's date of purchase (an ItemDate).
+     */
+    public ItemDate getDate() {
+        return date;
+    }
+
+    /**
+     * Setter for the InventoryItem's date.
+     * @param date New date to use (an ItemDate).
+     */
+    public void setDate(ItemDate date) {
+        this.date = date;
+    }
+
+    /**
+     * Setter for the InventoryItem's tags.
+     * @param tags New tags.
+     */
+    public void setTags(ArrayList<String> tags) { this.tags = tags; }
+
+    /**
+     * Getter for the InventoryItem's tags.
+     * @return InventoryItem's tags (an ArrayList of String objects)
+     */
+    public ArrayList<String> getTags() { return tags; }
 }

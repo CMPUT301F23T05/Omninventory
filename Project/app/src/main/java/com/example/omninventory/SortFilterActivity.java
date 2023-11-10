@@ -40,6 +40,7 @@ import java.util.List;
  * are passed back to MainActivity and will be restored when coming back to this Activity.
  * Static methods are provided for the actual sorting/filtering so they can be accessed from
  * anywhere. Sorting is done with the help of Comparator class.
+ * @author Zachary
  */
 public class SortFilterActivity extends AppCompatActivity {
     private String dropdownSelection;
@@ -450,6 +451,11 @@ public class SortFilterActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * Placeholder method to be implemented in Part 4.
+     * @param tags    Placeholder.
+     * @param adapter Placeholder.
+     */
     public static void applyTagsFilter(Tag[] tags, ArrayAdapter<InventoryItem> adapter) {
         // do nothing for now, implemented in part 4
     }
