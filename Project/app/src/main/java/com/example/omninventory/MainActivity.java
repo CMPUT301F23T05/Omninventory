@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
             sharedPrefs.edit().putString("username", user).apply();
             Log.d("login", "Logged in as: " + user);
             // todo: for testing purposes only, will remove later
-            Toast.makeText(getApplicationContext(), "Logged in as , " + user, Toast.LENGTH_LONG).show();
+//            Toast.makeText(getApplicationContext(), "Logged in as , " + user, Toast.LENGTH_LONG).show();
         }
 
         // set up itemList owned by logged in user
