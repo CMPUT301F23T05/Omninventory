@@ -1,6 +1,13 @@
 package com.example.omninventory;
 
 
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static org.hamcrest.Matchers.allOf;
+
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
@@ -13,19 +20,43 @@ import org.junit.runner.RunWith;
 @LargeTest
 public class TestLoginActivity {
 
-
+    /**
+     * DO NOT RUN THIS TEST CASE, IT WILL FAIL BECAUSE FUNCTIONALITY IS INCOMPLETE
+     */
     /*
 
     //Rule too set starting point on login screen
     @Rule
-    public ActivityScenarioRule<MainActivity> scenario = new
-            ActivityScenarioRule<MainActivity>(MainActivity.class);
+    public ActivityScenarioRule<> scenario = new
+            ActivityScenarioRule<>(.class);
     */
 
+    //todo:update test case after change to start on login screen
+    //for now app starts on the inventory screen
+
+    /**
+     * Base test case for signing up as a user
+     * IMPORTANT: User needs to be deleted from database before running this test case
+     * IMPORTANT: Incomplete test case (since functionality is not complete yet)
+     *
+     * @author: Kevin
+     */
     @Test
     public void testSignup(){
         //From login screen, sign up for a new account
+
+        //click on profile button
+        onView(allOf(withId(R.id.profile_button), isDisplayed())).perform(click());
+
+        onView(withId(R.id.signup_link)).perform(click());
+
+        onView(withId(R.id.signup_name_edit_text)).perform(typeText("John Doe"));
+        onView(withId(R.id.signup_username_edit_text)).perform(typeText("TheRealJohnDoe"));
+        onView(withId(R.id.signup_password_edit_text)).perform(typeText("TheRealJohnDoe123!"));
+        onView(withId(R.id.signup_confirm_password_edit_text)).perform(typeText("TheRealJohnDoe123!"));
+
         //validate the user profile is of the account just signed up for
+        //todo: this is not yet implemented, update when implemented
     }
 
     @Test

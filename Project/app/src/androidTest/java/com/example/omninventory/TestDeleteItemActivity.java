@@ -70,6 +70,7 @@ public class TestDeleteItemActivity {
         onView(withId(R.id.delete_dialog_button)).perform(click());
 
         //validate the items are deleted.
+        //todo: change to check for not displayed
         onView(withText("TestItem1")).check(matches(isDisplayed()));
         onView(withText("TestItem2")).check(matches(isDisplayed()));
         onView(withText("TestItem3")).check(matches(isDisplayed()));
