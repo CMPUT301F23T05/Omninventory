@@ -19,7 +19,6 @@ public class InventoryItem implements Serializable {
     private String serialNo;
     private ItemValue value;
     private ItemDate date;
-    private String owner;
     private ArrayList<Object> tags; // placeholder
     private ArrayList<Object> images; // placeholder
 
@@ -38,7 +37,6 @@ public class InventoryItem implements Serializable {
         this.serialNo = "";
         this.value = new ItemValue(0);
         this.date = new ItemDate(new Date());
-        this.owner = "";
         // TODO: tags & images
 
         this.isSelected = false;
@@ -50,7 +48,7 @@ public class InventoryItem implements Serializable {
      * @param description
      */
     public InventoryItem(String FirebaseId, String name, String description, String comment,
-                         String make, String model, String serialno, Integer value, Date date, String owner) {
+                         String make, String model, String serialno, Integer value, Date date) {
         // placeholder constructor for testing, just has name
         this.name = name;
         this.description = description;
@@ -60,7 +58,6 @@ public class InventoryItem implements Serializable {
         this.serialNo = "123";
         this.value = new ItemValue(0);
         this.date = new ItemDate(new Date());
-        this.owner = owner;
         // TODO: tags & images
 
         this.isSelected = false;
@@ -79,7 +76,7 @@ public class InventoryItem implements Serializable {
      * @param date
      */
     public InventoryItem(String firebaseId, String name, String description, String comment,
-                         String make, String model, String serialNo, ItemValue value, ItemDate date, String owner) {
+                         String make, String model, String serialNo, ItemValue value, ItemDate date) {
         // full constructor
         this.firebaseId = firebaseId;
         this.name = name;
@@ -90,7 +87,6 @@ public class InventoryItem implements Serializable {
         this.serialNo = serialNo;
         this.value = value;
         this.date = date;
-        this.owner = owner;
         // TODO: tags & images
 
         this.isSelected = false;
@@ -111,7 +107,6 @@ public class InventoryItem implements Serializable {
         itemData.put("serialno", this.getSerialNo());
         itemData.put("value", this.getValue().toPrimitiveLong()); // convert ItemValue to long
         itemData.put("date", this.getDate().toDate()); // convert ItemDate to Date
-        itemData.put("owner", this.getOwner());
         // TODO: tags and images
         return itemData;
     }
@@ -185,7 +180,7 @@ public class InventoryItem implements Serializable {
     public void setDate(ItemDate date) {
         this.date = date;
     }
-    public String getOwner() { return owner; }
+
     public String getTagsString() {
         return "#placeholder #tags";
     }

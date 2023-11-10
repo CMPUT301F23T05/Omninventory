@@ -73,7 +73,7 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
         }
 
         // === set up database
-        repo = new InventoryRepository(currentUser.getUsername());
+        repo = new InventoryRepository();
 
         // === UI setup
         titleText.setText(getString(R.string.details_title_text)); // set title text

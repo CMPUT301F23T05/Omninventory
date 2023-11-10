@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         }
         else {
             // === set up database
-            repo = new InventoryRepository(currentUser.getUsername());
+            repo = new InventoryRepository();
 
 
         // Get references to views
@@ -322,12 +322,7 @@ public class MainActivity extends AppCompatActivity implements ItemListUpdateHan
         selectedItems.clear();
         System.out.println("The number of selected items is: " + Integer.toString(selectedItems.size()));
     }
-    /**
-     * Add an inventory item retrieved from the database to the data list
-     */
-    public void onGetItemListData(InventoryItem item) {
-        itemListData.add(item);
-    }
+
 
 }
             

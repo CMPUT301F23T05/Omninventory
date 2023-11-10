@@ -87,7 +87,7 @@ public class EditActivity extends AppCompatActivity  {
             throw new RuntimeException("EditActivity opened without any extra data");
         }
 
-        repo = new InventoryRepository(currentUser.getUsername());
+        repo = new InventoryRepository();
         // === UI setup
 
         // set title text
@@ -255,8 +255,7 @@ public class EditActivity extends AppCompatActivity  {
             itemModelEditText.getText().toString(),
             itemSerialEditText.getText().toString(),
             new ItemValue(itemValueEditText.getText().toString()),
-            new ItemDate(itemDateText.getText().toString()),
-            currentUser.getUsername()
+            new ItemDate(itemDateText.getText().toString())
         );
     }
 }

@@ -35,16 +35,14 @@ public class InventoryRepository {
     private FirebaseFirestore db;
     private CollectionReference usersRef;
     private CollectionReference inventoryItemsRef;
-    private String username;
 
     /**
      * Constructor that sets up connection to Firestore and references.
      */
-    public InventoryRepository(String username) {
+    public InventoryRepository() {
         db = FirebaseFirestore.getInstance();
         usersRef = db.collection("users");
         inventoryItemsRef = db.collection("inventoryItems");
-        this.username = username;
     }
 
     /**
@@ -57,7 +55,6 @@ public class InventoryRepository {
      */
     public ListenerRegistration setupInventoryItemList(InventoryItemAdapter adapter, ItemListUpdateHandler handler) {
         // set up listener
-        Log.d("InventoryRepository", "setupInventoryItemList was called");
         inventoryItemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException error) {
@@ -67,25 +64,18 @@ public class InventoryRepository {
                 }
                 if (snapshot != null) {
                     adapter.clear(); // clear existing list data
+
                     for (QueryDocumentSnapshot doc : snapshot) {
                         // get each item returned by query and add to adapter
-                        if (doc.getString("owner").equals(username)) {
-                            Log.d("InventoryRepository", "doc id: " + doc.getId());
-                            InventoryItem item = convertDocumentToInventoryItem(doc);
-                            adapter.add(item);
-                        }
+                        InventoryItem item = convertDocumentToInventoryItem(doc);
+                        adapter.add(item);
                     }
                 }
                 adapter.notifyDataSetChanged(); // TODO: is this necessary?
-                Log.d("InventoryRepository", "onItemListUpdate was called");
                 handler.onItemListUpdate();
             }
         });
         return null;
-//        adapter.notifyDataSetChanged(); // TODO: is this necessary?
-//        Log.d("InventoryRepository", "onItemListUpdate was called");
-//        handler.onItemListUpdate();
-//        return null;
     }
 
     /**
@@ -106,8 +96,7 @@ public class InventoryRepository {
             doc.getString("model"),
             doc.getString("serialno"),
             new ItemValue(doc.getLong("value")), // convert to ItemValue
-            new ItemDate(doc.getDate("date")), // convert to ItemDate
-            username
+            new ItemDate(doc.getDate("date"))// convert to ItemDate
         );
 
         return item;

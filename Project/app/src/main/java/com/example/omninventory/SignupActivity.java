@@ -70,7 +70,7 @@ public class SignupActivity extends AppCompatActivity {
                     public void onValidationResult(boolean isValid, String message, User user) {
                         // === add user to database if their input passes all validation tests
                         if (isValid) {
-                            InventoryRepository repo = new InventoryRepository(user.getUsername());
+                            InventoryRepository repo = new InventoryRepository();
                             repo.addUser(user);
                             // have user logged in and go back to main activity
                             Intent intent = new Intent(SignupActivity.this, MainActivity.class);
