@@ -9,6 +9,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
+import static org.hamcrest.Matchers.allOf;
 import static java.lang.Thread.sleep;
 
 import androidx.test.espresso.action.ViewActions;
@@ -29,18 +30,30 @@ public class TestAddItemActivity {
     public ActivityScenarioRule<MainActivity> scenario = new
             ActivityScenarioRule<MainActivity>(MainActivity.class);
 
+    /**
+     * PLEASE ONLY USE "AddItemTest" as the name for testing item.
+     */
+
+    /**
+     * Clean up for the item added during test
+     * @author Kevin
+     */
     private void cleanup(){
         onView(withText("AddItemTest")).perform(longClick());
-        onView(withId(R.id.delete_item_button)).perform(click());
+        onView(allOf(withId(R.id.delete_item_button), isDisplayed()))
+                .perform(click());
         onView(withId(R.id.delete_dialog_button)).perform(click());
     }
 
+    /**
+     * Test for the base case of adding an item
+     * @author kevin
+     */
     @Test
     public void testAddItemBase() throws InterruptedException {
         // start on the inventory screen click on the add button
-        onView(withId(R.id.add_item_button))
+        onView(allOf(withId(R.id.add_item_button), isDisplayed()))
                 .perform(click());
-
 
         //in the add item screen fill in the minimum required information for an item
         onView(withId(R.id.item_name_edittext)).perform(ViewActions.
@@ -50,6 +63,7 @@ public class TestAddItemActivity {
         onView(withId(R.id.save_button)).perform(click());
 
         //validate in the inventory screen that the item was added
+        //may crash if the database is not reset before hand.
         onView(withText("AddItemTest")).check(matches(isDisplayed()));
 
         cleanup();
