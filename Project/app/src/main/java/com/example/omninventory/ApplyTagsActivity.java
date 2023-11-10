@@ -23,7 +23,10 @@ import java.util.ArrayList;
 import java.util.ListIterator;
 
 /**
- * Activity for applying tags to one or more items.
+ * Activity for applying tags to one or more items. Accepts a flag as part of the intent passed by
+ * the parent function to determine whether it will immediately apply the tag changes upon completion
+ * or return an inventoryItem object with the tags added.
+ *
  * @author Patrick
  */
 public class ApplyTagsActivity extends AppCompatActivity  {
@@ -43,7 +46,13 @@ public class ApplyTagsActivity extends AppCompatActivity  {
     private ImageButton addTagButton;
     private ImageButton confirmTagsButton;
 
-
+    /**
+     * Method called on Activity creation. Contains most of the logic of this Activity; programmatically
+     * modifying UI elements, reading information from previous activity, setting up connection to
+     * the database, and setting up click listeners to enable functionality.
+     *
+     * @param savedInstanceState Information about this Activity's saved state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

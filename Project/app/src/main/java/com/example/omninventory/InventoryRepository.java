@@ -315,7 +315,8 @@ public class InventoryRepository {
     };
 
     /**
-     * Adds a new Tag to the *tag* collection.
+     * Adds a new Tag to the tags collection.
+     *
      * @param tag Tag to add to the list of tags.
      */
     public void addTag(Tag tag) {
@@ -381,7 +382,7 @@ public class InventoryRepository {
     }
 
     /**
-     * Sets up a TagAdapter to contain contents of Firebase *tags* collection, and be automatically
+     * Sets up a TagAdapter to contain contents of Firebase tags collection, and be automatically
      * updated when the list changes.
      * @param adapter the adapter to contain the tags
      * @return a snapshot listener for the collection that will automatically update the adapter
