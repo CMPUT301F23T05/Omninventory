@@ -139,11 +139,12 @@ public class ApplyTagsActivity extends AppCompatActivity  {
                 @Override
                 public void onClick(View view) {
 
-                    ArrayList<String> tagList = new ArrayList<>();
                     appliedTagsListData.forEach(tag -> {
-                        tagList.add(tag.getName());
+                        if (!selectedItems.get(0).getTags().contains(tag.getName())) {
+                            selectedItems.get(0).addTag(tag.getName());
+                        }
                     });
-                    selectedItems.get(0).setTags(tagList);
+
                     Intent itemReturn = new Intent();
                     itemReturn.putExtra("taggedItem", selectedItems.get(0));
                     setResult(RESULT_OK, itemReturn);
