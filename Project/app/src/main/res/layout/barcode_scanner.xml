@@ -18,8 +18,8 @@
         android:layout_height="match_parent">
 
         <!--app:layout_constraintBottom_toTopOf="@+id/barcode_back_button"-->
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+<!--        <app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent" />-->
 
         <TextView
             android:id="@+id/barcode_text"

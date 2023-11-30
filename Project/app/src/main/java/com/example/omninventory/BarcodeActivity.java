@@ -1,12 +1,19 @@
 package com.example.omninventory;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+import android.Manifest;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.budiyev.android.codescanner.CodeScanner;
 import com.budiyev.android.codescanner.CodeScannerView;
@@ -23,15 +30,28 @@ public class BarcodeActivity extends AppCompatActivity {
 
     private CodeScanner mCodeScanner;
 
-
+    //TODO REWORK/ANNOTATE? - @Patrick
+    // ref: https://stackoverflow.com/questions/67553067/cannot-open-camera-0-without-camera-permission
+    public static void checkCameraPermissions(Context context){
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED)
+        {
+            // Permission is not granted
+            Log.d("checkCameraPermissions", "No Camera Permissions");
+            ActivityCompat.requestPermissions((Activity) context,
+                    new String[] { Manifest.permission.CAMERA },
+                    100);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.barcode_scanner);
+        checkCameraPermissions(this);
         CodeScannerView scannerView = findViewById(R.id.barcode_scanner);
         Button backButton = findViewById(R.id.barcode_back_button);
-        mCodeScanner = new CodeScanner(this, scannerView);
+        mCodeScanner = new CodeScanner(this, scannerView, CodeScanner.CAMERA_BACK);
         mCodeScanner.setDecodeCallback(new DecodeCallback() {
             @Override
             public void onDecoded(@NonNull final Result result) {
