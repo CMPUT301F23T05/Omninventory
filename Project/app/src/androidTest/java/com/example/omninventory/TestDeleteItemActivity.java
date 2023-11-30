@@ -22,6 +22,8 @@ import org.junit.runner.RunWith;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 
+import java.util.Arrays;
+
 /**
  * Tests for deleting an item.
  * @author Kevin
@@ -82,11 +84,19 @@ public class TestDeleteItemActivity {
                 .perform(click());
         onView(withId(R.id.delete_dialog_button)).perform(click());
 
+        try {
+            Thread.sleep(2000); // Sleep for 1 second
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
+
         //validate the items are deleted.
         //todo: change to check for not displayed
         onView(withText("TestItem1")).check(doesNotExist());
         onView(withText("TestItem2")).check(doesNotExist());
         onView(withText("TestItem3")).check(doesNotExist());
+
 
     }
 
