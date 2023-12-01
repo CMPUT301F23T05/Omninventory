@@ -1,7 +1,9 @@
 package com.example.omninventory;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -53,7 +55,6 @@ public class EditActivity extends AppCompatActivity  {
     private TextInputEditText itemSerialEditText;
     private TextInputEditText itemValueEditText;
     private TextView itemDateText;
-
     private TextView itemTagsText;
     // TODO: images
 
@@ -69,7 +70,6 @@ public class EditActivity extends AppCompatActivity  {
                 setFields(currentItem);
             }
         });
-
     /**
      * Method called on Activity creation. Contains most of the logic of this Activity; programmatically
      * modifying UI elements, creating Intents to move to other Activites, and setting up connection
@@ -100,6 +100,7 @@ public class EditActivity extends AppCompatActivity  {
         final ImageButton backButton = findViewById(R.id.back_button);
         final ImageButton itemDateButton = findViewById(R.id.item_date_button);
         final ImageButton saveButton = findViewById(R.id.save_button);
+        final ImageButton descriptionCameraButton = findViewById(R.id.description_camera_button);
 
         // ============== RETRIEVE DATA ================
 
@@ -189,6 +190,15 @@ public class EditActivity extends AppCompatActivity  {
             }
         });
 
+        // descriptionCameraButton takes user to Camera to take picture of product barcode
+        // reference: https://github.com/yuriy-budiyev/code-scanner
+        descriptionCameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent barcodeIntent = new Intent(EditActivity.this, BarcodeActivity.class);
+                startActivity(barcodeIntent);
+            }
+        });
         // itemDateButton should open a DatePickerDialog to choose date
         itemDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
