@@ -296,6 +296,7 @@ public class SortFilterActivity extends AppCompatActivity {
                 Intent myIntent = new Intent(SortFilterActivity.this, MainActivity.class);
                 putFieldsIntent(myIntent, makePressed, datePressed, descriptionPressed);
                 SortFilterActivity.this.startActivity(myIntent);
+                finish();
             }
         });
     }

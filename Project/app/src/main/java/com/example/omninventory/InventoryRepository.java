@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +53,22 @@ public class InventoryRepository {
         tagsRef = db.collection("tags");
     }
 
+    public ListenerRegistration listenToUserUpdate(String username, UserUpdateHandler handler) {
+        usersRef.document(username).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.d("listenToUserUpdate", error.toString());
+                    return;
+                }
+                if (snapshot != null && snapshot.exists()) {
+                    handler.onUserUpdate(convertDocumentToUser(snapshot));
+                }
+            }
+        });
+        return null;
+    }
     /**
      * Sets up an InventoryItemAdapter to contain contents of Firebase collection, and be
      * automatically updated when inventoryItem changes.
@@ -60,7 +77,7 @@ public class InventoryRepository {
      * @param adapter An InventoryItemAdapter to set up to track contents of database.
      * @return
      */
-    public ListenerRegistration setupInventoryItemList(InventoryItemAdapter adapter, InventoryUpdateHandler handler) {
+    public ListenerRegistration setupInventoryItemList(InventoryItemAdapter adapter, InventoryUpdateHandler handler, ArrayList<String> itemIDs) {
         // set up listener
         inventoryItemsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -73,11 +90,12 @@ public class InventoryRepository {
                     adapter.clear(); // clear existing list data
                     for (QueryDocumentSnapshot doc : snapshot) {
                         // get each item returned by query and add to adapter
-                        InventoryItem item = convertDocumentToInventoryItem(doc);
-                        adapter.add(item);
+                        if (itemIDs.contains(doc.getId())) {
+                            InventoryItem item = convertDocumentToInventoryItem(doc);
+                            adapter.add(item);
+                        }
                     }
                 }
-                adapter.notifyDataSetChanged(); // TODO: is this necessary?
                 handler.onItemListUpdate();
             }
         });
@@ -143,7 +161,7 @@ public class InventoryRepository {
         DocumentReference currentUserRef = usersRef.document(currentUser.getUsername());
 
         // add new inventoryItem reference to currentUser's list of ownedItems
-        Object[] arrayToAdd = {newItemRef};
+        Object[] arrayToAdd = {newItemRef.getId()};
 
         currentUserRef
             .update("ownedItems", FieldValue.arrayUnion(arrayToAdd))
@@ -473,6 +491,7 @@ public class InventoryRepository {
      */
     public void addUser(User user) {
         HashMap<String, Object> data = new HashMap<>();
+        data.put("name", user.getName());
         data.put("password", user.getPassword());
         data.put("ownedItems", user.getItemsRefs());
         usersRef.document(user.getUsername())
@@ -485,32 +504,65 @@ public class InventoryRepository {
                 });
 
     };
-
-    /**
-     * Retrieve the contents of the User's inventory.
-     * @param username The username (ID) of the currently signed-in user.
-     */
-    public void getUserInventory(String username) {
-        usersRef.document(username).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot doc = task.getResult();
-                    if (doc.exists()) {
-                        Log.d(TAG, "DocumentSnapshot data: " + doc.getData());
-                        List<String> ownedItems = (List<String>) doc.get("ownedItems");
-                        ArrayList<InventoryItem> inventory = new ArrayList<InventoryItem>();
-                        // todo: get an array list of inventory items
-//                        for (String itemRef : ownedItems) {
-//
-//                        }
-                    } else {
-                        Log.d(TAG, "Can't find user with username: " + username);
-                    }
-                } else {
-                    Log.d(TAG, "get failed with ", task.getException());
-                }
-            }
-        });
+    public User convertDocumentToUser(DocumentSnapshot doc) {
+        Log.d("convertDocumentToUser", "(convertDocumentToUser) converting to User");
+        User user = new User(
+                doc.getString("name"),
+                doc.getId(),
+                doc.getString("password"),
+                (ArrayList<String>) doc.get("ownedItems")
+        );
+        Log.d("convertDocumentToUser", "(convertDocumentToUser) done");
+        return user;
     }
+
+    public void updateUser(User user) {
+        HashMap<String, Object> userData = user.convertToHashMap();
+
+        // get the document for this item
+        DocumentReference docRef = usersRef.document(user.getUsername());
+
+        // overwrite data of document with item data
+        docRef
+                .set(userData)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("InventoryRepository", String.format("Updated user, id=%s", docRef.getId()));
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e("InventoryRepository", String.format("Error updating user, id=%s", docRef.getId()), e);
+                    }
+                });
+
+    }
+
+//    /**
+//     * Retrieve the contents of the User's inventory.
+//     * @param ownedItems IDs of all items in user's inventory
+//     */
+//    public void getItemDataList(ArrayList<String> ownedItems, GetInventoryItemHandler handler) {
+//        for (String itemID : ownedItems) {
+//            inventoryItemsRef.document(itemID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//                @Override
+//                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                    if (task.isSuccessful()) {
+//                        DocumentSnapshot doc = task.getResult();
+//                        if (doc.exists()) {
+//                            Log.d(TAG, "DocumentSnapshot data: " + doc.getId());
+//                            handler.onGetInventoryItem(convertDocumentToInventoryItem(doc));
+//                        }
+//                        else {
+//                        Log.d(TAG, "Can't find item with ID: " + itemID);
+//                        }
+//                    }
+//                    else { Log.d(TAG, "Failed with ", task.getException()); }
+//                }
+//            });
+//        }
+//    }
+
 }
