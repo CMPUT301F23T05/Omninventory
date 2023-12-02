@@ -137,7 +137,6 @@ public class EditActivity extends AppCompatActivity  {
         final boolean newItemFlag; // true if we are creating a new item, false if editing existing item
 
         if (getIntent().getExtras() != null) {
-            // TODO: set up images here
             if (getIntent().getExtras().getSerializable("item") == null) {
                 // creating a new item; initialize with no fields
                 Log.d("EditActivity", "EditActivity opened without an InventoryItem");
@@ -246,16 +245,16 @@ public class EditActivity extends AppCompatActivity  {
 
                 // create a calendar dialog to get date input
                 DatePickerDialog datePickerDialog = new DatePickerDialog(
-                        EditActivity.this, // pass context
-                        new DatePickerDialog.OnDateSetListener() {
-                            @Override
-                            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                                // set formatted date in itemDateText TextView
-                                // use monthOfYear + 1 because Calendar zero-indexes month
-                                itemDateText.setText(ItemDate.ymdToString(year, monthOfYear + 1, dayOfMonth));
-                            }
-                        },
-                        currentYear, currentMonth, currentDay
+                    EditActivity.this, // pass context
+                    new DatePickerDialog.OnDateSetListener() {
+                        @Override
+                        public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                            // set formatted date in itemDateText TextView
+                            // use monthOfYear + 1 because Calendar zero-indexes month
+                            itemDateText.setText(ItemDate.ymdToString(year, monthOfYear + 1, dayOfMonth));
+                        }
+                    },
+                    currentYear, currentMonth, currentDay
                 );
 
                 // display dialog
@@ -274,15 +273,15 @@ public class EditActivity extends AppCompatActivity  {
         // Create a photo picker activity launcher to get an image and then store it in the current InventoryItem.
         // See https://developer.android.com/training/data-storage/shared/photopicker
         ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
-                registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
-                    // callback when photo chosen or user closes menu
-                    if (uri != null) {
-                        Log.d("EditActivity", "PhotoPicker, user selected photo URI: " + uri);
-                        imageAdapter.add(new ItemImage(uri)); // add the uri to the current images
-                    } else {
-                        Log.d("EditActivity", "PhotoPicker, user closed menu with no photo selected");
-                    }
-                });
+            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+                // callback when photo chosen or user closes menu
+                if (uri != null) {
+                    Log.d("EditActivity", "PhotoPicker, user selected photo URI: " + uri);
+                    imageAdapter.add(new ItemImage(uri)); // add the uri to the current images
+                } else {
+                    Log.d("EditActivity", "PhotoPicker, user closed menu with no photo selected");
+                }
+            });
 
         // imageUploadButton takes user to gallery to upload a photo
         imageUploadButton.setOnClickListener(new View.OnClickListener() {
@@ -344,6 +343,8 @@ public class EditActivity extends AppCompatActivity  {
         itemValueEditText.setText(item.getValue().toString()); // convert ItemValue to String
         itemDateText.setText(item.getDate().toString()); // convert ItemDate to String. note this is a TextView, not EditText
         itemTagsText.setText(item.getTagsString());
+
+        imageListData = currentItem.getImages(); // ensure this item's images are displayed
     }
 
     /**
@@ -387,7 +388,7 @@ public class EditActivity extends AppCompatActivity  {
             new ItemValue(itemValueEditText.getText().toString()),
             new ItemDate(itemDateText.getText().toString()),
             currentItem.getTags(),
-            new ArrayList<Image>()
+            imageListData // the current images displayed onscreen
         );
         // TODO: add Images in part 4
     }

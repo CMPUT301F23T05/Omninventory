@@ -1,8 +1,10 @@
 package com.example.omninventory;
 
 import android.media.Image;
+import android.util.Log;
 
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.storage.StorageReference;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ public class InventoryItem implements Serializable {
     private ItemValue value;
     private ItemDate date;
     private ArrayList<String> tags;
-    private ArrayList<Image> images; // placeholder
+    private ArrayList<ItemImage> images;
 
     private boolean isSelected;
 
@@ -65,7 +67,7 @@ public class InventoryItem implements Serializable {
      */
     public InventoryItem(String firebaseId, String name, String description, String comment,
                          String make, String model, String serialNo, ItemValue value, ItemDate date,
-                         ArrayList<String> tags, ArrayList<Image> images) {
+                         ArrayList<String> tags, ArrayList<ItemImage> images) {
         // full constructor
         this.firebaseId = firebaseId;
         this.name = name;
@@ -98,7 +100,7 @@ public class InventoryItem implements Serializable {
         itemData.put("value", this.getValue().toPrimitiveLong()); // convert ItemValue to long
         itemData.put("date", this.getDate().toDate()); // convert ItemDate to Date
         itemData.put("tags", this.getTags());
-        itemData.put("images", this.getImages());
+        itemData.put("images", this.getImagePaths()); // list of image paths as strings
         return itemData;
     }
 
@@ -287,7 +289,21 @@ public class InventoryItem implements Serializable {
      */
     public ArrayList<String> getTags() { return tags; }
 
-    public ArrayList<Image> getImages() { return images; }
+    public ArrayList<ItemImage> getImages() {
+        return images;
+    }
 
-    public void setImages(ArrayList<Image> images) { this.images = images; }
+    public ArrayList<String> getImagePaths() {
+        ArrayList<String> imagePaths = new ArrayList<String>();
+        for (ItemImage image : images) {
+            if (image.getPath() != null) {
+                imagePaths.add(image.getPath());
+            }
+            else {
+                Log.d("InventoryItem", String.format("no path for item %s, skipping in getImagePaths", image));
+            }
+        }
+        return imagePaths;
+    }
+
 }

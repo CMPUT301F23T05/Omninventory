@@ -2,12 +2,13 @@ package com.example.omninventory;
 
 import static android.content.ContentValues.TAG;
 
-import android.media.Image;
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,8 +27,12 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ListIterator;
+import java.util.UUID;
 
 /**
  * Encapsulate behaviours related to Firestore, going from Firestore document to InventoryItem and
@@ -43,6 +48,9 @@ public class InventoryRepository {
     private CollectionReference inventoryItemsRef;
     private CollectionReference tagsRef;
 
+    private FirebaseStorage storage;
+    private StorageReference storageRef;
+
     /**
      * Constructor that sets up connection to Firestore and references.
      */
@@ -51,6 +59,9 @@ public class InventoryRepository {
         usersRef = db.collection("users");
         inventoryItemsRef = db.collection("inventoryItems");
         tagsRef = db.collection("tags");
+
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
     }
 
     /**
@@ -91,9 +102,19 @@ public class InventoryRepository {
      * @return    An InventoryItem whose fields match the DocumentSnapshot.
      */
     public InventoryItem convertDocumentToInventoryItem(DocumentSnapshot doc) {
-        Log.d("InventoryRepository", "convert called with document id=" + doc.getId());
-        Log.d("InventoryRepository", doc.getData().toString());
-        ArrayList<DocumentReference> test = (ArrayList<DocumentReference>) doc.get("tags");
+        Log.d("InventoryRepository", "convert called with document id=" + doc.getId() + " data=" + doc.getData().toString());
+
+        // get all image paths as 'empty' ItemImages
+        ArrayList<ItemImage> images = new ArrayList<ItemImage>();
+        ArrayList<String> imagePaths = (ArrayList<String>) doc.get("images");
+        if (imagePaths != null) {
+            for (String imagePath : imagePaths) {
+                images.add(new ItemImage(imagePath));
+            }
+        }
+        else {
+            Log.d("InventoryRepository", "images array is null");
+        }
 
         InventoryItem item = new InventoryItem(
             doc.getId(),
@@ -106,10 +127,39 @@ public class InventoryRepository {
             new ItemValue(doc.getLong("value")), // convert to ItemValue
             new ItemDate(doc.getDate("date")), // convert to ItemDate
             (ArrayList<String>) doc.get("tags"),
-            new ArrayList<Image>()
+            images
         );
 
+        // don't want to download images here since they may not be displayed, e.g. if this is called
+        // from homepage. but we could do it
+        // attemptDownloadImages(item);
+
         return item;
+    }
+
+    public void attemptDownloadImages(InventoryItem item) {
+        // get all the images associated with this item from storage
+        ArrayList<ItemImage> images = item.getImages();
+
+        for (ItemImage image : images) {
+            Log.d("InventoryRepository", "attempting to download image: " + image.toString());
+
+            // get image's uri, hopefully
+            storageRef.child(image.getPath()).getDownloadUrl()
+                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Log.d("InventoryRepository", String.format("Got URI for image path %s, URI %s", image.getPath(), uri));
+                        image.setUri(uri);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("InventoryRepository", "Couldn't get URI for image path " + image.getPath());
+                    }
+                });
+        }
     }
 
     /**
@@ -119,8 +169,13 @@ public class InventoryRepository {
      * @param item        InventoryItem to add to currentUser's owned items.
      */
     public void addInventoryItem(User currentUser, InventoryItem item) {
+
+        // upload images
+        addImages(item.getImages()); // this also returns the storageRefs but we get them in item.convertToHashMap instead
+
         // create data for new item document
         HashMap<String, Object> itemData = item.convertToHashMap();
+        Log.d("InventoryRepository", "addInventoryItem called with itemData: " + itemData.toString());
 
         // create new inventoryItems document with auto-generated id
         DocumentReference newItemRef = inventoryItemsRef.document();
@@ -315,6 +370,47 @@ public class InventoryRepository {
                     }
                 });
     };
+
+    /**
+     * Add an ItemImage to the storage.
+     * @param images
+     * @return
+     */
+    public ArrayList<String> addImages(ArrayList<ItemImage> images) {
+
+        ArrayList<String> imagePaths = new ArrayList<String>();
+//        ArrayList<Task> uploadTasks = new ArrayList<Task>();
+
+        for (ItemImage image : images) {
+            String filepath = "images/" + UUID.randomUUID().toString();
+
+            // create filename for new image
+            StorageReference imageRef = storageRef.child(filepath);
+
+            // store reference
+            imagePaths.add(filepath);
+            image.setPath(filepath);
+
+            Task task = imageRef.putFile(image.getUri())
+                .addOnSuccessListener(
+                        new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                Log.d("InventoryRepository", "Image uploaded successfully:" + image.getUri() + " as " + filepath);
+                            }
+                        })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("InventoryRepository", "Image failed to upload:" + image.getUri());
+                    }
+                });
+        }
+
+        // return a list of image paths
+        Log.d("InventoryRepository", "Started tasks to upload images: " + imagePaths.toString());
+        return imagePaths;
+    }
 
     /**
      * Adds a new Tag to the *tag* collection.

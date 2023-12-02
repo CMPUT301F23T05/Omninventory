@@ -43,4 +43,6 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.github.yuriy-budiyev:code-scanner:2.3.2")
     compileOnly(files("${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"))
+    implementation("com.google.firebase:firebase-storage")
+
 }

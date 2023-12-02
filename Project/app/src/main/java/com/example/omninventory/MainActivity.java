@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         setContentView(R.layout.activity_main);
 
         // TODO: this is testing code, replace when merged with Rose's code
-        currentUser = new User("erika", "erikausername", "password", new ArrayList<String>());
+        currentUser = new User("Erika", "erika", "password", new ArrayList<String>());
 
         selectedItems = new ArrayList<>();
 
