@@ -44,5 +44,6 @@ dependencies {
     implementation("com.github.yuriy-budiyev:code-scanner:2.3.2")
     compileOnly(files("${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"))
     implementation("com.google.firebase:firebase-storage")
+    implementation ("com.squareup.picasso:picasso:2.8")
 
 }

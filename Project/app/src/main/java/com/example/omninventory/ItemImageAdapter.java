@@ -2,6 +2,9 @@ package com.example.omninventory;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
 import android.util.TypedValue;
@@ -17,65 +20,89 @@ import android.widget.Toast;
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import com.squareup.picasso.Picasso;
 
 /**
  * A custom ArrayAdapter that works with InventoryItem objects. Uses item_list_content.xml
  * for layout display of InventoryItems in a ListView.
  * @author Castor
  */
-public class ItemImageAdapter extends ArrayAdapter<ItemImage> {
+public class ItemImageAdapter extends RecyclerView.Adapter<ItemImageAdapter.ViewHolder> {
 
     private ArrayList<ItemImage> listData;
-    private Context context;
 
     /**
      * Constructor that takes in necessary parameters for an ArrayAdapter.
-     * @param context Context for the ArrayAdapter.
-     * @param images  ArrayList to use to set up the ArrayAdapter.
      */
-    public ItemImageAdapter(Context context, ArrayList<ItemImage> images) {
-        super(context, 0, images);
-        this.listData = images;
-        this.context = context;
+    public ItemImageAdapter(ArrayList<ItemImage> listData) {
+        this.listData = listData;
     }
 
+
     /**
-     * Sets up the UI for a list element in the ArrayAdapter.
-     * @param position     Position of list element.
-     * @param convertView  View to inflate.
-     * @param parent       Parent ViewGroup of this view.
-     * @return The View for this list element.
+     * Provide a reference to the type of views that you are using
+     * (custom ViewHolder)
      */
-    @NonNull
-    @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        // === setup view
-        View view = convertView;
-        if (view == null) {
-            view = LayoutInflater.from(context).inflate(R.layout.image_list_content, parent, false);
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        ImageView imageContent;
+        ImageButton imageDeleteButton;
+        public ViewHolder(View view) {
+            super(view);
+            // Define click listener for the ViewHolder's View
+            imageContent = view.findViewById(R.id.image_content);
+            imageDeleteButton = view.findViewById(R.id.image_delete_button);
         }
 
-        // === find views
-        ImageView imageContent = view.findViewById(R.id.image_content);
-        ImageButton imageDeleteButton = view.findViewById(R.id.image_delete_button);
+        public ImageView getImageView() {
+            return imageContent;
+        }
+        public ImageButton getImageDeleteButton() {
+            return imageDeleteButton;
+        }
+    }
 
-        // === UI setup
+
+    @NonNull
+    @Override
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_list_content, parent, false);
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+        // === find views
+        ImageView imageContent = holder.getImageView();
+        ImageButton imageDeleteButton = holder.getImageDeleteButton();
+
         ItemImage image = listData.get(position); // get item at this position
 
         // set content field (image display) for this image from its URI
-        imageContent.setImageURI(Uri.parse(image.getUri().toString()));
+        // this works for both local URIs and internet firebase storage URIs
+//        imageContent.setImageURI(Uri.parse(image.getUri().toString()));
+        Picasso.get()
+                .load(image.getUri().toString())
+                .into(imageContent);
 
         // set up onclick listener for deleting this image
         imageDeleteButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Log.d("ItemImageAdapter", String.format("Deleting image at position %d", position));
-                listData.remove(position); // this position's image will be deleted
-                ItemImageAdapter.this.notifyDataSetChanged(); // update this ItemImageAdapter
+                int pos = holder.getAdapterPosition();
+                Log.d("ItemImageAdapter", String.format("Deleting image at position %d", pos));
+                listData.remove(pos); // this position's image will be deleted
+                ItemImageAdapter.this.notifyItemRemoved(pos); // update this ItemImageAdapter
             }
         });
+    }
 
-        return view;
+    @Override
+    public int getItemCount() {
+        return listData.size();
     }
 }

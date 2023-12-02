@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,9 +27,12 @@ import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.DocumentReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -43,7 +47,7 @@ import java.util.Calendar;
  *
  * @author Castor
  */
-public class EditActivity extends AppCompatActivity  {
+public class EditActivity extends AppCompatActivity implements ImageDownloadHandler {
 
     private InventoryRepository repo;
 
@@ -60,9 +64,10 @@ public class EditActivity extends AppCompatActivity  {
     private TextInputEditText itemValueEditText;
     private TextView itemDateText;
     private TextView itemTagsText;
-    private ListView imageList;
+    private RecyclerView imageList;
 
     private ArrayList<ItemImage> imageListData; // images need to be handled rather differently
+    private ItemImageAdapter imageAdapter;
 
     // ActivityResultLauncher to launch the ApplyTagsActivity for result, to define tags for the edited item
     ActivityResultLauncher<Intent> mDefineTags = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -181,8 +186,9 @@ public class EditActivity extends AppCompatActivity  {
         itemValueEditText.addTextChangedListener(new ValueTextWatcher(itemValueEditText));
 
         // set up list adapter for images
-        ItemImageAdapter imageAdapter = new ItemImageAdapter(this, imageListData);
+        imageAdapter = new ItemImageAdapter(imageListData);
         imageList.setAdapter(imageAdapter);
+        imageList.setLayoutManager(new LinearLayoutManager(this));
 
         // ============== CLICK ACTIONS ================
 
@@ -277,7 +283,8 @@ public class EditActivity extends AppCompatActivity  {
                 // callback when photo chosen or user closes menu
                 if (uri != null) {
                     Log.d("EditActivity", "PhotoPicker, user selected photo URI: " + uri);
-                    imageAdapter.add(new ItemImage(uri)); // add the uri to the current images
+                    imageListData.add(new ItemImage(uri)); // add the uri to the current images, no path yet
+                    imageAdapter.notifyItemInserted(imageListData.size() - 1);
                 } else {
                     Log.d("EditActivity", "PhotoPicker, user closed menu with no photo selected");
                 }
@@ -344,7 +351,8 @@ public class EditActivity extends AppCompatActivity  {
         itemDateText.setText(item.getDate().toString()); // convert ItemDate to String. note this is a TextView, not EditText
         itemTagsText.setText(item.getTagsString());
 
-        imageListData = currentItem.getImages(); // ensure this item's images are displayed
+//        imageListData = currentItem.getImages(); // ensure this item's images are displayed
+        repo.attemptDownloadImages(item, this); // attempt image download into this activity, calling this.onImageDownload on success
     }
 
     /**
@@ -390,7 +398,33 @@ public class EditActivity extends AppCompatActivity  {
             currentItem.getTags(),
             imageListData // the current images displayed onscreen
         );
-        // TODO: add Images in part 4
+    }
+
+    public void onImageDownload(ItemImage image) {
+        Log.d("EditActivity", "onimagedownload called");
+        imageListData.add(image);
+        imageAdapter.notifyItemInserted(imageListData.size() - 1);
+    }
+
+    public void addImageToLayout(ItemImage image) {
+        // find layout where we add the images
+//        LinearLayout imageLayout = findViewById(R.id.item_images_layout);
+//        View view = LayoutInflater.from(this).inflate(R.layout.image_list_content, imageLayout);
+//
+//        // set content field (image display) for this image from its URI
+////        imageContent.setImageURI(Uri.parse(image.getUri().toString()));
+//        Picasso.get()
+//                .load(image.getUri().toString())
+//                .into(imageContent);
+//
+//        // set up onclick listener for deleting this image
+//        imageDeleteButton.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                Log.d("ItemImageAdapter", String.format("Deleting image at position %d", position));
+//                listData.remove(position); // this position's image will be deleted
+//                ItemImageAdapter.this.notifyDataSetChanged(); // update this ItemImageAdapter
+//            }
+//        });
     }
 
 

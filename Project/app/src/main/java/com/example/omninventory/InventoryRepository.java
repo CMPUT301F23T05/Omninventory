@@ -137,9 +137,10 @@ public class InventoryRepository {
         return item;
     }
 
-    public void attemptDownloadImages(InventoryItem item) {
+    public void attemptDownloadImages(InventoryItem item, ImageDownloadHandler handler) {
         // get all the images associated with this item from storage
         ArrayList<ItemImage> images = item.getImages();
+        Log.d("InventoryRepository", "attemptImageDownload called, item images: " + images.toString());
 
         for (ItemImage image : images) {
             Log.d("InventoryRepository", "attempting to download image: " + image.toString());
@@ -151,6 +152,7 @@ public class InventoryRepository {
                     public void onSuccess(Uri uri) {
                         Log.d("InventoryRepository", String.format("Got URI for image path %s, URI %s", image.getPath(), uri));
                         image.setUri(uri);
+                        handler.onImageDownload(image); // call handler function to refresh its images
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
