@@ -5,6 +5,8 @@ import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +22,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -56,9 +60,9 @@ public class EditActivity extends AppCompatActivity  {
     private TextInputEditText itemValueEditText;
     private TextView itemDateText;
     private TextView itemTagsText;
-    // TODO: images
+    private ListView imageList;
 
-    private ValueTextWatcher itemValueTextWatcher;
+    private ArrayList<ItemImage> imageListData; // images need to be handled rather differently
 
     // ActivityResultLauncher to launch the ApplyTagsActivity for result, to define tags for the edited item
     ActivityResultLauncher<Intent> mDefineTags = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -116,17 +120,24 @@ public class EditActivity extends AppCompatActivity  {
         itemModelEditText = findViewById(R.id.item_model_edittext);
         itemSerialEditText = findViewById(R.id.item_serial_edittext);
         itemValueEditText = findViewById(R.id.item_value_edittext);
+        imageList = findViewById(R.id.item_images_list);
 
         final ImageButton backButton = findViewById(R.id.back_button);
         final ImageButton itemDateButton = findViewById(R.id.item_date_button);
         final ImageButton saveButton = findViewById(R.id.save_button);
         final ImageButton descriptionCameraButton = findViewById(R.id.description_camera_button);
+        final ImageButton imageTakeButton = findViewById(R.id.image_take_button);
+        final ImageButton imageUploadButton = findViewById(R.id.image_upload_button);
+
+        // === set up image list
+        imageListData = new ArrayList<ItemImage>();
 
         // ============== RETRIEVE DATA ================
 
         final boolean newItemFlag; // true if we are creating a new item, false if editing existing item
 
         if (getIntent().getExtras() != null) {
+            // TODO: set up images here
             if (getIntent().getExtras().getSerializable("item") == null) {
                 // creating a new item; initialize with no fields
                 Log.d("EditActivity", "EditActivity opened without an InventoryItem");
@@ -169,6 +180,10 @@ public class EditActivity extends AppCompatActivity  {
         Log.d("EditActivity", "set up TextWatcher");
         // initial text modified by TextWatcher will be from currentItem, as EditText contents were just set by setFields
         itemValueEditText.addTextChangedListener(new ValueTextWatcher(itemValueEditText));
+
+        // set up list adapter for images
+        ItemImageAdapter imageAdapter = new ItemImageAdapter(this, imageListData);
+        imageList.setAdapter(imageAdapter);
 
         // ============== CLICK ACTIONS ================
 
@@ -218,6 +233,7 @@ public class EditActivity extends AppCompatActivity  {
                 barcodeActivityLauncher.launch(barcodeIntent);
             }
         });
+
         // itemDateButton should open a DatePickerDialog to choose date
         itemDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -247,10 +263,41 @@ public class EditActivity extends AppCompatActivity  {
             }
         });
 
+        // imageTakeButton takes user to Camera to take a photo
+        imageTakeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO
+            }
+        });
+
+        // Create a photo picker activity launcher to get an image and then store it in the current InventoryItem.
+        // See https://developer.android.com/training/data-storage/shared/photopicker
+        ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
+                registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+                    // callback when photo chosen or user closes menu
+                    if (uri != null) {
+                        Log.d("EditActivity", "PhotoPicker, user selected photo URI: " + uri);
+                        imageAdapter.add(new ItemImage(uri)); // add the uri to the current images
+                    } else {
+                        Log.d("EditActivity", "PhotoPicker, user closed menu with no photo selected");
+                    }
+                });
+
+        // imageUploadButton takes user to gallery to upload a photo
+        imageUploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Launch the photo picker and let the user choose only images.
+                pickMedia.launch(new PickVisualMediaRequest.Builder()
+                    .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                    .build());
+            }
+        });
+
         // saveButton should send data to Firebase and return to DetailsActivity
         saveButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // TODO: implement this
 
                 if (validateFields()) {
                     Log.d("EditActivity", "validation success, updating database");
@@ -339,9 +386,11 @@ public class EditActivity extends AppCompatActivity  {
             itemSerialEditText.getText().toString(),
             new ItemValue(itemValueEditText.getText().toString()),
             new ItemDate(itemDateText.getText().toString()),
-            currentItem.getTags()
+            currentItem.getTags(),
+            new ArrayList<Image>()
         );
         // TODO: add Images in part 4
     }
+
 
 }

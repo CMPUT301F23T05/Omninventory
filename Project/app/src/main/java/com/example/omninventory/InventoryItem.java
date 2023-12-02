@@ -1,5 +1,7 @@
 package com.example.omninventory;
 
+import android.media.Image;
+
 import com.google.firebase.firestore.DocumentReference;
 
 import java.io.Serializable;
@@ -26,7 +28,7 @@ public class InventoryItem implements Serializable {
     private ItemValue value;
     private ItemDate date;
     private ArrayList<String> tags;
-    private ArrayList<Object> images; // placeholder
+    private ArrayList<Image> images; // placeholder
 
     private boolean isSelected;
 
@@ -44,7 +46,7 @@ public class InventoryItem implements Serializable {
         this.value = new ItemValue(0);
         this.date = new ItemDate(new Date());
         this.tags = new ArrayList<>();
-        // TODO: images
+        this.images = new ArrayList<>();
 
         this.isSelected = false;
     }
@@ -62,7 +64,8 @@ public class InventoryItem implements Serializable {
      * @param date         Date of purchase of item to create (an ItemDate).
      */
     public InventoryItem(String firebaseId, String name, String description, String comment,
-                         String make, String model, String serialNo, ItemValue value, ItemDate date, ArrayList<String> tags) {
+                         String make, String model, String serialNo, ItemValue value, ItemDate date,
+                         ArrayList<String> tags, ArrayList<Image> images) {
         // full constructor
         this.firebaseId = firebaseId;
         this.name = name;
@@ -74,7 +77,7 @@ public class InventoryItem implements Serializable {
         this.value = value;
         this.date = date;
         this.tags = tags;
-        // TODO: images
+        this.images = images;
         this.isSelected = false;
     }
 
@@ -95,7 +98,7 @@ public class InventoryItem implements Serializable {
         itemData.put("value", this.getValue().toPrimitiveLong()); // convert ItemValue to long
         itemData.put("date", this.getDate().toDate()); // convert ItemDate to Date
         itemData.put("tags", this.getTags());
-        // TODO: tags and images
+        itemData.put("images", this.getImages());
         return itemData;
     }
 
@@ -283,4 +286,8 @@ public class InventoryItem implements Serializable {
      * @return InventoryItem's tags (an ArrayList of String objects)
      */
     public ArrayList<String> getTags() { return tags; }
+
+    public ArrayList<Image> getImages() { return images; }
+
+    public void setImages(ArrayList<Image> images) { this.images = images; }
 }

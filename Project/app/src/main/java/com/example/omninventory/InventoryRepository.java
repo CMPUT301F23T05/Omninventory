@@ -2,6 +2,7 @@ package com.example.omninventory;
 
 import static android.content.ContentValues.TAG;
 
+import android.media.Image;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -104,7 +105,8 @@ public class InventoryRepository {
             doc.getString("serialno"),
             new ItemValue(doc.getLong("value")), // convert to ItemValue
             new ItemDate(doc.getDate("date")), // convert to ItemDate
-            (ArrayList<String>) doc.get("tags")
+            (ArrayList<String>) doc.get("tags"),
+            new ArrayList<Image>()
         );
 
         return item;
