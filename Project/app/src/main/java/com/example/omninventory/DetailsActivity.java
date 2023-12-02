@@ -1,22 +1,23 @@
 package com.example.omninventory;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 
 /**
  * Activity for viewing the contents of all of an InventoryItem's fields.
  * @author Castor
  */
-public class DetailsActivity extends AppCompatActivity implements GetInventoryItemHandler {
+public class DetailsActivity extends AppCompatActivity implements GetInventoryItemHandler, ImageDownloadHandler {
 
     private InventoryRepository repo;
     private InventoryItem currentItem;
@@ -31,6 +32,10 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
     private TextView itemValueText;
     private TextView itemDateText;
     private TextView itemTagsText;
+    private RecyclerView imageList;
+
+    private ArrayList<ItemImage> imageListData; // images need to be handled rather differently
+    private ItemImageAdapter imageAdapter;
 
     /**
      * Method called on Activity creation. Contains most of the logic of this Activity; programmatically
@@ -59,6 +64,7 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
         itemValueText = findViewById(R.id.item_value_text);
         itemDateText = findViewById(R.id.item_date_text);
         itemTagsText = findViewById(R.id.item_tags_text);
+        imageList = findViewById(R.id.item_images_list);
 
         // ============== RETRIEVE DATA ================
 
@@ -91,6 +97,17 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
 
         titleText.setText(getString(R.string.details_title_text)); // set title text
         setFields(currentItem); // set item fields to contain data from InventoryItem passed in
+
+        // set up list adapter for images
+        imageListData = new ArrayList<ItemImage>();
+        for (int i = 0; i < currentItem.getImages().size(); i++) {
+            // by default, we have a list of placeholder images
+            imageListData.add(null);
+        }
+
+        imageAdapter = new ItemImageAdapter(imageListData);
+        imageList.setAdapter(imageAdapter);
+        imageList.setLayoutManager(new LinearLayoutManager(this));
 
         // ============== ONCLICK ACTIONS ================
 
@@ -126,6 +143,8 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
         itemValueText.setText(item.getValue().toString()); // convert ItemValue to String
         itemDateText.setText(item.getDate().toString()); // convert ItemDate to String
         itemTagsText.setText(item.getTagsString());
+
+        repo.attemptDownloadImages(item, this); // attempt image download into this activity, calling this.onImageDownload on success
     }
 
     /**
@@ -160,5 +179,11 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
         // update fields for the new item
         currentItem = item;
         setFields(currentItem);
+    }
+
+    public void onImageDownload(int pos, ItemImage image) {
+        Log.d("EditActivity", "onimagedownload called");
+        imageListData.set(pos, image);
+        imageAdapter.notifyItemChanged(pos);
     }
 }

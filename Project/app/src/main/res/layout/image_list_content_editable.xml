@@ -21,6 +21,19 @@
                     android:adjustViewBounds="true"
                     android:src="@drawable/placeholder_cat" />
 
+                <ImageButton
+                    android:id="@+id/image_delete_button"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:layout_margin="8dp"
+                    android:background="@drawable/rounded_button"
+                    android:cropToPadding="false"
+                    android:padding="4dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/delete_64"
+                    app:layout_constraintEnd_toEndOf="@+id/image_content"
+                    app:layout_constraintTop_toTopOf="@+id/image_content" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

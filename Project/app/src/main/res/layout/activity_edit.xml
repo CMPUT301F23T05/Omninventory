@@ -290,7 +290,7 @@
             <!--            using marginStart and marginTop for this particular case instead of blanket layout_margin, because layout_margin will overwrite -->
 
 
-            <!--            listview that stores images associated with this item using item_list_content layout -->
+            <!--            view that stores images associated with this item using item_list_content layout -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/item_images_list"
                 android:layout_width="match_parent"

@@ -2,20 +2,12 @@ package com.example.omninventory;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.Image;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,15 +16,12 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.firestore.DocumentReference;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -67,7 +56,7 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
     private RecyclerView imageList;
 
     private ArrayList<ItemImage> imageListData; // images need to be handled rather differently
-    private ItemImageAdapter imageAdapter;
+    private EditableItemImageAdapter imageAdapter;
 
     // ActivityResultLauncher to launch the ApplyTagsActivity for result, to define tags for the edited item
     ActivityResultLauncher<Intent> mDefineTags = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -134,9 +123,6 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
         final ImageButton imageTakeButton = findViewById(R.id.image_take_button);
         final ImageButton imageUploadButton = findViewById(R.id.image_upload_button);
 
-        // === set up image list
-        imageListData = new ArrayList<ItemImage>();
-
         // ============== RETRIEVE DATA ================
 
         final boolean newItemFlag; // true if we are creating a new item, false if editing existing item
@@ -186,7 +172,13 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
         itemValueEditText.addTextChangedListener(new ValueTextWatcher(itemValueEditText));
 
         // set up list adapter for images
-        imageAdapter = new ItemImageAdapter(imageListData);
+        imageListData = new ArrayList<ItemImage>();
+        for (int i = 0; i < currentItem.getImages().size(); i++) {
+            // by default, we have a list of placeholder images
+            imageListData.add(null);
+        }
+
+        imageAdapter = new EditableItemImageAdapter(imageListData);
         imageList.setAdapter(imageAdapter);
         imageList.setLayoutManager(new LinearLayoutManager(this));
 
@@ -400,32 +392,9 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
         );
     }
 
-    public void onImageDownload(ItemImage image) {
+    public void onImageDownload(int pos, ItemImage image) {
         Log.d("EditActivity", "onimagedownload called");
-        imageListData.add(image);
-        imageAdapter.notifyItemInserted(imageListData.size() - 1);
+        imageListData.set(pos, image);
+        imageAdapter.notifyItemChanged(pos);
     }
-
-    public void addImageToLayout(ItemImage image) {
-        // find layout where we add the images
-//        LinearLayout imageLayout = findViewById(R.id.item_images_layout);
-//        View view = LayoutInflater.from(this).inflate(R.layout.image_list_content, imageLayout);
-//
-//        // set content field (image display) for this image from its URI
-////        imageContent.setImageURI(Uri.parse(image.getUri().toString()));
-//        Picasso.get()
-//                .load(image.getUri().toString())
-//                .into(imageContent);
-//
-//        // set up onclick listener for deleting this image
-//        imageDeleteButton.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                Log.d("ItemImageAdapter", String.format("Deleting image at position %d", position));
-//                listData.remove(position); // this position's image will be deleted
-//                ItemImageAdapter.this.notifyDataSetChanged(); // update this ItemImageAdapter
-//            }
-//        });
-    }
-
-
 }

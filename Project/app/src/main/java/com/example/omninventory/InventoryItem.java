@@ -31,6 +31,7 @@ public class InventoryItem implements Serializable {
     private ItemDate date;
     private ArrayList<String> tags;
     private ArrayList<ItemImage> images;
+    private ArrayList<ItemImage> originalImages; // only set if initialized with images
 
     private boolean isSelected;
 
@@ -80,6 +81,7 @@ public class InventoryItem implements Serializable {
         this.date = date;
         this.tags = tags;
         this.images = images;
+        this.originalImages = new ArrayList<>(images); // since initialized with images, store originals as well
         this.isSelected = false;
     }
 
@@ -304,6 +306,10 @@ public class InventoryItem implements Serializable {
             }
         }
         return imagePaths;
+    }
+
+    public ArrayList<ItemImage> getOriginalImages() {
+        return originalImages;
     }
 
 }

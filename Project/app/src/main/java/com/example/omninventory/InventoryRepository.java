@@ -142,17 +142,19 @@ public class InventoryRepository {
         ArrayList<ItemImage> images = item.getImages();
         Log.d("InventoryRepository", "attemptImageDownload called, item images: " + images.toString());
 
-        for (ItemImage image : images) {
+        for (int i = 0; i < images.size(); i++) {
+            ItemImage image = images.get(i);
             Log.d("InventoryRepository", "attempting to download image: " + image.toString());
 
             // get image's uri, hopefully
+            int finalPos = i;
             storageRef.child(image.getPath()).getDownloadUrl()
                 .addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
                         Log.d("InventoryRepository", String.format("Got URI for image path %s, URI %s", image.getPath(), uri));
                         image.setUri(uri);
-                        handler.onImageDownload(image); // call handler function to refresh its images
+                        handler.onImageDownload(finalPos, image); // call handler function to refresh its images
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -293,6 +295,69 @@ public class InventoryRepository {
                     });
 
         });
+
+        // update images if item had images on initialization
+        updateItemImages(item.getOriginalImages(), item.getImages());
+    }
+
+
+
+    /**
+     * remove and add images
+     */
+    public void updateItemImages(ArrayList<ItemImage> prevImages, ArrayList<ItemImage> newImages) {
+        // if no prev images, we are just adding all images
+        if (prevImages == null || prevImages.size() == 0) {
+            addImages(newImages);
+            return;
+        }
+
+        // otherwise, optimize by only uploading/deleting necessary images
+        ArrayList<ItemImage> toUpload = new ArrayList<>();
+        ArrayList<ItemImage> toDelete = new ArrayList<>();
+
+        // find images that haven't been uploaded yet
+        for (ItemImage image1 : newImages) {
+            boolean alreadyUploaded = false;
+
+            for (ItemImage image2 : prevImages) {
+                if (image1.getPath() == null) {
+                    continue; // image definitely not uploaded
+                }
+                else if (image1.getPath().equals( image2.getPath() )) {
+                    // image was already uploaded to the database, don't need to reupload
+                    alreadyUploaded = true;
+                    break;
+                }
+            }
+            if (!alreadyUploaded) {
+                toUpload.add(image1);
+            }
+        }
+        // upload images
+        addImages(toUpload);
+
+        // find images that can be deleted
+        for (ItemImage image1 : prevImages) {
+            boolean keep = false;
+
+            for (ItemImage image2 : newImages) {
+                if (image1.getPath() == null) {
+                    // this shouldn't happen, but it would theoretically mean that image1 was never uploaded
+                    continue;
+                }
+                else if (image1.getPath().equals( image2.getPath() )) {
+                    // image is kept in new list of images
+                    keep = true;
+                    break;
+                }
+            }
+            if (!keep) {
+                toDelete.add(image1);
+            }
+        }
+        // delete images
+        deleteImages(toDelete);
     }
 
     /**
@@ -374,7 +439,7 @@ public class InventoryRepository {
     };
 
     /**
-     * Add an ItemImage to the storage.
+     * Add a list of ItemImages to the storage.
      * @param images
      * @return
      */
@@ -398,13 +463,13 @@ public class InventoryRepository {
                         new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                Log.d("InventoryRepository", "Image uploaded successfully:" + image.getUri() + " as " + filepath);
+                                Log.d("InventoryRepository", "addImages: Image uploaded successfully:" + image.getUri() + " as " + filepath);
                             }
                         })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("InventoryRepository", "Image failed to upload:" + image.getUri());
+                        Log.d("InventoryRepository", "addImages: Image failed to upload:" + image.getUri());
                     }
                 });
         }
@@ -412,6 +477,33 @@ public class InventoryRepository {
         // return a list of image paths
         Log.d("InventoryRepository", "Started tasks to upload images: " + imagePaths.toString());
         return imagePaths;
+    }
+
+    /**
+     * Delete a list of ItemImages from the storage (based on path).
+     * @param images
+     * @return
+     */
+    public void deleteImages(ArrayList<ItemImage> images) {
+
+        for (ItemImage image : images) {
+            // get reference for image
+            StorageReference imageRef = storageRef.child(image.getPath());
+            imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    Log.d("InventoryRepository", "deleteImages: deleted image with path " + image.getPath());
+                    image.setPath(null); // ensure we don't try to reference this path again
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d("InventoryRepository", "deleteImages: failed to delete image with path " + image.getPath());
+                    image.setPath(null); // get rid of path anyway because there is probably something wrong with it
+                }
+            });
+        }
+
     }
 
     /**
