@@ -96,6 +96,41 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
         }
     });
 
+    // ActivityResultLauncher to get an image and then store it in the current InventoryItem.
+    // Currently allows up to 5 selections
+    // See https://developer.android.com/training/data-storage/shared/photopicker
+    ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
+            registerForActivityResult(new ActivityResultContracts.PickMultipleVisualMedia(5), uris -> {
+                // callback when photos chosen or user closes menu
+                if (uris != null && !uris.isEmpty()) {
+                    for (Uri uri : uris) {
+                        Log.d("EditActivity", "PhotoPicker, user selected photo URI: " + uri);
+                        ItemImage newImage = new ItemImage(uri);
+                        imageAdapter.add(newImage); // add the uri to the current images, has no path yet and a local URI
+                    }
+                } else {
+                    Log.d("EditActivity", "PhotoPicker, user closed menu with no photo selected");
+                }
+            });
+
+    // ActivityResultLauncher for intent launched by imageTakeButton; creates a new ItemImage with URI of created file
+    ActivityResultLauncher<Intent> imageTakeLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Log.d("EditActivity", "imageTakeLauncher obtained image, uri: " + imageUri);
+
+                        // create new image from information set in imageTakeButton onClick action
+                        ItemImage newImage = new ItemImage(imageUri);
+                        newImage.setFilePath(imageFilePath); // need to load EXIF data from filepath in order to fix rotation
+                        newImage.fixRotation(EditActivity.this); // known issue, sometimes rotation is messed up for images on particular devices; this function fixes it
+                        imageAdapter.add(newImage); // add the uri to the current images, has no path yet and a URI in phone filesystem
+                    }
+                }
+            });
+
     /**
      * Method called on Activity creation. Contains most of the logic of this Activity; programmatically
      * modifying UI elements, creating Intents to move to other Activites, and setting up connection
@@ -130,6 +165,7 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
         final ImageButton descriptionCameraButton = findViewById(R.id.description_camera_button);
         final ImageButton imageTakeButton = findViewById(R.id.image_take_button);
         final ImageButton imageUploadButton = findViewById(R.id.image_upload_button);
+        final ImageButton tagButton = findViewById(R.id.item_tags_button);
 
         // ============== RETRIEVE DATA ================
 
@@ -181,10 +217,10 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
 
         // set up list adapter for images
         imageAdapter = new EditableItemImageAdapter(new ArrayList<ItemImage>());
+        // should be initialized with nulls the same size as currentItem's image list, so that we can read in images as they are downloaded
         imageAdapter.resetData(currentItem.getImages().size());
         imageList.setAdapter(imageAdapter);
-        imageList.setLayoutManager(new LinearLayoutManager(this));
-//        imageList.setHasFixedSize(true);
+        imageList.setLayoutManager(new LinearLayoutManager(this)); // necessary for RecyclerView
 
         // ============== CLICK ACTIONS ================
 
@@ -208,7 +244,6 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
         });
 
         // tagButton should launch the ApplyTagsActivity for result
-        final ImageButton tagButton = findViewById(R.id.item_tags_button);
         tagButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -264,32 +299,11 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
             }
         });
 
-        // launcher for intent launched by imageTakeButton; creates a new ItemImage with URI of created file
-        ActivityResultLauncher<Intent> imageTakeLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == Activity.RESULT_OK) {
-                            Log.d("EditActivity", "imageTakeLauncher obtained image, uri: " + imageUri);
-
-                            // create new image from information set in imageTakeButton onClick action
-                            ItemImage newImage = new ItemImage(imageUri);
-                            newImage.setFilePath(imageFilePath); // need to load EXIF data from filepath in order to fix rotation
-                            newImage.fixRotation(EditActivity.this); // sometimes rotation is messed up for camera images
-                            imageAdapter.add(newImage); // add the uri to the current images, has no path yet and a URI in phone filesystem
-                        }
-                    }
-                });
-
         // imageTakeButton takes user to Camera to take a photo
         imageTakeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent imageTakeIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-                File photo = new File(Environment.getExternalStorageDirectory(),"omninventory.jpg");
-                imageTakeIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
 
                 // try to create a new file to store image in
                 File photoFile = createImageFile();
@@ -303,31 +317,23 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
 
                     imageTakeIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                     imageTakeLauncher.launch(imageTakeIntent);
-                };
+                }
+                else {
+                    // something went wrong in file creation
+                    Log.e("EditActivity", "File creation failed, not allowing user to take a photo");
+                    Toast toast = Toast.makeText(getApplicationContext(), "There was a problem accessing device storage.", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
             }
         });
-
-        // Create a photo picker activity launcher to get an image and then store it in the current InventoryItem.
-        // Currently allows up to 5 selections
-        // See https://developer.android.com/training/data-storage/shared/photopicker
-        ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
-            registerForActivityResult(new ActivityResultContracts.PickMultipleVisualMedia(5), uris  -> {
-                // callback when photos chosen or user closes menu
-                if (uris != null && !uris.isEmpty()) {
-                    for (Uri uri : uris) {
-                        Log.d("EditActivity", "PhotoPicker, user selected photo URI: " + uri);
-                        imageAdapter.add(new ItemImage(uri)); // add the uri to the current images, has no path yet and a local URI
-                    }
-                } else {
-                    Log.d("EditActivity", "PhotoPicker, user closed menu with no photo selected");
-                }
-            });
 
         // imageUploadButton takes user to gallery to upload a photo
         imageUploadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Launch the photo picker and let the user choose only images.
+                // known issue with androidx.activity:activity, this line gets underlined as an error
+                // in the IDE but code runs with no issue.
                 pickMedia.launch(new PickVisualMediaRequest.Builder()
                     .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
                     .build());
@@ -383,18 +389,16 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
         itemDateText.setText(item.getDate().toString()); // convert ItemDate to String. note this is a TextView, not EditText
         itemTagsText.setText(item.getTagsString());
 
-//        imageListData = currentItem.getImages(); // ensure this item's images are displayed
         repo.attemptDownloadImages(item, this); // attempt image download into this activity, calling this.onImageDownload on success
     }
 
     /**
      * Handles input validation for fields on this screen. Currently only imposes restrictions on
-     * the item name (that is, it must exist), but in the future might be necessary to add more
+     * the item name (that is, it must exist), but in the future could be used to add more
      * complex restrictions on more fields.
      * @return A Boolean; 'true' if validation succeeded, otherwise 'false'.
      */
     private boolean validateFields() {
-        // === get references to Views
         final TextInputEditText itemNameEditText = findViewById(R.id.item_name_edittext);
         boolean val_result = true;
 
@@ -431,13 +435,28 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
             imageAdapter.getImageList(), // the current images displayed onscreen
             currentItem.getImages() // original image paths before edit
         );
+        // need to pass original image paths to this constructor because original/new image lists
+        // are compared in InventoryRepository, in order to determine if images can be deleted/which
+        // images need to be uploaded
     }
 
+    /**
+     * Callback function that updates images displayed in the imageAdapter when a necessary image
+     * is downloaded from Firestore storage. (This is implemented with a callback from InventoryRepository
+     * so that images can be displayed one-by-one as they are loaded).
+     * @param pos Position of image in currentItem's list of images.
+     * @param image The ItemImage with data used for display.
+     */
     public void onImageDownload(int pos, ItemImage image) {
-        Log.d("EditActivity", "onimagedownload called");
         imageAdapter.set(pos, image);
     }
 
+    /**
+     * Callback function for when an image fails to download; typically this is because the image is still
+     * being uploaded, i.e. the user is moving quickly between screens and upload hasn't finished yet.
+     * This function waits a little bit and then tries to download the image again.
+     * @param pos Position of image in currentItem's list of images.
+     */
     public void onImageDownloadFailed(int pos) {
         // just keep trying to download the image
         Log.d("EditActivity", String.format("onImageDownloadFailed called for pos %d, trying again after 1s...", pos));
@@ -448,24 +467,28 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
             public void run() {
                 repo.attemptDownloadImage(currentItem, pos, EditActivity.this);
             }
-        }, 1000); // try again after 1s
+        }, 750); // try again after 0.75s
     }
 
+    /**
+     * Creates a local file on the device to use for storing an image.
+     * @return A File object for the created file.
+     */
     private File createImageFile() {
         // create filename
-//        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CANADA).format(new Date());
-//        String imageFileName = "omninventory-" + timeStamp;
         String imageFileName = "omninventory";
 
+        // storage directory on device
         File storageDir = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DCIM), "Camera");
 
-        File imageFile = null;
+        File imageFile;
         try {
             imageFile = File.createTempFile(imageFileName, ".jpg", storageDir);
         }
         catch (IOException e) {
             Log.e("EditActivity", "error creating new image file");
+            return null;
         }
 
         Log.d("EditActivity", "image file created: " + imageFile.getPath() + ", absolute: " + imageFile.getAbsolutePath());

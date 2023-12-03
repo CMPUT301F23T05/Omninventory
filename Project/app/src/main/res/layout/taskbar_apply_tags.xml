@@ -2,60 +2,68 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <TextView
         android:id="@+id/taskbar_band"
         android:layout_width="fill_parent"
         android:layout_height="10dp"
-        android:background="@drawable/color_primary_draw" />
+        android:background="@color/salmon_banner"/>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@drawable/color_secondary_draw"
+        android:background="@color/blue_banner"
         android:orientation="horizontal">
 
-        <ImageButton style="@style/taskbar_button"
+        <ImageButton
             android:id="@+id/back_button"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="0dp"
+            android:background="@color/blue_banner"
             android:contentDescription="@string/back_button_label"
-            android:src="@drawable/icon_back" />
+            android:cropToPadding="true"
+            android:padding="10dp"
+            android:scaleType="fitXY"
+            app:layout_constraintDimensionRatio="1:1"
+            android:src="@drawable/icon_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <!-- to keep spacing consistent with layout_weight -->
-        <LinearLayout
-            android:id="@+id/spacer1"
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal"/>
-
-        <ImageButton style="@style/taskbar_button"
+        <ImageButton
             android:id="@+id/add_tag_button"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="0dp"
+            android:background="@color/blue_banner"
             android:contentDescription="@string/delete_tag_button_label"
-            android:src="@drawable/icon_trash"/>
+            android:cropToPadding="true"
+            android:padding="10dp"
+            android:scaleType="fitXY"
+            app:layout_constraintDimensionRatio="1:1"
+            android:src="@drawable/icon_trash"
+            app:layout_constraintEnd_toStartOf="@+id/confirm_tags_button"
+            app:layout_constraintStart_toEndOf="@+id/back_button"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <!-- to keep spacing consistent with layout_weight -->
-        <LinearLayout
-            android:id="@+id/spacer2"
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal"/>
-
-        <ImageButton style="@style/taskbar_button"
+        <ImageButton
             android:id="@+id/confirm_tags_button"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="0dp"
+            android:background="@color/blue_banner"
             android:contentDescription="@string/add_tag_button_label"
-            android:src="@drawable/icon_save"/>
+            android:cropToPadding="true"
+            android:padding="10dp"
+            android:scaleType="fitXY"
+            app:layout_constraintDimensionRatio="1:1"
+            android:src="@drawable/icon_save"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
-    </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

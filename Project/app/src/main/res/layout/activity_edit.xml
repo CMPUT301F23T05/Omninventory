@@ -164,6 +164,7 @@
                     android:id="@+id/item_value_edittext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:inputType="number"
                     android:theme="@style/item_edit_edittext" />
             </com.google.android.material.textfield.TextInputLayout>
 
