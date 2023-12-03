@@ -3,6 +3,7 @@ package com.example.omninventory;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.StorageReference;
@@ -63,5 +64,12 @@ public class ItemImage implements Serializable {
     @Override
     public String toString() {
         return String.format("[IMAGE | uri=%s | path=%s]", this.uri, this.path);
+    }
+
+    public boolean equalRef(@Nullable ItemImage image) {
+        if (path == null || image.path == null) {
+            return false;
+        }
+        return path.equals(image.path);
     }
 }

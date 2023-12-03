@@ -81,7 +81,39 @@ public class InventoryItem implements Serializable {
         this.date = date;
         this.tags = tags;
         this.images = images;
-        this.originalImages = new ArrayList<>(images); // since initialized with images, store originals as well
+//        this.originalImages = new ArrayList<>(images); // since initialized with images, store originals as well
+        this.isSelected = false;
+    }
+
+    /**
+     * Initialize all fields of item, as well as an 'originalImages' field used if this item is an update
+     * to something already stored in the database.
+     * @param firebaseId   ID of item to create.
+     * @param name         Name of item to create.
+     * @param description  Description of item to create.
+     * @param comment      Comment of item to create.
+     * @param make         Make of item to create.
+     * @param model        Model of item to create.
+     * @param serialNo     Serial number of item to create.
+     * @param value        Estimated value of item to create (an ItemValue).
+     * @param date         Date of purchase of item to create (an ItemDate).
+     */
+    public InventoryItem(String firebaseId, String name, String description, String comment,
+                         String make, String model, String serialNo, ItemValue value, ItemDate date,
+                         ArrayList<String> tags, ArrayList<ItemImage> images, ArrayList<ItemImage> originalImages) {
+        // full constructor
+        this.firebaseId = firebaseId;
+        this.name = name;
+        this.description = description;
+        this.comment = comment;
+        this.make = make;
+        this.model = model;
+        this.serialNo = serialNo;
+        this.value = value;
+        this.date = date;
+        this.tags = tags;
+        this.images = images;
+        this.originalImages = originalImages;
         this.isSelected = false;
     }
 

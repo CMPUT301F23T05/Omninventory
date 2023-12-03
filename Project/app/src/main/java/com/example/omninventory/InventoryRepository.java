@@ -251,6 +251,9 @@ public class InventoryRepository {
      * @param item The InventoryItem to update.
      */
     public void updateInventoryItem(InventoryItem item) {
+        // update images. this needs to happen before item.convertToHashMap because image paths are written to item here
+        updateItemImages(item.getOriginalImages(), item.getImages());
+
         // create data for new item document
         HashMap<String, Object> itemData = item.convertToHashMap();
 
@@ -263,7 +266,7 @@ public class InventoryRepository {
             .addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    Log.d("InventoryRepository", String.format("New inventoryItems DocumentSnapshot written, id=%s", itemRef.getId()));
+                    Log.d("InventoryRepository", String.format("Updated inventoryItems DocumentSnapshot written, id=%s", itemRef.getId()));
                 }
             })
             .addOnFailureListener(new OnFailureListener() {
@@ -295,9 +298,6 @@ public class InventoryRepository {
                     });
 
         });
-
-        // update images if item had images on initialization
-        updateItemImages(item.getOriginalImages(), item.getImages());
     }
 
 
@@ -317,46 +317,42 @@ public class InventoryRepository {
         ArrayList<ItemImage> toDelete = new ArrayList<>();
 
         // find images that haven't been uploaded yet
-        for (ItemImage image1 : newImages) {
+        for (ItemImage newImg : newImages) {
             boolean alreadyUploaded = false;
 
-            for (ItemImage image2 : prevImages) {
-                if (image1.getPath() == null) {
-                    continue; // image definitely not uploaded
-                }
-                else if (image1.getPath().equals( image2.getPath() )) {
+            for (ItemImage oldImg : prevImages) {
+                if (newImg.equalRef(oldImg)) {
                     // image was already uploaded to the database, don't need to reupload
                     alreadyUploaded = true;
                     break;
                 }
             }
             if (!alreadyUploaded) {
-                toUpload.add(image1);
+                toUpload.add(newImg);
             }
         }
-        // upload images
-        addImages(toUpload);
 
         // find images that can be deleted
-        for (ItemImage image1 : prevImages) {
+        for (ItemImage oldImg : prevImages) {
             boolean keep = false;
 
-            for (ItemImage image2 : newImages) {
-                if (image1.getPath() == null) {
-                    // this shouldn't happen, but it would theoretically mean that image1 was never uploaded
-                    continue;
-                }
-                else if (image1.getPath().equals( image2.getPath() )) {
+            for (ItemImage newImg : newImages) {
+                if (newImg.equalRef( oldImg )) {
                     // image is kept in new list of images
                     keep = true;
                     break;
                 }
             }
             if (!keep) {
-                toDelete.add(image1);
+                toDelete.add(oldImg);
             }
         }
+        // upload images
+        Log.d("InventoryRepository", "Uploading new images: " + toUpload);
+        addImages(toUpload);
+
         // delete images
+        Log.d("InventoryRepository", "Deleting images no longer used: " + toDelete);
         deleteImages(toDelete);
     }
 
@@ -457,6 +453,7 @@ public class InventoryRepository {
             // store reference
             imagePaths.add(filepath);
             image.setPath(filepath);
+            Log.d(">????>", image.toString());
 
             Task task = imageRef.putFile(image.getUri())
                 .addOnSuccessListener(

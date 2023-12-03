@@ -30,6 +30,18 @@ public class ItemImageAdapter extends RecyclerView.Adapter<ItemImageAdapter.View
         this.listData = listData;
     }
 
+    /**
+     * Set this adapter's data to a default array of nulls.
+     * @param n
+     */
+    public void resetData(int n) {
+        listData = new ArrayList<ItemImage>();
+        for (int i = 0; i < n; i++) {
+            // by default, we have a list of placeholder images
+            listData.add(null);
+        }
+    }
+
 
     /**
      * Provide a reference to the type of views that you are using
@@ -48,7 +60,6 @@ public class ItemImageAdapter extends RecyclerView.Adapter<ItemImageAdapter.View
         }
     }
 
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -63,14 +74,7 @@ public class ItemImageAdapter extends RecyclerView.Adapter<ItemImageAdapter.View
 
         ItemImage image = listData.get(position); // get item at this position
 
-        if (image == null) {
-            // image not loaded yet; use placeholder
-            // seemingly images usually load fast enough that this never gets drawn but hey
-            Picasso.get()
-                    .load(R.drawable.image_placeholder)
-                    .into(imageContent);
-        }
-        else if (image.getUri() != null) {
+        if (image != null && image.getUri() != null) {
             // set content field (image display) for this image from its URI
             // this works for both local URIs and internet firebase storage URIs
 //        imageContent.setImageURI(Uri.parse(image.getUri().toString()));
@@ -79,11 +83,31 @@ public class ItemImageAdapter extends RecyclerView.Adapter<ItemImageAdapter.View
                     .into(imageContent);
         }
         else {
-            // placeholder again
+            // image not loaded yet; use placeholder
+            // seemingly images usually load fast enough that this is never visible. but hey
             Picasso.get()
                     .load(R.drawable.image_placeholder)
                     .into(imageContent);
         }
+    }
+
+    /**
+     * Mimic set method of ArrayList to set item in adapter and update
+     * @param pos
+     * @param image
+     */
+    public void set(int pos, ItemImage image) {
+        listData.set(pos, image);
+        this.notifyItemChanged(pos);
+    }
+
+    public void add(ItemImage image) {
+        listData.add(image);
+        this.notifyItemInserted(listData.size() - 1);
+    }
+
+    public ArrayList<ItemImage> getImageList() {
+        return listData;
     }
 
     @Override

@@ -55,7 +55,6 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
     private TextView itemTagsText;
     private RecyclerView imageList;
 
-    private ArrayList<ItemImage> imageListData; // images need to be handled rather differently
     private EditableItemImageAdapter imageAdapter;
 
     // ActivityResultLauncher to launch the ApplyTagsActivity for result, to define tags for the edited item
@@ -172,13 +171,8 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
         itemValueEditText.addTextChangedListener(new ValueTextWatcher(itemValueEditText));
 
         // set up list adapter for images
-        imageListData = new ArrayList<ItemImage>();
-        for (int i = 0; i < currentItem.getImages().size(); i++) {
-            // by default, we have a list of placeholder images
-            imageListData.add(null);
-        }
-
-        imageAdapter = new EditableItemImageAdapter(imageListData);
+        imageAdapter = new EditableItemImageAdapter(new ArrayList<ItemImage>());
+        imageAdapter.resetData(currentItem.getImages().size());
         imageList.setAdapter(imageAdapter);
         imageList.setLayoutManager(new LinearLayoutManager(this));
 
@@ -275,8 +269,7 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
                 // callback when photo chosen or user closes menu
                 if (uri != null) {
                     Log.d("EditActivity", "PhotoPicker, user selected photo URI: " + uri);
-                    imageListData.add(new ItemImage(uri)); // add the uri to the current images, no path yet
-                    imageAdapter.notifyItemInserted(imageListData.size() - 1);
+                    imageAdapter.add(new ItemImage(uri)); // add the uri to the current images, has no path yet and a local URI
                 } else {
                     Log.d("EditActivity", "PhotoPicker, user closed menu with no photo selected");
                 }
@@ -321,7 +314,6 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
                     CharSequence toastText = "Please fix invalid input fields.";
                     Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
                     toast.show();
-
                 }
             }
         });
@@ -388,13 +380,13 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
             new ItemValue(itemValueEditText.getText().toString()),
             new ItemDate(itemDateText.getText().toString()),
             currentItem.getTags(),
-            imageListData // the current images displayed onscreen
+            imageAdapter.getImageList(), // the current images displayed onscreen
+            currentItem.getImages() // original image paths before edit
         );
     }
 
     public void onImageDownload(int pos, ItemImage image) {
         Log.d("EditActivity", "onimagedownload called");
-        imageListData.set(pos, image);
-        imageAdapter.notifyItemChanged(pos);
+        imageAdapter.set(pos, image);
     }
 }

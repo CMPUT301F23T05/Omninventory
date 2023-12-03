@@ -1,5 +1,6 @@
 package com.example.omninventory;
 
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,11 +54,12 @@ public class EditableItemImageAdapter extends ItemImageAdapter {
         return new ViewHolder(view);
     }
 
-    public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
+    @Override
+    public void onBindViewHolder(@NonNull ItemImageAdapter.ViewHolder holder, final int position) {
         super.onBindViewHolder(holder, position);
 
         // === find views
-        ImageButton imageDeleteButton = holder.getImageDeleteButton();
+        ImageButton imageDeleteButton = ((EditableItemImageAdapter.ViewHolder) holder).getImageDeleteButton();
 
         // set up onclick listener for deleting this image
         imageDeleteButton.setOnClickListener(new View.OnClickListener() {

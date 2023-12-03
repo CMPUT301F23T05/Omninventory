@@ -34,7 +34,6 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
     private TextView itemTagsText;
     private RecyclerView imageList;
 
-    private ArrayList<ItemImage> imageListData; // images need to be handled rather differently
     private ItemImageAdapter imageAdapter;
 
     /**
@@ -99,13 +98,8 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
         setFields(currentItem); // set item fields to contain data from InventoryItem passed in
 
         // set up list adapter for images
-        imageListData = new ArrayList<ItemImage>();
-        for (int i = 0; i < currentItem.getImages().size(); i++) {
-            // by default, we have a list of placeholder images
-            imageListData.add(null);
-        }
-
-        imageAdapter = new ItemImageAdapter(imageListData);
+        imageAdapter = new ItemImageAdapter(new ArrayList<ItemImage>());
+        imageAdapter.resetData(currentItem.getImages().size());
         imageList.setAdapter(imageAdapter);
         imageList.setLayoutManager(new LinearLayoutManager(this));
 
@@ -144,7 +138,8 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
         itemDateText.setText(item.getDate().toString()); // convert ItemDate to String
         itemTagsText.setText(item.getTagsString());
 
-        repo.attemptDownloadImages(item, this); // attempt image download into this activity, calling this.onImageDownload on success
+        // attempt image download into this activity, calling this.onImageDownload on success
+        repo.attemptDownloadImages(item, this);
     }
 
     /**
@@ -157,13 +152,18 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("DetailsActivity", "onResume called");
 
         // repo and currentItem may be null if we are entering DetailActivity from MainActivity
         if (repo != null && currentItem != null) {
             // but, in case we are entering from EditActivity, we need to refresh the item fields
             // as they may have been edited
             Log.d("DetailsActivity", "refreshing currentItem");
+
+            // clear adapter in case we had anything in there (otherwise downloading new images will cause duplicates)
+            imageAdapter.resetData(currentItem.getImages().size());
+            imageAdapter.notifyItemRangeChanged(0, imageAdapter.getItemCount());
+
+            // then redownload images
             repo.getInventoryItemInto(currentItem.getFirebaseId(), this);
         }
     }
@@ -183,7 +183,6 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
 
     public void onImageDownload(int pos, ItemImage image) {
         Log.d("EditActivity", "onimagedownload called");
-        imageListData.set(pos, image);
-        imageAdapter.notifyItemChanged(pos);
+        imageAdapter.set(pos, image);
     }
 }
