@@ -1,5 +1,12 @@
 package com.example.omninventory;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
+import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -81,8 +90,12 @@ public class ItemImageAdapter extends RecyclerView.Adapter<ItemImageAdapter.View
 //        imageContent.setImageURI(Uri.parse(image.getUri().toString()));
             Picasso.get()
                     .load(image.getUri().toString())
+                    .rotate(image.getNeededRotation())
                     .placeholder(R.drawable.image_placeholder)
                     .into(imageContent);
+
+//            Context context = holder.getImageView().getContext();
+//            imageContent.setImageBitmap(image.getBitmap(context));
         }
         else {
             // image not loaded yet; use placeholder
@@ -122,4 +135,6 @@ public class ItemImageAdapter extends RecyclerView.Adapter<ItemImageAdapter.View
     public int getItemCount() {
         return listData.size();
     }
+
+
 }

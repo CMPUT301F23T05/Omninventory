@@ -71,6 +71,7 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
 
     private EditableItemImageAdapter imageAdapter;
     private Uri imageUri; // used to hold URI from image capture
+    private String imageFilePath; // used to hold filepath from image capture
 
     // ActivityResultLauncher to launch the ApplyTagsActivity for result, to define tags for the edited item
     ActivityResultLauncher<Intent> mDefineTags = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -278,7 +279,11 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
                     public void onActivityResult(ActivityResult result) {
                         if (result.getResultCode() == Activity.RESULT_OK) {
                             Log.d("EditActivity", "imageTakeLauncher obtained image, uri: " + imageUri);
-                            imageAdapter.add(new ItemImage(imageUri)); // add the uri to the current images, has no path yet and a URI in phone filesystem
+
+                            // create new image from information set in imageTakeButton onClick action
+                            ItemImage newImage = new ItemImage(imageUri);
+                            newImage.setFilePath(imageFilePath);
+                            imageAdapter.add(newImage); // add the uri to the current images, has no path yet and a URI in phone filesystem
                         }
                     }
                 });
@@ -296,9 +301,12 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
                 File photoFile = createImageFile();
 
                 if (photoFile != null) {
+                    // store filepath and URI
+                    imageFilePath = photoFile.getAbsolutePath();
                     imageUri = FileProvider.getUriForFile(EditActivity.this,
                             EditActivity.this.getPackageName() + ".provider",
-                            createImageFile());
+                            photoFile);
+
                     imageTakeIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                     imageTakeLauncher.launch(imageTakeIntent);
                 };
@@ -451,8 +459,9 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
 
     private File createImageFile() {
         // create filename
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CANADA).format(new Date());
-        String imageFileName = "omninventory-" + timeStamp;
+//        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CANADA).format(new Date());
+//        String imageFileName = "omninventory-" + timeStamp;
+        String imageFileName = "omninventory";
 
         File storageDir = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DCIM), "Camera");
@@ -464,6 +473,8 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
         catch (IOException e) {
             Log.e("EditActivity", "error creating new image file");
         }
+
+        Log.d("EditActivity", "image file created: " + imageFile.getPath() + ", absolute: " + imageFile.getAbsolutePath());
         return imageFile;
     }
 }

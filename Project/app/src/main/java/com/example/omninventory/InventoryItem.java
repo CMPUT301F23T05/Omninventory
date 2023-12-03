@@ -330,8 +330,8 @@ public class InventoryItem implements Serializable {
     public ArrayList<String> getImagePaths() {
         ArrayList<String> imagePaths = new ArrayList<String>();
         for (ItemImage image : images) {
-            if (image.getPath() != null) {
-                imagePaths.add(image.getPath());
+            if (image.getStoragePath() != null) {
+                imagePaths.add(image.getStoragePath());
             }
             else {
                 Log.d("InventoryItem", String.format("no path for item %s, skipping in getImagePaths", image));

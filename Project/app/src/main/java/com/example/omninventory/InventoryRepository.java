@@ -148,11 +148,11 @@ public class InventoryRepository {
 
             // get image's uri, hopefully
             int finalPos = i;
-            storageRef.child(image.getPath()).getDownloadUrl()
+            storageRef.child(image.getStoragePath()).getDownloadUrl()
                 .addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        Log.d("InventoryRepository", String.format("Got URI for image path %s, URI %s", image.getPath(), uri));
+                        Log.d("InventoryRepository", String.format("Got URI for image path %s, URI %s", image.getStoragePath(), uri));
                         image.setUri(uri);
                         handler.onImageDownload(finalPos, image); // call handler function to refresh its images
                     }
@@ -160,7 +160,7 @@ public class InventoryRepository {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("InventoryRepository", "Couldn't get URI for image path " + image.getPath());
+                        Log.d("InventoryRepository", "Couldn't get URI for image path " + image.getStoragePath());
                         handler.onImageDownloadFailed(finalPos);
                     }
                 });
@@ -178,11 +178,11 @@ public class InventoryRepository {
         Log.d("InventoryRepository", "attemptDownloadImages called, image: " + image.toString());
 
         // get image's uri, hopefully
-        storageRef.child(image.getPath()).getDownloadUrl()
+        storageRef.child(image.getStoragePath()).getDownloadUrl()
                 .addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        Log.d("InventoryRepository", String.format("Got URI for image path %s, URI %s", image.getPath(), uri));
+                        Log.d("InventoryRepository", String.format("Got URI for image path %s, URI %s", image.getStoragePath(), uri));
                         image.setUri(uri);
                         handler.onImageDownload(pos, image); // call handler function to refresh its images
                     }
@@ -190,7 +190,7 @@ public class InventoryRepository {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.d("InventoryRepository", "Couldn't get URI for image path " + image.getPath());
+                        Log.d("InventoryRepository", "Couldn't get URI for image path " + image.getStoragePath());
                         handler.onImageDownloadFailed(pos);
                     }
                 });
@@ -484,7 +484,7 @@ public class InventoryRepository {
 
             // store reference
             imagePaths.add(filepath);
-            image.setPath(filepath);
+            image.setStoragePath(filepath);
             Log.d(">????>", image.toString());
 
             imageRef.putFile(image.getUri())
@@ -519,18 +519,18 @@ public class InventoryRepository {
 
         for (ItemImage image : images) {
             // get reference for image
-            StorageReference imageRef = storageRef.child(image.getPath());
+            StorageReference imageRef = storageRef.child(image.getStoragePath());
             imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void unused) {
-                    Log.d("InventoryRepository", "deleteImages: deleted image with path " + image.getPath());
-                    image.setPath(null); // ensure we don't try to reference this path again
+                    Log.d("InventoryRepository", "deleteImages: deleted image with path " + image.getStoragePath());
+                    image.setStoragePath(null); // ensure we don't try to reference this path again
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.d("InventoryRepository", "deleteImages: failed to delete image with path " + image.getPath());
-                    image.setPath(null); // get rid of path anyway because there is probably something wrong with it
+                    Log.d("InventoryRepository", "deleteImages: failed to delete image with path " + image.getStoragePath());
+                    image.setStoragePath(null); // get rid of path anyway because there is probably something wrong with it
                 }
             });
         }
