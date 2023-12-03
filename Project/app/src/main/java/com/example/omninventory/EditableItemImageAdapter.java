@@ -66,8 +66,7 @@ public class EditableItemImageAdapter extends ItemImageAdapter {
             public void onClick(View v) {
                 int pos = holder.getAdapterPosition();
                 Log.d("ItemImageAdapter", String.format("Deleting image at position %d", pos));
-                listData.remove(pos); // this position's image will be deleted
-                EditableItemImageAdapter.this.notifyItemRemoved(pos); // update this ItemImageAdapter
+                EditableItemImageAdapter.this.remove(pos); // this position's image will be deleted
             }
         });
     }

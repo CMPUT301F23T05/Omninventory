@@ -40,6 +40,7 @@ public class ItemImageAdapter extends RecyclerView.Adapter<ItemImageAdapter.View
             // by default, we have a list of placeholder images
             listData.add(null);
         }
+        this.notifyDataSetChanged(); // using this because whole dataset may have been changed
     }
 
 
@@ -80,6 +81,7 @@ public class ItemImageAdapter extends RecyclerView.Adapter<ItemImageAdapter.View
 //        imageContent.setImageURI(Uri.parse(image.getUri().toString()));
             Picasso.get()
                     .load(image.getUri().toString())
+                    .placeholder(R.drawable.image_placeholder)
                     .into(imageContent);
         }
         else {
@@ -87,6 +89,7 @@ public class ItemImageAdapter extends RecyclerView.Adapter<ItemImageAdapter.View
             // seemingly images usually load fast enough that this is never visible. but hey
             Picasso.get()
                     .load(R.drawable.image_placeholder)
+                    .placeholder(R.drawable.image_placeholder)
                     .into(imageContent);
         }
     }
@@ -104,6 +107,11 @@ public class ItemImageAdapter extends RecyclerView.Adapter<ItemImageAdapter.View
     public void add(ItemImage image) {
         listData.add(image);
         this.notifyItemInserted(listData.size() - 1);
+    }
+
+    public void remove(int pos) {
+        listData.remove(pos); // this position's image will be deleted
+        this.notifyItemRemoved(pos); // update this ItemImageAdapter
     }
 
     public ArrayList<ItemImage> getImageList() {

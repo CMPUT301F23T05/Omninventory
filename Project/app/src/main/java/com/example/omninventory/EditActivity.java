@@ -176,7 +176,7 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
         imageAdapter.resetData(currentItem.getImages().size());
         imageList.setAdapter(imageAdapter);
         imageList.setLayoutManager(new LinearLayoutManager(this));
-        imageList.setHasFixedSize(true);
+//        imageList.setHasFixedSize(true);
 
         // ============== CLICK ACTIONS ================
 

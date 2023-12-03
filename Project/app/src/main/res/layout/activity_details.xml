@@ -185,6 +185,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/item_tags_text"/>
 
             <!-- view that stores images associated with this item using item_list_content layout -->
+<!--            custom NonScrollRecyclerView works here, but causes problems in EditActivity due to fixed size -->
             <com.example.omninventory.NonScrollRecyclerView
                 android:id="@+id/item_images_list"
                 android:layout_width="match_parent"
