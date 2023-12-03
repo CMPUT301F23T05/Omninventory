@@ -90,6 +90,23 @@ public class EditActivity extends AppCompatActivity  {
         }
     });
 
+    // ActivityResultLauncher to launch the SerialNoActivity for getting serial no. from scanned image
+    ActivityResultLauncher<Intent> serialNoActivityLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // Retrieve product information
+                        Intent data = result.getData();
+                        if (data != null) {
+                            String scannedSerialNo = data.getStringExtra("serialno");
+                            itemSerialEditText.setText(scannedSerialNo);
+                        }
+                    }
+                }
+            });
+
     /**
      * Method called on Activity creation. Contains most of the logic of this Activity; programmatically
      * modifying UI elements, creating Intents to move to other Activites, and setting up connection
@@ -121,6 +138,8 @@ public class EditActivity extends AppCompatActivity  {
         final ImageButton itemDateButton = findViewById(R.id.item_date_button);
         final ImageButton saveButton = findViewById(R.id.save_button);
         final ImageButton descriptionCameraButton = findViewById(R.id.description_camera_button);
+        final ImageButton serialNoCameraButton = findViewById(R.id.serialno_camera_button);
+
 
         // ============== RETRIEVE DATA ================
 
@@ -218,6 +237,16 @@ public class EditActivity extends AppCompatActivity  {
                 barcodeActivityLauncher.launch(barcodeIntent);
             }
         });
+
+        // serialNoCameraButton takes user to Camera to scan serial number
+        serialNoCameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent serialNoIntent = new Intent(EditActivity.this, SerialNoScanningActivity.class);
+                serialNoActivityLauncher.launch(serialNoIntent);
+            }
+        });
+
         // itemDateButton should open a DatePickerDialog to choose date
         itemDateButton.setOnClickListener(new View.OnClickListener() {
             @Override

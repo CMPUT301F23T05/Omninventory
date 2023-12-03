@@ -246,7 +246,6 @@ public class SortFilterActivity extends AppCompatActivity {
                     makePressed = false;
                 }
                 else {
-                    makeText = makeFilterEditText.getText().toString();
                     makeFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
                     makePressed = true;
                 }
@@ -275,7 +274,6 @@ public class SortFilterActivity extends AppCompatActivity {
                     descriptionPressed = false;
                 }
                 else {
-                    descriptionText = descriptionFilterEditText.getText().toString();
                     descriptionFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
                     descriptionPressed = true;
                 }
@@ -294,6 +292,8 @@ public class SortFilterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent myIntent = new Intent(SortFilterActivity.this, MainActivity.class);
+                makeText = makeFilterEditText.getText().toString();
+                descriptionText = descriptionFilterEditText.getText().toString();
                 putFieldsIntent(myIntent, makePressed, datePressed, descriptionPressed);
                 SortFilterActivity.this.startActivity(myIntent);
             }
