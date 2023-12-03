@@ -1,73 +1,110 @@
 package com.example.omninventory;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
-import android.os.Build;
 import android.provider.MediaStore;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.StorageReference;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 
 public class ItemImage implements Serializable {
-    private transient Uri uri; // uri of downloaded image. might get de-set whenever this ItemImage passed between activities, because Uri is not serializable.
-    private String storagePath; // path in storage
-    private String filePath; // path on system, if applicable
 
+    // uri of downloaded image. might get de-set whenever this ItemImage passed between activities,
+    // because Uri is not serializable. this is OK, because when that happens the image should be
+    // getting redownloaded from Firebase Storage anyway
+    private transient Uri uri;
+    private String storagePath; // path in Firebase Storage
+    private String filePath; // path in device filesystem, if applicable
+
+    /**
+     * Constructor for initialization from a String path on device.
+     * @param storagePath
+     */
     public ItemImage(String storagePath) {
         this.storagePath = storagePath;
     }
 
+    /**
+     * Constructor for initialization from a URI.
+     * @param uri
+     */
     public ItemImage(Uri uri) {
         this.uri = uri;
     }
 
+    /**
+     * Getter for URI.
+     * @return
+     */
     public Uri getUri() {
         return uri;
     }
 
+    /**
+     * Setter for URI.
+     * @param uri
+     */
     public void setUri(Uri uri) {
         this.uri = uri;
     }
 
+    /**
+     * Getter for storagePath (the String path on Firebase Storage), if it has been set.
+     * @return
+     */
     public String getStoragePath() {
         return storagePath;
     }
 
+    /**
+     * Setter for storagePath (the String path in Firebase Storage)
+     * @param storagePath
+     */
     public void setStoragePath(String storagePath) {
         this.storagePath = storagePath;
     }
 
+    /**
+     * Getter for filePath (the String path on device), if it has been set.
+     * @return
+     */
     public String getFilePath() {
         return filePath;
     }
 
+    /**
+     * Setter for filePath (the String path on device)
+     * @param filePath
+     */
     public void setFilePath(String filePath) {
         this.filePath = filePath;
     }
 
+    /**
+     * Method for printing an image with all three attributes (URI, storagePath, filePath), useful
+     * for debug output purposes.
+     * @return A formatted string that displays URI, storagePath, and filePath.
+     */
     @NonNull
     @Override
     public String toString() {
         return String.format("[IMAGE | uri=%s | storagePath=%s | filePath=%s ]", this.uri, this.storagePath, this.filePath);
     }
 
+    /**
+     * Checks if the storagePaths of two images are both non-null and equal. This is useful for checking
+     * if two images refer to the same image in Firebase Storage.
+     * @param image ItemImage to compare with this ItemImage.
+     * @return boolean, 'true' if ItemImages both non-null and refer to same image in Firebase storage, 'false' otherwise.
+     */
     public boolean equalRef(@Nullable ItemImage image) {
         if (storagePath == null || image.storagePath == null) {
             return false;
@@ -75,6 +112,15 @@ public class ItemImage implements Serializable {
         return storagePath.equals(image.storagePath);
     }
 
+    /**
+     * Reads image EXIF data from a filePath (this is only applicable if image stored locally
+     * in filesystem by app; i.e. if image was taken using EditActivity's feature for taking images).
+     * If this does apply, and filePath has been set properly, this method reads the EXIF data
+     * and returns the degrees by which the image should be rotated in order to display it properly.
+     * @return Integer number of degrees to rotate image; either 0, 90, 180, or 270. Returns 0
+     *      if an error occurs.
+     * @reference https://stackoverflow.com/questions/6813166/set-orientation-of-android-camera-started-with-intent-action-image-capture
+     */
     public int getNeededRotation() {
         // if image not stored locally, hopefully not an issue
         if (filePath == null) {
@@ -96,6 +142,18 @@ public class ItemImage implements Serializable {
         return 0;
     }
 
+    /**
+     * If the image represented by this ItemImage is stored in the local filesystem accessible by
+     * the app (i.e. if image was taken using EditActivity's feature for taking images), this method
+     * obtains the necessary EXIF information to correctly rotate it, rotates it, and then writes
+     * the correctly-rotated image bitmap to the same file location.
+     *
+     * This is useful because rotating the image in-app allows us to display it properly, but it
+     * also needs to be rotated in-filesystem if we want it to upload to Firebase Storage with the
+     * correct rotation.
+     * @param context Context from which this method called.
+     * @reference https://stackoverflow.com/questions/30294153/rotate-image-from-uri-and-save-the-rotated-image-to-the-same-place
+     */
     public void fixRotation(Context context) {
         Bitmap bitmap;
         try {
@@ -125,71 +183,4 @@ public class ItemImage implements Serializable {
         }
 
     }
-
-//    public Bitmap getBitmap(Context context) {
-//        return getRotatedBitmap(context, uri);
-//    }
-//
-//    public static Bitmap getBitmapFromUri(Context context, Uri uri) {
-//
-//        ContentResolver cr = context.getContentResolver();
-//        cr.notifyChange(uri, null);
-//        Bitmap bitmap;
-//
-//        try {
-//            bitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, uri);
-//            return bitmap;
-//        }
-//        catch (IOException e) {
-//            return null;
-//        }
-//    }
-//
-//    private static Bitmap getRotatedBitmap(Context context, Uri imageUri) {
-//
-//        // referenced from https://stackoverflow.com/questions/14066038/why-does-an-image-captured-using-camera-intent-gets-rotated-on-some-devices-on-a
-//        ExifInterface ei;
-//
-//        try {
-//            ei = new ExifInterface(imageUri.toString());
-//        }
-//        catch (IOException e) {
-//            Log.e("ItemImage", "IOException in bitmap");
-//            return null;
-//        }
-//
-//        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
-//                ExifInterface.ORIENTATION_UNDEFINED);
-//
-//        Bitmap bitmap = getBitmapFromUri(context, imageUri);
-//        Bitmap rotatedBitmap;
-//
-//        switch(orientation) {
-//
-//            case ExifInterface.ORIENTATION_ROTATE_90:
-//                rotatedBitmap = rotateImage(bitmap, 90);
-//                break;
-//
-//            case ExifInterface.ORIENTATION_ROTATE_180:
-//                rotatedBitmap = rotateImage(bitmap, 180);
-//                break;
-//
-//            case ExifInterface.ORIENTATION_ROTATE_270:
-//                rotatedBitmap = rotateImage(bitmap, 270);
-//                break;
-//
-//            case ExifInterface.ORIENTATION_NORMAL:
-//            default:
-//                rotatedBitmap = bitmap;
-//        }
-//
-//        return rotatedBitmap;
-//    }
-//
-//    public static Bitmap rotateImage(Bitmap source, float angle) {
-//        Matrix matrix = new Matrix();
-//        matrix.postRotate(angle);
-//        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
-//                matrix, true);
-//    }
 }
