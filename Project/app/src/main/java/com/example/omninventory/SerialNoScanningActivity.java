@@ -1,17 +1,19 @@
 package com.example.omninventory;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.SurfaceTexture;
 import android.media.Image;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
-import android.util.Size;
-import android.view.Surface;
 import android.view.View;
 import android.widget.Button;
 import android.Manifest;
+import android.os.Handler;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.OptIn;
@@ -20,9 +22,10 @@ import androidx.camera.core.CameraSelector;
 import androidx.camera.core.ExperimentalGetImage;
 import androidx.camera.core.ImageProxy;
 import androidx.camera.core.Preview;
-import androidx.camera.core.SurfaceRequest;
 import androidx.camera.lifecycle.ProcessCameraProvider;
-import android.view.TextureView;
+
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.camera.view.PreviewView;
 import androidx.core.app.ActivityCompat;
@@ -48,6 +51,8 @@ import androidx.lifecycle.LifecycleOwner;
  */
 public class SerialNoScanningActivity extends AppCompatActivity {
     private ExecutorService cameraExecutor;
+    private TextView parsedSerialNoText;
+    private String scannedText;
 
     /**
      * Method to dynamically request camera permissions for the barcode scanner
@@ -81,7 +86,6 @@ public class SerialNoScanningActivity extends AppCompatActivity {
 
         // Dynamically request camera permissions
         checkCameraPermissions(this);
-        startCamera(previewView);
         cameraExecutor = Executors.newSingleThreadExecutor();
 
         Button cancelButton = findViewById(R.id.serialno_cancel_button);
@@ -93,6 +97,23 @@ public class SerialNoScanningActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        Button confirmButton = findViewById(R.id.serialno_confirm_button);
+        confirmButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent resultIntent = new Intent();
+                resultIntent.putExtra("serialno", scannedText);
+                setResult(Activity.RESULT_OK, resultIntent);
+
+                // Close BarcodeActivity and return to EditActivity
+                finish();
+            }
+        });
+
+        parsedSerialNoText = findViewById(R.id.parsed_serialno_text);
+
+        startCamera(previewView);
     }
 
     private void startCamera(PreviewView previewView) {
@@ -117,32 +138,44 @@ public class SerialNoScanningActivity extends AppCompatActivity {
     }
 
     private class TextAnalyzer implements ImageAnalysis.Analyzer {
-        private TextRecognizer textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
+        private final TextRecognizer textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
 
         @OptIn(markerClass = ExperimentalGetImage.class) @Override
         public void analyze(@NonNull ImageProxy imageProxy) {
             @SuppressLint("UnsafeExperimentalUsageError") Image mediaImage = imageProxy.getImage();
             if (mediaImage != null) {
                 InputImage image = InputImage.fromMediaImage(mediaImage, imageProxy.getImageInfo().getRotationDegrees());
-
                 textRecognizer.process(image)
                         .addOnSuccessListener(result -> {
                             List<Text.TextBlock> blocks = result.getTextBlocks();
                             for (Text.TextBlock block : blocks) {
                                 String text = block.getText();
-                                try{
-                                    int serialno = Integer.parseInt(text);
-                                }
-                                catch (NumberFormatException ex){
-                                    // print some error message about no serial number could be found
-                                }
+                                handleScan(text);
                             }
                         })
                         .addOnFailureListener(e -> {
-                            // Handle text recognition failure
+                            parsedSerialNoText.setText("N/A");
                         })
                         .addOnCompleteListener(task -> imageProxy.close());
             }
+        }
+    }
+
+    private void handleScan(String text) {
+        try{
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    String displayText = "Parsed Serial Number: " + text;
+                    parsedSerialNoText.setText(displayText);
+                    scannedText = text;
+                }
+            });
+        }
+        catch (Exception e){
+            Toast.makeText(SerialNoScanningActivity.this,
+                    "Could not parse serial number", Toast.LENGTH_LONG).show();
         }
     }
 }

@@ -100,8 +100,10 @@ public class EditActivity extends AppCompatActivity  {
                         // Retrieve product information
                         Intent data = result.getData();
                         if (data != null) {
-                            String scannedSerialNo = data.getStringExtra("serialno");
-                            itemSerialEditText.setText(scannedSerialNo);
+                            if (data.getStringExtra("serialno") != null) {
+                                String scannedSerialNo = data.getStringExtra("serialno");
+                                itemSerialEditText.setText(scannedSerialNo);
+                            }
                         }
                     }
                 }
