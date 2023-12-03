@@ -19,10 +19,10 @@
         <ImageButton style="@style/taskbar_button"
             android:id="@+id/back_button"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:contentDescription="@string/back_button_label"
-            android:src="@drawable/taskbar_back" />
+            android:src="@drawable/icon_back" />
 
         <!-- to keep spacing consistent with layout_weight -->
         <LinearLayout
@@ -35,10 +35,10 @@
         <ImageButton style="@style/taskbar_button"
             android:id="@+id/edit_button"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:contentDescription="@string/edit_button_label"
-            android:src="@drawable/taskbar_edit" />
+            android:src="@drawable/icon_edit" />
 
     </LinearLayout>
 
