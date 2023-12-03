@@ -2,13 +2,20 @@ package com.example.omninventory;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,13 +26,19 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Activity for editing an item's fields. It has a flag which determines whether we treat the item
@@ -57,6 +70,7 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
     private RecyclerView imageList;
 
     private EditableItemImageAdapter imageAdapter;
+    private Uri imageUri; // used to hold URI from image capture
 
     // ActivityResultLauncher to launch the ApplyTagsActivity for result, to define tags for the edited item
     ActivityResultLauncher<Intent> mDefineTags = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -256,22 +270,52 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
             }
         });
 
+        // launcher for intent launched by imageTakeButton; creates a new ItemImage with URI of created file
+        ActivityResultLauncher<Intent> imageTakeLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == Activity.RESULT_OK) {
+                            Log.d("EditActivity", "imageTakeLauncher obtained image, uri: " + imageUri);
+                            imageAdapter.add(new ItemImage(imageUri)); // add the uri to the current images, has no path yet and a URI in phone filesystem
+                        }
+                    }
+                });
+
         // imageTakeButton takes user to Camera to take a photo
         imageTakeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO
+                Intent imageTakeIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                File photo = new File(Environment.getExternalStorageDirectory(),"omninventory.jpg");
+                imageTakeIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photo));
+
+                // try to create a new file to store image in
+                File photoFile = createImageFile();
+
+                if (photoFile != null) {
+                    imageUri = FileProvider.getUriForFile(EditActivity.this,
+                            EditActivity.this.getPackageName() + ".provider",
+                            createImageFile());
+                    imageTakeIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+                    imageTakeLauncher.launch(imageTakeIntent);
+                };
             }
         });
 
         // Create a photo picker activity launcher to get an image and then store it in the current InventoryItem.
+        // Currently allows up to 5 selections
         // See https://developer.android.com/training/data-storage/shared/photopicker
         ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
-            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
-                // callback when photo chosen or user closes menu
-                if (uri != null) {
-                    Log.d("EditActivity", "PhotoPicker, user selected photo URI: " + uri);
-                    imageAdapter.add(new ItemImage(uri)); // add the uri to the current images, has no path yet and a local URI
+            registerForActivityResult(new ActivityResultContracts.PickMultipleVisualMedia(5), uris  -> {
+                // callback when photos chosen or user closes menu
+                if (uris != null && !uris.isEmpty()) {
+                    for (Uri uri : uris) {
+                        Log.d("EditActivity", "PhotoPicker, user selected photo URI: " + uri);
+                        imageAdapter.add(new ItemImage(uri)); // add the uri to the current images, has no path yet and a local URI
+                    }
                 } else {
                     Log.d("EditActivity", "PhotoPicker, user closed menu with no photo selected");
                 }
@@ -403,5 +447,23 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
                 repo.attemptDownloadImage(currentItem, pos, EditActivity.this);
             }
         }, 1000); // try again after 1s
+    }
+
+    private File createImageFile() {
+        // create filename
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.CANADA).format(new Date());
+        String imageFileName = "omninventory-" + timeStamp;
+
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DCIM), "Camera");
+
+        File imageFile = null;
+        try {
+            imageFile = File.createTempFile(imageFileName, ".jpg", storageDir);
+        }
+        catch (IOException e) {
+            Log.e("EditActivity", "error creating new image file");
+        }
+        return imageFile;
     }
 }
