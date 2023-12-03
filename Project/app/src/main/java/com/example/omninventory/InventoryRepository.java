@@ -140,7 +140,7 @@ public class InventoryRepository {
     public void attemptDownloadImages(InventoryItem item, ImageDownloadHandler handler) {
         // get all the images associated with this item from storage
         ArrayList<ItemImage> images = item.getImages();
-        Log.d("InventoryRepository", "attemptImageDownload called, item images: " + images.toString());
+        Log.d("InventoryRepository", "attemptDownloadImages called, item images: " + images.toString());
 
         for (int i = 0; i < images.size(); i++) {
             ItemImage image = images.get(i);
@@ -161,10 +161,42 @@ public class InventoryRepository {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.d("InventoryRepository", "Couldn't get URI for image path " + image.getPath());
+                        handler.onImageDownloadFailed(finalPos);
                     }
                 });
         }
     }
+
+    /**
+     * Attempt to download a single image, at position `pos` in item's images.
+     * @param item
+     * @param handler
+     */
+    public void attemptDownloadImage(InventoryItem item, int pos, ImageDownloadHandler handler) {
+        // get all the images associated with this item from storage
+        ItemImage image = item.getImages().get(pos);
+        Log.d("InventoryRepository", "attemptDownloadImages called, image: " + image.toString());
+
+        // get image's uri, hopefully
+        storageRef.child(image.getPath()).getDownloadUrl()
+                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Log.d("InventoryRepository", String.format("Got URI for image path %s, URI %s", image.getPath(), uri));
+                        image.setUri(uri);
+                        handler.onImageDownload(pos, image); // call handler function to refresh its images
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("InventoryRepository", "Couldn't get URI for image path " + image.getPath());
+                        handler.onImageDownloadFailed(pos);
+                    }
+                });
+    }
+
+
 
     /**
      * Add a new InventoryItem to the inventoryItem collection. Also adds reference to the current
@@ -455,7 +487,7 @@ public class InventoryRepository {
             image.setPath(filepath);
             Log.d(">????>", image.toString());
 
-            Task task = imageRef.putFile(image.getUri())
+            imageRef.putFile(image.getUri())
                 .addOnSuccessListener(
                         new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @Override
@@ -466,6 +498,8 @@ public class InventoryRepository {
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
+                        // usually this gets called if you're returning to ItemDetails and an image hasn't
+                        // been uploaded yet. StorageException is also printed
                         Log.d("InventoryRepository", "addImages: Image failed to upload:" + image.getUri());
                     }
                 });

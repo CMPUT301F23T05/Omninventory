@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
@@ -175,6 +176,7 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
         imageAdapter.resetData(currentItem.getImages().size());
         imageList.setAdapter(imageAdapter);
         imageList.setLayoutManager(new LinearLayoutManager(this));
+        imageList.setHasFixedSize(true);
 
         // ============== CLICK ACTIONS ================
 
@@ -388,5 +390,18 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
     public void onImageDownload(int pos, ItemImage image) {
         Log.d("EditActivity", "onimagedownload called");
         imageAdapter.set(pos, image);
+    }
+
+    public void onImageDownloadFailed(int pos) {
+        // just keep trying to download the image
+        Log.d("EditActivity", String.format("onImageDownloadFailed called for pos %d, trying again after 1s...", pos));
+
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                repo.attemptDownloadImage(currentItem, pos, EditActivity.this);
+            }
+        }, 1000); // try again after 1s
     }
 }

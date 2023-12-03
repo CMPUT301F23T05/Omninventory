@@ -184,8 +184,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/item_tags_text"/>
 
-            <!--            view that stores images associated with this item using item_list_content layout -->
-            <androidx.recyclerview.widget.RecyclerView
+            <!-- view that stores images associated with this item using item_list_content layout -->
+            <com.example.omninventory.NonScrollRecyclerView
                 android:id="@+id/item_images_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
