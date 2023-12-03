@@ -22,6 +22,8 @@ import org.junit.runner.RunWith;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 
+import java.util.Arrays;
+
 /**
  * Tests for deleting an item.
  * @author Kevin
@@ -81,6 +83,14 @@ public class TestDeleteItemActivity {
         onView(allOf(withId(R.id.delete_item_button), isDisplayed()))
                 .perform(click());
         onView(withId(R.id.delete_dialog_button)).perform(click());
+
+        //stall is required to update the database properly
+        try {
+            Thread.sleep(2000); // Sleep for 1 second
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
 
         //validate the items are deleted.
         //todo: change to check for not displayed
