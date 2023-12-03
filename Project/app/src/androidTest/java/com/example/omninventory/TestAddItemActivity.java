@@ -11,7 +11,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-//import androidx.test.espresso.contrib.PickerActions;
+
 
 import static org.hamcrest.Matchers.allOf;
 import static java.lang.Thread.sleep;
@@ -118,11 +118,6 @@ public class TestAddItemActivity {
                 typeText("9.99"));
         onView(withId(R.id.item_serial_edittext)).perform(ViewActions.
                 typeText("2222"));
-        /**
-        //date picker
-        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
-                .perform(PickerActions.setDate(2222, 02, 22));
-        **/
 
         //add the item
         onView(withId(R.id.save_button)).perform(click());
@@ -141,8 +136,17 @@ public class TestAddItemActivity {
         onView(withText("AddItemTest description test")).check(matches(isDisplayed()));
         onView(withText("AddItemTest Comment test")).check(matches(isDisplayed()));
         onView(withText("Make Test")).check(matches(isDisplayed()));
-        onView(withText("9.99")).check(matches(isDisplayed()));
+        onView(withText("$9.99")).check(matches(isDisplayed()));
         onView(withText("Test Model")).check(matches(isDisplayed()));
+
+        try {
+            Thread.sleep(2000); // Sleep for 1 second
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
+
+        onView(withId(R.id.back_button)).perform(click());
 
         cleanup();
     }
