@@ -153,8 +153,6 @@ public class TestAddItemActivity {
         cleanup();
     }
 
-    //todo: add test case for more detailed item description to cover all fields (outside of ones listed below)
-
     @Test
     public void testAddItemWithTag(){
         //Start on inventory screen, click on the add button
@@ -202,14 +200,8 @@ public class TestAddItemActivity {
             return;
         }
 
-        // Scroll to the TextView that should contain the tag
-        onView(withId(R.id.act_details_view)) // ScrollView ID
-                .perform(scrollTo(), click());
-
         // Now check if the TextView contains the expected tag
-        onView(withId(R.id.item_tags_text))
-                .check(matches(withText(containsString("#important"))));
-
+        onView(withId(R.id.item_tags_text)).check(matches(withText(containsString("#important"))));
 
         try {
             Thread.sleep(2000); // Sleep for 1 second
