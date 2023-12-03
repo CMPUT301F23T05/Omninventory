@@ -1,7 +1,9 @@
 package com.example.omninventory;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -53,7 +55,6 @@ public class EditActivity extends AppCompatActivity  {
     private TextInputEditText itemSerialEditText;
     private TextInputEditText itemValueEditText;
     private TextView itemDateText;
-
     private TextView itemTagsText;
     // TODO: images
 
@@ -69,6 +70,25 @@ public class EditActivity extends AppCompatActivity  {
                 setFields(currentItem);
             }
         });
+
+    // ActivityResultLauncher to launch the BarcodeActivity for results getting product information from the scanned barcode
+    ActivityResultLauncher<Intent> barcodeActivityLauncher = registerForActivityResult(
+        new ActivityResultContracts.StartActivityForResult(),
+        new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if (result.getResultCode() == Activity.RESULT_OK) {
+                // Retrieve product information
+                Intent data = result.getData();
+                if (data != null) {
+                    String productDescription = data.getStringExtra("productDescription");
+                    String productPrice = data.getStringExtra("productPrice");
+                    itemDescriptionEditText.setText(productDescription);
+                    itemValueEditText.setText(productPrice);
+                }
+            }
+        }
+    });
 
     /**
      * Method called on Activity creation. Contains most of the logic of this Activity; programmatically
@@ -100,6 +120,7 @@ public class EditActivity extends AppCompatActivity  {
         final ImageButton backButton = findViewById(R.id.back_button);
         final ImageButton itemDateButton = findViewById(R.id.item_date_button);
         final ImageButton saveButton = findViewById(R.id.save_button);
+        final ImageButton descriptionCameraButton = findViewById(R.id.description_camera_button);
 
         // ============== RETRIEVE DATA ================
 
@@ -189,6 +210,14 @@ public class EditActivity extends AppCompatActivity  {
             }
         });
 
+        // descriptionCameraButton takes user to Camera to scan product barcode
+        descriptionCameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent barcodeIntent = new Intent(EditActivity.this, BarcodeActivity.class);
+                barcodeActivityLauncher.launch(barcodeIntent);
+            }
+        });
         // itemDateButton should open a DatePickerDialog to choose date
         itemDateButton.setOnClickListener(new View.OnClickListener() {
             @Override

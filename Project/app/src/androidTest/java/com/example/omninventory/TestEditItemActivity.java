@@ -31,7 +31,6 @@ public class TestEditItemActivity {
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new
             ActivityScenarioRule<MainActivity>(MainActivity.class);
-
     TestItems testItems = new TestItems();
 
     /**
@@ -48,7 +47,8 @@ public class TestEditItemActivity {
                 .perform(click());
 
         //in the Edit item screen change the information about a certain item
-        onView(withId(R.id.item_description_edittext)).perform(typeText("Hello World"));
+        onView(allOf(withId(R.id.item_description_edittext),isDisplayed()))
+                .perform(typeText("Hello World"));
 
         //save the item
         onView(withId(R.id.save_button)).perform(click());

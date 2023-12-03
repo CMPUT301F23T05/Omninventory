@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
             sharedPrefs.edit().putString("username", user).apply();
             Log.d("login", "Logged in as: " + user);
             // todo: for testing purposes only, will remove later
-            Toast.makeText(getApplicationContext(), "Logged in as , " + user, Toast.LENGTH_LONG).show();
+//            Toast.makeText(getApplicationContext(), "Logged in as , " + user, Toast.LENGTH_LONG).show();
         }
 
         // set up itemList owned by logged in user
@@ -207,19 +207,19 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         });
 
         // on profile button click, go to LoginActivity
-        profileBtn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                // todo: this logs out the current user, for testing only, will remove this later
-                sharedPrefs.edit().putBoolean("logged",false).apply();
-                // check if user is logged in
-                if (!sharedPrefs.getBoolean("logged",false)) {
-                    startLoginActivity();
-                }
-                else {
-                    // start ProfileActivity
-                }
-            }
-        });
+//        profileBtn.setOnClickListener(new View.OnClickListener() {
+//            public void onClick(View v) {
+//                // todo: this logs out the current user, for testing only, will remove this later
+//                sharedPrefs.edit().putBoolean("logged",false).apply();
+//                // check if user is logged in
+//                if (!sharedPrefs.getBoolean("logged",false)) {
+//                    startLoginActivity();
+//                }
+//                else {
+//                    // start ProfileActivity
+//                }
+//            }
+//        });
 
         // on long press on item list, select item
         itemList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
