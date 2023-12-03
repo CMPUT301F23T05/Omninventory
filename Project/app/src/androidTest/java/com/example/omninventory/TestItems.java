@@ -77,20 +77,36 @@ public class TestItems {
                 .perform(click());
         onView(withId(R.id.delete_dialog_button)).perform(click());
 
-        onView(withText("TestItem2")).perform(longClick());
-        onView(allOf(withId(R.id.delete_item_button), isDisplayed()))
-                .perform(scrollTo())
-                .perform(click());
-        onView(withId(R.id.delete_dialog_button)).perform(click());
+        try {
+            Thread.sleep(100); // Sleep for 1 second
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
 
-        onView(withText("TestItem3")).perform(longClick());
-        onView(allOf(withId(R.id.delete_item_button), isDisplayed()))
+        onView(withText("TestItem2"))
                 .perform(scrollTo())
+                .perform(longClick());
+        onView(allOf(withId(R.id.delete_item_button), isDisplayed()))
                 .perform(click());
         onView(withId(R.id.delete_dialog_button)).perform(click());
 
         try {
-            Thread.sleep(2000); // Sleep for 1 second
+            Thread.sleep(100); // Sleep for 1 second
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
+
+        onView(withText("TestItem3"))
+                .perform(scrollTo())
+                .perform(longClick());
+        onView(allOf(withId(R.id.delete_item_button), isDisplayed()))
+                .perform(click());
+        onView(withId(R.id.delete_dialog_button)).perform(click());
+
+        try {
+            Thread.sleep(100); // Sleep for 1 second
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return;

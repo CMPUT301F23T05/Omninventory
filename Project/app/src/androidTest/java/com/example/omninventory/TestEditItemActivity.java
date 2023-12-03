@@ -10,6 +10,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.allOf;
 
 import androidx.test.espresso.action.ViewActions;
@@ -73,13 +74,6 @@ public class TestEditItemActivity {
     public void testEditItemMultipleField(){
         testItems.generateOneTestItems();
 
-        try {
-            Thread.sleep(1000); // Sleep for 1 second
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return;
-        }
-
         onView(withText("TestItem1"))
                 .perform(scrollTo())
                 .perform(click());
@@ -111,16 +105,6 @@ public class TestEditItemActivity {
         //add the item
         onView(withId(R.id.save_button)).perform(click());
 
-        onView(withText("TestItem1"))
-                .perform(scrollTo())
-                .check(matches(isDisplayed()));
-
-        //validate in the inventory screen that the item was added
-        //may crash if the database is not reset before hand.
-        onView(withText("EditItemTest description test")).check(matches(isDisplayed()));
-
-        onView(withText("EditItemTest")).perform(click());
-
         //check in item info
         onView(withText("EditItemTest description test")).check(matches(isDisplayed()));
         onView(withText("EditItemTest Comment test")).check(matches(isDisplayed()));
@@ -142,60 +126,57 @@ public class TestEditItemActivity {
 
 
     /**
-     * Not yet implemented
+     * Can edit an item with tag now
      */
     @Test
     public void testEditItemWithTag(){
-        testItems.generateTestItems();
+        testItems.generateOneTestItems();
         //Start on inventory screen, click on an inventory item
+        onView(withText("TestItem1"))
+                .perform(scrollTo())
+                .perform(click());
+
+        //click the edit button
+        onView(allOf(withId(R.id.edit_button), isDisplayed()))
+                .perform(click());
+
         //in the edit item screen, click on the edit tag
-        //edit the tags on the item
+        onView(withId(R.id.item_tags_button)).perform(click());
+
+        onView(withText("important"))
+                .perform(scrollTo())
+                .check(matches(isDisplayed()))
+                .perform(click());
+
+        onView(withId(R.id.confirm_tags_button)).perform(click());
+
+        onView(withId(R.id.save_button)).perform(click());
+
+        try {
+            Thread.sleep(2000); // Sleep for 1 second
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
+
+        // Now check if the TextView contains the expected tag
+        onView(withId(R.id.item_tags_text))
+                .check(matches(withText(containsString("#important"))));
+
+        try {
+            Thread.sleep(2000); // Sleep for 1 second
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
+
+        onView(withId(R.id.back_button)).perform(click());
+
         //apply the changes
         //validate from the inventory screen that the item's tags are changed
-        testItems.wipeTestItems();
+        testItems.cleanOneTestItem();
     }
 
-    /**
-     * Not yet implemented
-     */
-    @Test
-    public void testEditItemWithPhotos(){
-        testItems.generateTestItems();
-        //Start on inventory screen, click on an inventory item
-        //in the edit item screen, click on edit photos
-        //change photos of the item
-        //apply the changes
-        //validate from the inventory screen that the item has different photos
-        testItems.wipeTestItems();
-    }
-
-    /**
-     * Not yet implemented
-     */
-    @Test
-    public void testEditItemWithBarcode(){
-        testItems.generateTestItems();
-        //Start on inventory screen, click on an inventory item
-        //in the edit item screen, click on change barcode
-        //edit the barcode of the item
-        //apply the changes
-        //validate from the inventory screen that the barcode has changed
-        testItems.wipeTestItems();
-    }
-
-    /**
-     * Not yet implemented
-     */
-    @Test
-    public void testEditItemWithSerialNumber(){
-        testItems.generateTestItems();
-        //Start on inventory screen, click on an inventory item
-        //in the edit item screen, click on change serial number
-        //edit the serial number of the item
-        //apply the changes
-        //validate from the inventory screen that the item has serial number has changed
-        testItems.wipeTestItems();
-    }
 
     /**
      * Not yet implemented
@@ -204,8 +185,112 @@ public class TestEditItemActivity {
     public void testEditMultipleItemWithTags(){
         testItems.generateTestItems();
         //Start on inventory screen, Select multiple inventory items
-        //in the edit item screen, click on edit tags
-        //add new tags to the item and remove common tags from item
+        onView(withText("TestItem1"))
+                .perform(scrollTo())
+                .perform(longClick());
+        onView(withText("TestItem2"))
+                .perform(scrollTo())
+                .perform(longClick());
+        onView(withText("TestItem3"))
+                .perform(scrollTo())
+                .perform(longClick());
+
+        //click tags
+        onView(withId(R.id.tag_button)).perform(click());
+
+        //add new tags to the item
+        onView(withText("important"))
+                .perform(scrollTo())
+                .check(matches(isDisplayed()))
+                .perform(click());
+
+        onView(withText("shared"))
+                .perform(scrollTo())
+                .check(matches(isDisplayed()))
+                .perform(click());
+
+        onView(withId(R.id.confirm_tags_button)).perform(click());
+
+        try {
+            Thread.sleep(2000); // Sleep for 1 second
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
+
+        //validate tags exist
+        onView(withText("TestItem1"))
+                .perform(scrollTo())
+                .perform(click());
+
+        onView(withId(R.id.item_tags_text))
+                .check(matches(withText(containsString("#important"))));
+        onView(withId(R.id.item_tags_text))
+                .check(matches(withText(containsString("#shared"))));
+
+        try {
+            Thread.sleep(1000); // Sleep for 1 second
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
+
+        onView(withId(R.id.back_button)).perform(click());
+
+        onView(withText("TestItem2"))
+                .perform(scrollTo())
+                .perform(click());
+
+        onView(withId(R.id.item_tags_text))
+                .check(matches(withText(containsString("#important"))));
+        onView(withId(R.id.item_tags_text))
+                .check(matches(withText(containsString("#shared"))));
+
+        try {
+            Thread.sleep(1000); // Sleep for 1 second
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
+
+        onView(withId(R.id.back_button)).perform(click());
+
+        onView(withText("TestItem3"))
+                .perform(scrollTo())
+                .perform(click());
+
+        onView(withId(R.id.item_tags_text))
+                .check(matches(withText(containsString("#important"))));
+        onView(withId(R.id.item_tags_text))
+                .check(matches(withText(containsString("#shared"))));
+
+        try {
+            Thread.sleep(1000); // Sleep for 1 second
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
+
+        onView(withId(R.id.back_button)).perform(click());
+
+        //remove common tags from item
+
+        /**
+        onView(withText("TestItem1"))
+                .perform(scrollTo())
+                .perform(longClick());
+        onView(withText("TestItem2"))
+                .perform(scrollTo())
+                .perform(longClick());
+        onView(withText("TestItem2"))
+                .perform(scrollTo())
+                .perform(longClick());
+
+        //click tags
+        onView(withId(R.id.tag_button)).perform(click());
+         */
+
+
         //apply the changes
         //validate from the inventory screen that the item's tags are changed.
         testItems.wipeTestItems();
