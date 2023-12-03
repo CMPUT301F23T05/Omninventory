@@ -215,8 +215,4 @@ public class TestAddItemActivity {
         cleanup();
     }
 
-    @Test
-    public void testTemp() {
-    }
-
 }

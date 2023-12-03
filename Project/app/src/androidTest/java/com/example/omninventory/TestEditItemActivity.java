@@ -3,6 +3,7 @@ package com.example.omninventory;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.longClick;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -11,6 +12,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import static org.hamcrest.Matchers.allOf;
 
+import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
@@ -38,9 +40,11 @@ public class TestEditItemActivity {
      */
     @Test
     public void testEditItemBase(){
-        testItems.generateTestItems();
+        testItems.generateOneTestItems();
         // start on the inventory screen click on an inventory item
-        onView(withText("TestItem1")).perform(click());
+        onView(withText("TestItem1"))
+                .perform(scrollTo())
+                .perform(click());
 
         //click the edit button
         onView(allOf(withId(R.id.edit_button), isDisplayed()))
@@ -60,10 +64,82 @@ public class TestEditItemActivity {
         onView(withId(R.id.back_button)).perform(click());
         onView(withText("Hello World")).check(matches(isDisplayed()));
 
-        testItems.wipeTestItems();
+        testItems.cleanOneTestItem();
     }
 
     //todo: Add test case that covers all fields of edit item
+
+    @Test
+    public void testEditItemMultipleField(){
+        testItems.generateOneTestItems();
+
+        try {
+            Thread.sleep(1000); // Sleep for 1 second
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
+
+        onView(withText("TestItem1"))
+                .perform(scrollTo())
+                .perform(click());
+
+        //click the edit button
+        onView(allOf(withId(R.id.edit_button), isDisplayed()))
+                .perform(click());
+
+        //in the add item screen fill in the minimum required information for an item
+        onView(withId(R.id.item_description_edittext)).perform(ViewActions.
+                typeText("EditItemTest description test"));
+        onView(withId(R.id.item_comment_edittext)).perform(ViewActions.
+                typeText("EditItemTest Comment test"));
+
+        //scroll
+        onView(withId(R.id.item_serial_edittext))
+                .perform(scrollTo())
+                .check(matches(isDisplayed()));
+
+        onView(withId(R.id.item_make_edittext)).perform(ViewActions.
+                typeText("Make Test"));
+        onView(withId(R.id.item_model_edittext)).perform(ViewActions.
+                typeText("Test Model"));
+        onView(withId(R.id.item_value_edittext)).perform(ViewActions.
+                typeText("8.88"));
+        onView(withId(R.id.item_serial_edittext)).perform(ViewActions.
+                typeText("2222"));
+
+        //add the item
+        onView(withId(R.id.save_button)).perform(click());
+
+        onView(withText("TestItem1"))
+                .perform(scrollTo())
+                .check(matches(isDisplayed()));
+
+        //validate in the inventory screen that the item was added
+        //may crash if the database is not reset before hand.
+        onView(withText("EditItemTest description test")).check(matches(isDisplayed()));
+
+        onView(withText("EditItemTest")).perform(click());
+
+        //check in item info
+        onView(withText("EditItemTest description test")).check(matches(isDisplayed()));
+        onView(withText("EditItemTest Comment test")).check(matches(isDisplayed()));
+        onView(withText("Make Test")).check(matches(isDisplayed()));
+        onView(withText("$9.99")).check(matches(isDisplayed()));
+        onView(withText("Test Model")).check(matches(isDisplayed()));
+
+        try {
+            Thread.sleep(2000); // Sleep for 1 second
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
+
+        onView(withId(R.id.back_button)).perform(click());
+
+        testItems.cleanOneTestItem();
+    }
+
 
     /**
      * Not yet implemented
