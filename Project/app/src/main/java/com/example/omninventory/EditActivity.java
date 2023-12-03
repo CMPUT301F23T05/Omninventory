@@ -282,7 +282,8 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
 
                             // create new image from information set in imageTakeButton onClick action
                             ItemImage newImage = new ItemImage(imageUri);
-                            newImage.setFilePath(imageFilePath);
+                            newImage.setFilePath(imageFilePath); // need to load EXIF data from filepath in order to fix rotation
+                            newImage.fixRotation(EditActivity.this); // sometimes rotation is messed up for camera images
                             imageAdapter.add(newImage); // add the uri to the current images, has no path yet and a URI in phone filesystem
                         }
                     }
