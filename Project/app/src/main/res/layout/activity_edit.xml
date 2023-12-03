@@ -221,7 +221,7 @@
                 app:layout_constraintEnd_toEndOf="parent"/>
 
             <TextView
-                android:id="@+id/item_images_head"
+                android:id="@+id/item_images_head_date"
                 style="@style/gray_text"
                 android:layout_marginTop="10dp"
                 android:text="@string/item_text_head"
@@ -233,7 +233,7 @@
                 android:id="@+id/item_images_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/item_images_head"
+                app:layout_constraintTop_toBottomOf="@+id/item_images_head_date"
                 android:orientation="vertical">
 
                 <ImageView
