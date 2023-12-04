@@ -68,12 +68,32 @@
                 </LinearLayout>
             </LinearLayout>
 
+
+            <TextView
+                android:id="@+id/change_username_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="14dp"
+                android:clickable="true"
+                android:paddingLeft="5dp"
+                android:text="Change username"
+                android:textColor="?colorOnSurface"
+                android:textSize="20sp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="?colorPrimary" />
+
+
             <TextView
                 android:id="@+id/change_name_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
-                android:layout_marginTop="14dp"
                 android:clickable="true"
                 android:paddingLeft="5dp"
                 android:text="Change name"
@@ -125,46 +145,6 @@
 
         </LinearLayout>
         <include layout="@layout/taskbar_profile"/>
-<!--        <TextView-->
-<!--            android:id="@+id/taskbar_band"-->
-<!--            android:layout_width="fill_parent"-->
-<!--            android:layout_height="10dp"-->
-<!--            android:background="@color/salmon_banner"/>-->
-
-<!--        <androidx.constraintlayout.widget.ConstraintLayout-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="80dp"-->
-<!--            android:background="@color/blue_banner"-->
-<!--            android:orientation="horizontal">-->
-
-<!--            <ImageButton-->
-<!--                android:id="@+id/back_button"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:background="@color/blue_banner"-->
-<!--                android:contentDescription="@string/back_button_label"-->
-<!--                android:cropToPadding="false"-->
-<!--                android:padding="10dp"-->
-<!--                android:scaleType="centerInside"-->
-<!--                android:src="@drawable/back_64"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent"/>-->
-
-<!--            <ImageButton-->
-<!--                android:id="@+id/profile_button"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:background="@color/blue_banner"-->
-<!--                android:contentDescription="@string/profile_button_label"-->
-<!--                android:cropToPadding="false"-->
-<!--                android:padding="10dp"-->
-<!--                android:scaleType="centerInside"-->
-<!--                android:src="@drawable/user_64"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent"/>-->
-
-<!--        </androidx.constraintlayout.widget.ConstraintLayout>-->
-
 
     </LinearLayout>
 

@@ -96,6 +96,7 @@ public class InventoryRepository {
                     Log.d("listenToUserUpdate", error.toString());
                     return;
                 }
+                // listens to the following changes: item addition/removal, name/password update
                 if (snapshot != null && snapshot.exists()) {
                     handler.onUserUpdate(convertDocumentToUser(snapshot));
                 }
@@ -737,6 +738,40 @@ public class InventoryRepository {
         return registration;
     }
 
+    public ListenerRegistration setupTagListsForItem(TagAdapter appliedAdapter, TagAdapter unappliedAdapter, User currentUser, InventoryItem item) {
+        // set up listener
+        ListenerRegistration registration = tagsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.d("TagRepository", error.toString());
+                    return;
+                }
+                if (snapshot != null) {
+                    appliedAdapter.clear(); // clear existing list data
+                    unappliedAdapter.clear();
+                    for (QueryDocumentSnapshot doc : snapshot) {
+                        // get each item returned by query and add to adapter
+                        if (currentUser.getUsername().equals(doc.getString("owner"))) {
+                            Tag tag = convertDocumentToTag(doc);
+                            tagDict.put(tag.getId(), tag);
+                            if (item.getTagIds().contains(doc.getString("tags"))) {
+                                appliedAdapter.add(tag);
+                            } else {
+                                unappliedAdapter.add(tag);
+                            }
+                        }
+                    }
+                    appliedAdapter.sort(Comparator.reverseOrder());
+                    unappliedAdapter.sort(Comparator.reverseOrder());
+                    appliedAdapter.notifyDataSetChanged();
+                    unappliedAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+        return registration;
+    }
+
     /**
      * Apply a list of tags to a list of items, correctly populating the fields of both so they
      * reference each other.
@@ -763,7 +798,22 @@ public class InventoryRepository {
                             }
 
                             // write the updated item back to the db
+                            item.setOriginalImages(item.getImages());
                             updateInventoryItem(item);
+//                            updateInventoryItem(new InventoryItem(
+//                                    item.getFirebaseId(),
+//                                    item.getName(),
+//                                    item.getDescription(),
+//                                    item.getComment(),
+//                                    item.getMake(),
+//                                    item.getModel(),
+//                                    item.getSerialNo(),
+//                                    item.getValue(),
+//                                    item.getDate(),
+//                                    item.getTags(),
+//                                    item.getImages(),
+//                                    item.getImages()
+//                            ));
                         }
                     });
         }
@@ -849,29 +899,61 @@ public class InventoryRepository {
 
     }
 
-//    /**
-//     * Retrieve the contents of the User's inventory.
-//     * @param ownedItems IDs of all items in user's inventory
-//     */
-//    public void getItemDataList(ArrayList<String> ownedItems, GetInventoryItemHandler handler) {
-//        for (String itemID : ownedItems) {
-//            inventoryItemsRef.document(itemID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                @Override
-//                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                    if (task.isSuccessful()) {
-//                        DocumentSnapshot doc = task.getResult();
-//                        if (doc.exists()) {
-//                            Log.d(TAG, "DocumentSnapshot data: " + doc.getId());
-//                            handler.onGetInventoryItem(convertDocumentToInventoryItem(doc));
-//                        }
-//                        else {
-//                        Log.d(TAG, "Can't find item with ID: " + itemID);
-//                        }
-//                    }
-//                    else { Log.d(TAG, "Failed with ", task.getException()); }
-//                }
-//            });
-//        }
-//    }
+    public void isUsernameUnique(String username, UpdateUsernameHandler handler) {
+        DocumentReference userDocRef = db.collection("users").document(username);
+        Log.d("canUpdateUsername", "checking if this username already exists: " + username);
+        userDocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("canUpdateUsername", "username taken");
+                        handler.onUsernameValidation(false, false, "");
+                    }
+                    else {
+                        Log.d("canUpdateUsername", "username available");
+                        handler.onUsernameValidation(true, false, username);
+                    }
+                }
+                else {
+                    Log.d(TAG, "Failed with: ", task.getException());
+                    handler.onUsernameValidation(false, false, "");
+                }
+            }
+        });
+    }
 
+    public void updateUsername(User user, String oldUsername) {
+        // create a new document
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("name", user.getName());
+        data.put("password", user.getPassword());
+        data.put("ownedItems", user.getItemsRefs());
+        usersRef.document(user.getUsername())
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("Firestore", "DocumentSnapshot successfully written!");
+                    }
+                });
+
+        // delete old document
+        usersRef.document(oldUsername)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d(TAG, "InventoryItem successfully deleted!");
+                    }
+                })
+
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error deleting item", e);
+                    }
+                });
+    }
 }

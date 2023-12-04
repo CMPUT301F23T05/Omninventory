@@ -3,9 +3,13 @@ package com.example.omninventory;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.pressMenuKey;
 import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
@@ -24,59 +28,46 @@ import org.junit.runner.RunWith;
 @LargeTest
 public class TestLoginActivity {
 
-    /**
-     * DO NOT RUN THIS TEST CASE, IT WILL FAIL BECAUSE FUNCTIONALITY IS INCOMPLETE
-     */
-    /*
+    TestItems testItems = new TestItems(); //sleep user
 
-    //Rule too set starting point on login screen
     @Rule
-    public ActivityScenarioRule<> scenario = new
-            ActivityScenarioRule<>(.class);
-    */
-
-    //todo:update test case after change to start on login screen
-    //for now app starts on the inventory screen
+    public ActivityScenarioRule<MainActivity> scenario = new
+            ActivityScenarioRule<MainActivity>(MainActivity.class);
 
     /**
      * Base test case for signing up as a user
      * IMPORTANT: User needs to be deleted from database before running this test case
-     * IMPORTANT: Incomplete test case (since functionality is not complete yet)
+     * Delete the user after running this test case to ensure no duplicates?
+     *
+     * @author Kevin
      */
+    @Test
     public void testSignup(){
         //From login screen, sign up for a new account
-
-        //click on profile button
-        onView(allOf(withId(R.id.profile_button), isDisplayed())).perform(click());
-
         onView(withId(R.id.signup_link)).perform(click());
 
         onView(withId(R.id.signup_name_edit_text)).perform(typeText("John Doe"));
         onView(withId(R.id.signup_username_edit_text)).perform(typeText("TheRealJohnDoe"));
-        onView(withId(R.id.signup_password_edit_text)).perform(typeText("TheRealJohnDoe123!"));
-        onView(withId(R.id.signup_confirm_password_edit_text)).perform(typeText("TheRealJohnDoe123!"));
+        onView(withId(R.id.signup_password_edit_text)).perform(typeText("TheRealJohnDoe123!"),closeSoftKeyboard());
+        onView(withId(R.id.signup_confirm_password_edit_text)).perform(typeText("TheRealJohnDoe123!"),closeSoftKeyboard());
+        onView(withId(R.id.signup_btn)).perform(click());
+        testItems.sleepProblemsAway(200);
+        //check profile
+        onView(allOf(withId(R.id.profile_button), isDisplayed())).perform(click());
+        onView(withText("John Doe")).check(matches(isDisplayed()));
+        onView(withText("@TheRealJohnDoe")).check(matches(isDisplayed()));
 
-        //validate the user profile is of the account just signed up for
-        //todo: this is not yet implemented, update when implemented
+        //log out and log in
+        onView(withId(R.id.logout_btn)).perform(click());
+        testItems.sleepProblemsAway(200);
+        onView(withId(R.id.login_username_edit_text)).perform(typeText("TheRealJohnDoe"));
+        onView(withId(R.id.login_password_edit_text)).perform(typeText("TheRealJohnDoe123!"),closeSoftKeyboard());
+        onView(withId(R.id.login_btn)).perform(click());
+        //check profile again
+        onView(allOf(withId(R.id.profile_button), isDisplayed())).perform(click());
+        onView(withText("John Doe")).check(matches(isDisplayed()));
+        onView(withText("@TheRealJohnDoe")).check(matches(isDisplayed()));
+
     }
 
-    public void testLogin(){
-        //From login screen, login to a already existing user
-        //validate in user profile is the account just logged in
-    }
-
-    public void testSignupToLogin(){
-        //From login screen go to sign up screen, go back to login screen
-    }
-
-    public void testInvalidLogin(){
-        //Try to login with invalid user information
-        //Check for some kind of error message display
-    }
-
-
-    public void testInvalidSignup(){
-        //Try to signup with invalid or not enough information
-        //check that some kind of error message should display
-    }
 }

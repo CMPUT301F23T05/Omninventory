@@ -1,9 +1,15 @@
 package com.example.omninventory;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.app.Activity;
 import android.content.Context;
 import android.app.Dialog;
 import android.content.Intent;
@@ -64,6 +70,26 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
 
     private Dialog deleteDialog;
     private ListenerRegistration registration;
+    private ListenerRegistration user_registration;
+    ActivityResultLauncher<Intent> profileLauncher = registerForActivityResult(
+        new ActivityResultContracts.StartActivityForResult(),
+        new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    Log.d("profileLauncher", "getting user");
+                    Intent data = result.getData();
+                    if (data != null) {
+                        currentUser = (User) data.getSerializableExtra("user");
+                        if (user_registration != null) {
+                            user_registration.remove();
+                        }
+                        user_registration = repo.listenToUserUpdate(currentUser.getUsername(), MainActivity.this);
+                    }
+                }
+            }
+        }
+    );
 
     /**
      * Method called on Activity creation. Contains most of the logic of this Activity; programmatically
@@ -156,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         repo = new InventoryRepository();
         itemListAdapter = new InventoryItemAdapter(this, itemListData);
         itemList.setAdapter(itemListAdapter);
-        ListenerRegistration user_registration = repo.listenToUserUpdate(currentUser.getUsername(), this);
+        user_registration = repo.listenToUserUpdate(currentUser.getUsername(), this);
         registration = repo.setupInventoryItemList(itemListAdapter, this, currentUser.getItemsRefs());
         // ============== SELECT/DELETE SETUP ================
 
@@ -257,10 +283,10 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         });
 
         profileBtn.setOnClickListener((v) -> {
-            Intent addIntent = new Intent(MainActivity.this, ProfileActivity.class);
+            Intent userIntent = new Intent(MainActivity.this, ProfileActivity.class);
             // intent launched without an InventoryItem
-            addIntent.putExtra("user", currentUser);
-            startActivity(addIntent);
+            userIntent.putExtra("user", currentUser);
+            profileLauncher.launch(userIntent);
         });
     }
 
