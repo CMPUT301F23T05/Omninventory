@@ -4,10 +4,10 @@ import android.media.Image;
 import android.util.Log;
 
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.storage.StorageReference;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -29,7 +29,7 @@ public class InventoryItem implements Serializable {
     private String serialNo;
     private ItemValue value;
     private ItemDate date;
-    private ArrayList<String> tags;
+    private ArrayList<Tag> tags;
     private ArrayList<ItemImage> images;
     private ArrayList<ItemImage> originalImages; // only set if initialized with images
 
@@ -67,8 +67,7 @@ public class InventoryItem implements Serializable {
      * @param date         Date of purchase of item to create (an ItemDate).
      */
     public InventoryItem(String firebaseId, String name, String description, String comment,
-                         String make, String model, String serialNo, ItemValue value, ItemDate date,
-                         ArrayList<String> tags, ArrayList<ItemImage> images) {
+                         String make, String model, String serialNo, ItemValue value, ItemDate date, ArrayList<Tag> tags, ArrayList<ItemImage> images) {
         // full constructor
         this.firebaseId = firebaseId;
         this.name = name;
@@ -100,7 +99,8 @@ public class InventoryItem implements Serializable {
      */
     public InventoryItem(String firebaseId, String name, String description, String comment,
                          String make, String model, String serialNo, ItemValue value, ItemDate date,
-                         ArrayList<String> tags, ArrayList<ItemImage> images, ArrayList<ItemImage> originalImages) {
+                         ArrayList<Tag> tags, ArrayList<ItemImage> images, ArrayList<ItemImage> originalImages) {
+        Log.d("InventoryItem", "created with price " + value);
         // full constructor
         this.firebaseId = firebaseId;
         this.name = name;
@@ -111,7 +111,8 @@ public class InventoryItem implements Serializable {
         this.serialNo = serialNo;
         this.value = value;
         this.date = date;
-        this.tags = tags;
+        this.tags = (ArrayList<Tag>) tags.clone();
+        this.tags.sort(Comparator.reverseOrder());
         this.images = images;
         this.originalImages = originalImages;
         this.isSelected = false;
@@ -133,7 +134,7 @@ public class InventoryItem implements Serializable {
         itemData.put("serialno", this.getSerialNo());
         itemData.put("value", this.getValue().toPrimitiveLong()); // convert ItemValue to long
         itemData.put("date", this.getDate().toDate()); // convert ItemDate to Date
-        itemData.put("tags", this.getTags());
+        itemData.put("tags", this.getTagIds());
         itemData.put("images", this.getImagePaths()); // list of image paths as strings
         return itemData;
     }
@@ -145,16 +146,19 @@ public class InventoryItem implements Serializable {
     public String getTagsString() {
         String tagString = "";
         for (int i = 0; i < tags.size(); i++) {
-            tagString = String.join(" ", tagString, String.format("#%s", tags.get(i)));
+            tagString = String.join(" ", tagString, String.format("#%s", tags.get(i).getName()));
         }
         return tagString;
     }
 
     /**
      * Adds a new tag to this InventoryItem's ArrayList of tags.
-     * @param tagName The tag to add.
+     * @param tag The tag to add.
      */
-    public void addTag(String tagName) { tags.add(tagName); }
+    public void addTag(Tag tag) {
+        tags.add(tag);
+        tags.sort(Comparator.reverseOrder());
+    }
 
     /**
      * For InventoryItems in the MainActivity item list, this returns a flag describing whether or
@@ -315,13 +319,32 @@ public class InventoryItem implements Serializable {
      * Setter for the InventoryItem's tags.
      * @param tags New tags.
      */
-    public void setTags(ArrayList<String> tags) { this.tags = tags; }
+    public void setTags(ArrayList<Tag> tags) {
+        this.tags = tags;
+        this.tags.sort(Comparator.reverseOrder());
+    }
 
     /**
      * Getter for the InventoryItem's tags.
      * @return InventoryItem's tags (an ArrayList of String objects)
      */
-    public ArrayList<String> getTags() { return tags; }
+    public ArrayList<Tag> getTags() { return tags; }
+
+    public ArrayList<String> getTagNames() {
+        ArrayList<String> tagNames = new ArrayList<>();
+        this.tags.forEach(tag -> {
+            tagNames.add(tag.getName());
+        });
+        return tagNames;
+    }
+
+    public ArrayList<String> getTagIds() {
+        ArrayList<String> tagIds = new ArrayList<>();
+        this.tags.forEach(tag -> {
+            tagIds.add(tag.getId());
+        });
+        return tagIds;
+    }
 
     public ArrayList<ItemImage> getImages() {
         return images;

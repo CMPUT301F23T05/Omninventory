@@ -96,6 +96,25 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
         }
     });
 
+    // ActivityResultLauncher to launch the SerialNoActivity for getting serial no. from scanned image
+    ActivityResultLauncher<Intent> serialNoActivityLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        // Retrieve product information
+                        Intent data = result.getData();
+                        if (data != null) {
+                            if (data.getStringExtra("serialno") != null) {
+                                String scannedSerialNo = data.getStringExtra("serialno");
+                                itemSerialEditText.setText(scannedSerialNo);
+                            }
+                        }
+                    }
+                }
+            });
+
     // ActivityResultLauncher to get an image and then store it in the current InventoryItem.
     // Currently allows up to 5 selections
     // See https://developer.android.com/training/data-storage/shared/photopicker
@@ -163,6 +182,7 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
         final ImageButton itemDateButton = findViewById(R.id.item_date_button);
         final ImageButton saveButton = findViewById(R.id.save_button);
         final ImageButton descriptionCameraButton = findViewById(R.id.description_camera_button);
+        final ImageButton serialNoCameraButton = findViewById(R.id.serialno_camera_button);
         final ImageButton imageTakeButton = findViewById(R.id.image_take_button);
         final ImageButton imageUploadButton = findViewById(R.id.image_upload_button);
         final ImageButton tagButton = findViewById(R.id.item_tags_button);
@@ -256,7 +276,8 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
                 // pass the current item to ApplyTagsActivity in "return" mode
                 // this makes sure we get it back instead of writing it to the db
                 applyTagsIntent.putExtra("selectedItems", itemList);
-                applyTagsIntent.putExtra("action", "return");
+                applyTagsIntent.putExtra("apply", false);
+                applyTagsIntent.putExtra("user", currentUser);
                 mDefineTags.launch(applyTagsIntent);
             }
         });
@@ -267,6 +288,15 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
             public void onClick(View view) {
                 Intent barcodeIntent = new Intent(EditActivity.this, BarcodeActivity.class);
                 barcodeActivityLauncher.launch(barcodeIntent);
+            }
+        });
+
+        // serialNoCameraButton takes user to Camera to scan serial number
+        serialNoCameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent serialNoIntent = new Intent(EditActivity.this, SerialNoScanningActivity.class);
+                serialNoActivityLauncher.launch(serialNoIntent);
             }
         });
 
@@ -335,8 +365,8 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
                 // known issue with androidx.activity:activity, this line gets underlined as an error
                 // in the IDE but code runs with no issue.
                 pickMedia.launch(new PickVisualMediaRequest.Builder()
-                    .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
-                    .build());
+                        .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                        .build());
             }
         });
 

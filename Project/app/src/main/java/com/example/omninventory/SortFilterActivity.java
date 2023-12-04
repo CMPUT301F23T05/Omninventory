@@ -1,6 +1,7 @@
 package com.example.omninventory;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.nfc.Tag;
@@ -20,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.time.LocalDate;
@@ -30,6 +32,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 
 // TODO:
@@ -53,9 +56,11 @@ public class SortFilterActivity extends AppCompatActivity {
     private String sortOrder;
     private String makeText;
     private String descriptionText;
+    private Dialog tagFilterDialog;
     private boolean makePressed;
     private boolean datePressed;
     private boolean descriptionPressed;
+    private User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +77,7 @@ public class SortFilterActivity extends AppCompatActivity {
         final EditText descriptionFilterEditText = findViewById(R.id.description_filter_edit_text);
         final Button descriptionFilterButton = findViewById(R.id.add_description_filter_button);
         final Button filterByTagsButton = findViewById(R.id.filter_by_tags_button);
+        tagFilterDialog = new Dialog(this);
 
         final ImageButton backButton = findViewById(R.id.back_button);
 
@@ -140,6 +146,9 @@ public class SortFilterActivity extends AppCompatActivity {
                 descriptionFilterEditText.setText(descriptionText);
                 descriptionFilterButton.setBackgroundColor(colorFilterApplied);
                 descriptionPressed = true;
+            }
+            if (intent.getSerializableExtra("login") != null) {
+                currentUser = (User) intent.getSerializableExtra("login");
             }
         }
 
@@ -309,8 +318,11 @@ public class SortFilterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent myIntent = new Intent(SortFilterActivity.this, MainActivity.class);
+                makeText = makeFilterEditText.getText().toString();
+                descriptionText = descriptionFilterEditText.getText().toString();
                 putFieldsIntent(myIntent, makePressed, datePressed, descriptionPressed);
                 SortFilterActivity.this.startActivity(myIntent);
+                finish();
             }
         });
     }
@@ -326,6 +338,7 @@ public class SortFilterActivity extends AppCompatActivity {
                                  boolean datePressed, boolean descriptionPressed) {
         myIntent.putExtra("sortBy", dropdownSelection);
         myIntent.putExtra("sortOrder", sortOrder);
+        myIntent.putExtra("login", currentUser);
         if (makePressed) {
             myIntent.putExtra("filterMake", makeText);
         }
@@ -343,7 +356,7 @@ public class SortFilterActivity extends AppCompatActivity {
      * or descending order. Implemented with the help of Comparator class.
      * Changes are applied directly to the passed adapter.
      * @param sortBy - user selection to sort the items by. Can be one of: "None", "Date",
-     *               "Description", "Make", "Estimated Value"
+     *               "Description", "Make", "Estimated Value", "Tags"
      * @param sortOrder - either "ascending" or "descending"
      * @param adapter - ArrayAdapter of InventoryItems to sort
      * @param descendingText - the string "descending". Values in strings.xml cannot be
@@ -385,6 +398,14 @@ public class SortFilterActivity extends AppCompatActivity {
                 }
                 else {
                     adapter.sort(new SortByValue());
+                }
+                break;
+            case "Tags":
+                if (descending) {
+                    adapter.sort(new SortByTags().reversed());
+                }
+                else {
+                    adapter.sort(new SortByTags());
                 }
                 break;
         }
@@ -474,4 +495,73 @@ public class SortFilterActivity extends AppCompatActivity {
     public static void applyTagsFilter(Tag[] tags, ArrayAdapter<InventoryItem> adapter) {
         // do nothing for now, implemented in part 4
     }
+
+//    private void tagFilterDialog() {
+//
+//        tagFilterDialog.setCancelable(false);
+//        tagFilter.setContentView(R.layout.add_tag_dialog);
+//
+//        // UI Elements
+//        EditText tagNameEditText = addTagDialog.findViewById(R.id.new_tag_name_editText);
+//        EditText tagPriorityEditText = addTagDialog.findViewById(R.id.new_tag_priority_editText);
+//        Button addTagDialogButton = addTagDialog.findViewById(R.id.add_tag_dialog_button);
+//        Button cancelDialogButton = addTagDialog.findViewById(R.id.cancel_dialog_button);
+//
+//        // Add tag button will create a new tag with the name specified in tagNameEditText
+//        addTagDialogButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                // Check tag name not empty
+//                String tagName = tagNameEditText.getText().toString();
+//                int priority = Integer.parseInt(tagPriorityEditText.getText().toString());
+//                if (tagName.isEmpty()) {
+//                    CharSequence toastText = "Tag name cannot be empty!";
+//                    Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
+//                    toast.show();
+//                    return;
+//                }
+//                // Check tag isn't a duplicate of an existing one
+//                boolean duplicate = false;
+//                ListIterator<com.example.omninventory.Tag> tagIter = appliedTagsListData.listIterator();
+//                while (tagIter.hasNext()) {
+//                    com.example.omninventory.Tag nextTag = tagIter.next();
+//                    if (tagName.equals(nextTag.getName())) {
+//                        duplicate = true;
+//                    }
+//                }
+//                tagIter = unappliedTagsListData.listIterator();
+//                while (tagIter.hasNext()) {
+//                    com.example.omninventory.Tag nextTag = tagIter.next();
+//                    if (tagName.equals(nextTag.getName())) {
+//                        duplicate = true;
+//                    }
+//                }
+//                if (duplicate) {
+//                    CharSequence toastText = "This tag already exists!";
+//                    Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
+//                    toast.show();
+//                    return;
+//                }
+//
+//                // If not empty and not a duplicate, create the tag and dismiss the dialog
+//                repo.addTag(new com.example.omninventory.Tag(tagName, currentUser.getUsername(), priority));
+//                CharSequence toastText = "Tag added successfully!";
+//                Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
+//                toast.show();
+//                addTagDialog.dismiss();
+//
+//
+//            }
+//        });
+//
+//        // The cancel button will dismiss the dialog without creating the tag
+//        cancelDialogButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                addTagDialog.dismiss();
+//            }
+//        });
+//
+//        addTagDialog.show();
+//    }
 }
