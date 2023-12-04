@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
 
     private InventoryRepository repo;
     private ArrayList<InventoryItem> itemListData;
+    private ArrayList<InventoryItem> completeItemList;
     private InventoryItemAdapter itemListAdapter;
     private String sortBy;
     private String sortOrder;
@@ -187,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
             sortFilterIntent.putExtra("filterStartDate", filterStartDate);
             sortFilterIntent.putExtra("filterEndDate", filterEndDate);
             sortFilterIntent.putExtra("filterDescription", filterDescription);
-            sortFilterIntent.putExtra("user", currentUser);
+            sortFilterIntent.putExtra("login", currentUser);
             MainActivity.this.startActivity(sortFilterIntent);
         });
 
@@ -237,11 +238,13 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
                     applyTagsIntent.putExtra("selectedItems", selectedItems);
 
                     // run in "apply" mode to apply changes upon activity exit
-                    applyTagsIntent.putExtra("action", "apply");
+                    applyTagsIntent.putExtra("apply", true);
+                    applyTagsIntent.putExtra("user", currentUser);
                     startActivity(applyTagsIntent);
                 } else {
                     // if nothing selected, go to ManageTagsActivity
                     Intent manageTagsIntent = new Intent(MainActivity.this, ManageTagsActivity.class);
+                    manageTagsIntent.putExtra("user", currentUser);
                     startActivity(manageTagsIntent);
                 }
             }

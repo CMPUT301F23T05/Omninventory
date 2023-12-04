@@ -10,13 +10,17 @@ import androidx.annotation.Nullable;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -32,6 +36,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -47,6 +52,7 @@ public class InventoryRepository {
     private CollectionReference usersRef;
     private CollectionReference inventoryItemsRef;
     private CollectionReference tagsRef;
+    private HashMap<String, Tag> tagDict;
 
     private FirebaseStorage storage;
     private StorageReference storageRef;
@@ -62,6 +68,24 @@ public class InventoryRepository {
 
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
+
+        tagDict = new HashMap<>();
+
+        tagsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.d("TagRepository", error.toString());
+                    return;
+                }
+                if (snapshot != null) {
+                    for (QueryDocumentSnapshot doc : snapshot) {
+                        Tag tag = convertDocumentToTag(doc);
+                        tagDict.put(tag.getId(), tag);
+                    }
+                }
+            }
+        });
     }
 
     public ListenerRegistration listenToUserUpdate(String username, UserUpdateHandler handler) {
@@ -134,25 +158,36 @@ public class InventoryRepository {
             Log.d("InventoryRepository", "images array is null");
         }
 
+        ArrayList<Tag> tagList = new ArrayList<>();
         InventoryItem item = new InventoryItem(
-            doc.getId(),
-            doc.getString("name"),
-            doc.getString("description"),
-            doc.getString("comment"),
-            doc.getString("make"),
-            doc.getString("model"),
-            doc.getString("serialno"),
-            new ItemValue(doc.getLong("value")), // convert to ItemValue
-            new ItemDate(doc.getDate("date")), // convert to ItemDate
-            (ArrayList<String>) doc.get("tags"),
-            images
+                doc.getId(),
+                doc.getString("name"),
+                doc.getString("description"),
+                doc.getString("comment"),
+                doc.getString("make"),
+                doc.getString("model"),
+                doc.getString("serialno"),
+                new ItemValue(doc.getLong("value)")), // convert to ItemValue
+                new ItemDate(doc.getDate("date")), // convert to ItemDate
+                tagList,
+                images
         );
 
         // don't want to download images here since they may not be displayed, e.g. if this is called
         // from homepage. but we could do it
         // attemptDownloadImages(item);
 
+        ArrayList<String> tagIdList = (ArrayList<String>) doc.get("tags");
+        tagIdList.forEach(tagId -> {
+            try {
+                item.addTag(tagDict.get(tagId));
+            } catch (NullPointerException e) {
+                Log.e("InventoryRepository", "Unable to retrieve tag with id=" + tagId);
+            }
+        });
+
         return item;
+
     }
 
     /**
@@ -212,8 +247,8 @@ public class InventoryRepository {
 
         // add new item id to itemlist on each tag
         Object[] idToAdd = {newItemRef.getId()};
-        item.getTags().forEach(tag -> {
-            // get document for tag (name is id)
+        item.getTagIds().forEach(tag -> {
+            // get document for tag
             DocumentReference tagRef = tagsRef.document(tag);
             tagRef
                     .update("items", FieldValue.arrayUnion(idToAdd))
@@ -267,7 +302,7 @@ public class InventoryRepository {
 
         // add new item id to itemlist on each tag
         Object[] idToAdd = {item.getFirebaseId()};
-        item.getTags().forEach(tag -> {
+        item.getTagIds().forEach(tag -> {
             // get document for tag (name is id)
             DocumentReference tagRef = tagsRef.document(tag);
 
@@ -535,18 +570,26 @@ public class InventoryRepository {
     };
 
     /**
-     * Adds a new Tag to the *tag* collection.
+     * Adds a new Tag to the tags collection.
+     *
      * @param tag Tag to add to the list of tags.
      */
     public void addTag(Tag tag) {
         HashMap<String, Object> data = new HashMap<>();
+        data.put("name", tag.getName());
+        data.put("owner", tag.getOwner());
+        data.put("priority", tag.getPriority());
         data.put("items", tag.getItemIds());
+        if (tag.getId().isEmpty()) {
+            tag.setId(tagsRef.document().getId());
+        }
         tagsRef
-                .document(tag.getName())
+                .document(tag.getId())
                 .set(data)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
+                        tagDict.put(tag.getId(), tag);
                         Log.d("Firestore", "DocumentSnapshot successfully written!");
                     }
                 });
@@ -561,10 +604,13 @@ public class InventoryRepository {
     public void updateTag(Tag tag) {
         // create data for new tag document
         HashMap<String, Object> tagData = new HashMap<>();
+        tagData.put("name", tag.getName());
+        tagData.put("owner", tag.getOwner());
+        tagData.put("priority", tag.getPriority());
         tagData.put("items", tag.getItemIds());
 
         // get the document for this tag
-        DocumentReference tagRef = tagsRef.document(tag.getName());
+        DocumentReference tagRef = tagsRef.document(tag.getId());
 
         // overwrite data of document with tag data
         tagRef
@@ -572,6 +618,7 @@ public class InventoryRepository {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
+                        tagDict.replace(tag.getId(), tag);
                         Log.d("InventoryRepository", String.format("New tags DocumentSnapshot written, id=%s", tagRef.getId()));
                     }
                 })
@@ -590,18 +637,19 @@ public class InventoryRepository {
      */
     public Tag convertDocumentToTag(DocumentSnapshot doc) {
         Log.d("TagRepository", "convert called with document name=" + doc.getId());
-        Tag tag = new Tag(doc.getId());
-        List<String> items = (List<String>) doc.get("items");
-        ListIterator<String> itemIterator = items.listIterator();
-        while (itemIterator.hasNext()) {
-            tag.addItem(itemIterator.next());
+        long priority = 0;
+        try {
+            priority = (long) doc.get("priority");
+        } catch (NullPointerException e) {
+            priority = 0;
         }
+        Tag tag = new Tag(doc.getId(), doc.getString("name"), doc.getString("owner"), priority,   (ArrayList<String>) doc.get("items"));
 
         return tag;
     }
 
     /**
-     * Sets up a TagAdapter to contain contents of Firebase *tags* collection, and be automatically
+     * Sets up a TagAdapter to contain contents of Firebase tags collection, and be automatically
      * updated when the list changes.
      * @param adapter the adapter to contain the tags
      * @return a snapshot listener for the collection that will automatically update the adapter
@@ -620,13 +668,15 @@ public class InventoryRepository {
                     for (QueryDocumentSnapshot doc : snapshot) {
                         // get each item returned by query and add to adapter
                         Tag tag = convertDocumentToTag(doc);
+                        tagDict.put(tag.getId(), tag);
                         adapter.add(tag);
                     }
+                    adapter.sort(Comparator.reverseOrder());
+                    adapter.notifyDataSetChanged();
                 }
             }
         });
 
-        adapter.notifyDataSetChanged();
         return registration;
     }
 
@@ -649,9 +699,9 @@ public class InventoryRepository {
                             InventoryItem item = convertDocumentToInventoryItem(documentSnapshot);
                             Log.d("Successfully read document id=", documentSnapshot.getId());
                             for (int j = 0; j < tags.size(); j++) {
-                                String tagName = tags.get(j).getName();
-                                if (!item.getTags().contains(tagName)) {
-                                    item.addTag(tagName);
+                                String tagId = tags.get(j).getId();
+                                if (!item.getTagIds().contains(tagId)) {
+                                    item.addTag(tags.get(j));
                                 }
                             }
 
@@ -663,7 +713,7 @@ public class InventoryRepository {
 
         // run through list of tags, adding items to each
         for (int i = 0; i < tags.size(); i++) {
-            DocumentReference tagRef = tagsRef.document(tags.get(i).getName());
+            DocumentReference tagRef = tagsRef.document(tags.get(i).getId());
             tagRef.
                     get()
                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
