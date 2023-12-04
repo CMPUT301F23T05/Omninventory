@@ -62,7 +62,7 @@ public class TestSortItemActivity {
         testItems.sleepProblemsAway(2000);
     }
 
-    @After
+    //@After
     public void cleanup(){
         testItems.wipeTestItems();
     }
@@ -407,7 +407,7 @@ public class TestSortItemActivity {
         onView(withId(R.id.save_button)).perform(click());
         testItems.sleepProblemsAway(500);
         onView(withId(R.id.back_button)).perform(click());
-
+        testItems.sleepProblemsAway(100);
         onView(withText("TestItem2"))
                 .perform(scrollTo())
                 .perform(click());
@@ -438,7 +438,7 @@ public class TestSortItemActivity {
         //Expected order would be testitem3, testitem2, testitem1
         //From inventory screen select sort/filter button
         onView(withId(R.id.sort_filter_button)).perform(click());
-        testItems.sleepProblemsAway(100);
+        testItems.sleepProblemsAway(500);
         //Select the sort option dropdown
         onView(withId(R.id.sort_dropdown_spinner)).perform(click());
         testItems.sleepProblemsAway(100);
@@ -463,7 +463,7 @@ public class TestSortItemActivity {
                 .inAdapterView(withId(R.id.item_list)) // Replace with the actual ID of your ListView
                 .atPosition(0)
                 .onChildView(withId(R.id.item_name_text)) // Replace with the actual ID of the TextView within the list item
-                .check(matches(withText("TestItem1")));
+                .check(matches(withText("TestItem3")));
 
         onData(anything())
                 .inAdapterView(withId(R.id.item_list))
@@ -475,7 +475,7 @@ public class TestSortItemActivity {
                 .inAdapterView(withId(R.id.item_list))
                 .atPosition(2)
                 .onChildView(withId(R.id.item_name_text))
-                .check(matches(withText("TestItem3")));
+                .check(matches(withText("TestItem1")));
 
         //Test DESC
         onView(withId(R.id.sort_filter_button)).perform(click());
@@ -488,7 +488,7 @@ public class TestSortItemActivity {
                 .inAdapterView(withId(R.id.item_list)) // Replace with the actual ID of your ListView
                 .atPosition(0)
                 .onChildView(withId(R.id.item_name_text)) // Replace with the actual ID of the TextView within the list item
-                .check(matches(withText("TestItem3")));
+                .check(matches(withText("TestItem1")));
 
         onData(anything())
                 .inAdapterView(withId(R.id.item_list))
@@ -500,7 +500,7 @@ public class TestSortItemActivity {
                 .inAdapterView(withId(R.id.item_list))
                 .atPosition(2)
                 .onChildView(withId(R.id.item_name_text))
-                .check(matches(withText("TestItem1")));
+                .check(matches(withText("TestItem3")));
     }
 
 
