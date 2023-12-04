@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
 
     private InventoryRepository repo;
     private ArrayList<InventoryItem> itemListData;
+    private ArrayList<InventoryItem> completeItemList;
     private InventoryItemAdapter itemListAdapter;
     SharedPreferences sharedPrefs;
     private String sortBy;
@@ -249,11 +250,13 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
                     applyTagsIntent.putExtra("selectedItems", selectedItems);
 
                     // run in "apply" mode to apply changes upon activity exit
-                    applyTagsIntent.putExtra("action", "apply");
+                    applyTagsIntent.putExtra("apply", true);
+                    applyTagsIntent.putExtra("user", currentUser);
                     startActivity(applyTagsIntent);
                 } else {
                     // if nothing selected, go to ManageTagsActivity
                     Intent manageTagsIntent = new Intent(MainActivity.this, ManageTagsActivity.class);
+                    manageTagsIntent.putExtra("user", currentUser);
                     startActivity(manageTagsIntent);
                 }
             }
