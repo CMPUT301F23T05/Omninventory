@@ -7,54 +7,40 @@
 
     <TextView style="@style/pink_bar"
         android:id="@+id/taskbar_band"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="10dp"
         android:background="@drawable/color_primary_draw"/>
 
     <LinearLayout style="@style/blue_bar"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:background="@drawable/color_secondary_draw"
+        android:background="@drawable/color_primary_draw"
         android:orientation="horizontal">
 
         <ImageButton style="@style/taskbar_button"
             android:id="@+id/back_button"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/back_button_label"
-            android:src="@drawable/icon_back"/>
-
-        <!-- to keep spacing consistent with layout_weight -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal"/>
+            android:src="@drawable/taskbar_back"/>
 
         <ImageButton style="@style/taskbar_button"
             android:id="@+id/add_tag_button"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/delete_tag_button_label"
-            android:src="@drawable/icon_add"
+            android:src="@drawable/taskbar_add"
             />
-
-        <!-- to keep spacing consistent with layout_weight -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal"/>
 
         <ImageButton style="@style/taskbar_button"
             android:id="@+id/confirm_tags_button"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/add_tag_button_label"
-            android:src="@drawable/icon_save"
+            android:src="@drawable/taskbar_save"
             />
 
 

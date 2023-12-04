@@ -2,17 +2,15 @@ package com.example.omninventory;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Comparator;
 
 /**
  * Stores tag name and list of items tagged with that tag.
  * @author Patrick
  */
-public class Tag implements Serializable, Comparable<Tag> {
+public class Tag implements Serializable {
     private String id;
     private String name;
     private String owner;
-    private long priority;
     private ArrayList<String> itemIds;
 
     private boolean isSelected;
@@ -21,11 +19,10 @@ public class Tag implements Serializable, Comparable<Tag> {
      * Basic constructor to initialize a new tag that's not applied to anything yet.
      * @param name Name of new Tag.
      */
-    public Tag(String name, String owner, long priority) {
+    public Tag(String name, String owner) {
         this.id = "";
         this.name = name;
         this.owner = owner;
-        this.priority = priority;
         this.itemIds = new ArrayList<>();
         this.isSelected = false;
     }
@@ -36,11 +33,10 @@ public class Tag implements Serializable, Comparable<Tag> {
      * @param name Name of tag.
      * @param itemIds List of references to the items to which the tag is applied.
      */
-    public Tag(String id, String name, String owner, long priority, ArrayList<String> itemIds) {
+    public Tag(String id, String name, String owner, ArrayList<String> itemIds) {
         this.id = id;
         this.name = name;
         this.owner = owner;
-        this.priority = priority;
         this.itemIds = itemIds;
         this.isSelected = false;
     }
@@ -85,14 +81,6 @@ public class Tag implements Serializable, Comparable<Tag> {
         this.name = name;
     }
 
-    public long getPriority() {
-        return priority;
-    }
-
-    public void setPriority(long priority) {
-        this.priority = priority;
-    }
-
     /**
      * Getter for IDs of items associated with Tag.
      * @return ArrayList of IDs of items associated with Tag.
@@ -122,9 +110,5 @@ public class Tag implements Serializable, Comparable<Tag> {
     }
 
     public void setSelected(boolean isSelected) { this.isSelected = isSelected; }
-
-    public int compareTo(Tag t) {
-        return (int) (this.priority - t.getPriority());
-    }
 
 }

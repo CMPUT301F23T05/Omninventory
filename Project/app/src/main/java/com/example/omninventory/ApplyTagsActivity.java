@@ -21,7 +21,6 @@ import android.widget.Toast;
 import com.google.firebase.firestore.ListenerRegistration;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.ListIterator;
 
 /**
@@ -192,7 +191,6 @@ public class ApplyTagsActivity extends AppCompatActivity  {
 
         // UI Elements
         EditText tagNameEditText = addTagDialog.findViewById(R.id.new_tag_name_editText);
-        EditText tagPriorityEditText = addTagDialog.findViewById(R.id.new_tag_priority_editText);
         Button addTagDialogButton = addTagDialog.findViewById(R.id.add_tag_dialog_button);
         Button cancelDialogButton = addTagDialog.findViewById(R.id.cancel_dialog_button);
 
@@ -202,7 +200,6 @@ public class ApplyTagsActivity extends AppCompatActivity  {
             public void onClick(View view) {
                 // Check tag name not empty
                 String tagName = tagNameEditText.getText().toString();
-                int priority = Integer.parseInt(tagPriorityEditText.getText().toString());
                 if (tagName.isEmpty()) {
                     CharSequence toastText = "Tag name cannot be empty!";
                     Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
@@ -233,7 +230,7 @@ public class ApplyTagsActivity extends AppCompatActivity  {
                 }
 
                 // If not empty and not a duplicate, create the tag and dismiss the dialog
-                repo.addTag(new Tag(tagName, currentUser.getUsername(), priority));
+                repo.addTag(new Tag(tagName, currentUser.getUsername()));
                 CharSequence toastText = "Tag added successfully!";
                 Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
                 toast.show();
