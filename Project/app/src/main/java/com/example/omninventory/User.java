@@ -58,4 +58,21 @@ public class User implements Serializable {
          */
         public ArrayList<String> getItemsRefs() { return ownedItems; }
 
+        public void setName(String name) {
+                this.name = name;
+        }
+
+        public void setPassword(String password) {
+                this.password = password;
+        }
+
+        public HashMap<String, Object> convertToHashMap() {
+                HashMap<String, Object> userData = new HashMap<>();
+                userData.put("name", this.getName());
+                userData.put("username", this.getUsername());
+                userData.put("password", this.getPassword());
+                userData.put("ownedItems", this.getItemsRefs());
+                return userData;
+        }
+
 }

@@ -305,6 +305,7 @@ public class SortFilterActivity extends AppCompatActivity {
                 descriptionText = descriptionFilterEditText.getText().toString();
                 putFieldsIntent(myIntent, makePressed, datePressed, descriptionPressed);
                 SortFilterActivity.this.startActivity(myIntent);
+                finish();
             }
         });
     }
