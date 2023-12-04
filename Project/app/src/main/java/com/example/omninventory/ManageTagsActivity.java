@@ -85,7 +85,7 @@ public class ManageTagsActivity extends AppCompatActivity {
         tagListAdapter = new TagAdapter(this, tagListData);
         tagList.setAdapter(tagListAdapter);
 
-        ListenerRegistration registration = repo.setupTagList(tagListAdapter);
+        ListenerRegistration registration = repo.setupTagList(tagListAdapter, currentUser);
 
         // === set up click actions
 

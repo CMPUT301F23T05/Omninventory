@@ -52,8 +52,8 @@ public class ItemImageAdapter extends RecyclerView.Adapter<ItemImageAdapter.View
      * Provides a reference to View used.
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageContent;
-        ProgressBar loadingPlaceholder;
+        private ImageView imageContent;
+        private ProgressBar loadingPlaceholder;
 
         /**
          * Constructor that gets the image content ImageView.
