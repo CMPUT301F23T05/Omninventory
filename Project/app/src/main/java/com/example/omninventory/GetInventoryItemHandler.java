@@ -12,5 +12,5 @@ public interface GetInventoryItemHandler {
      * InventoryRepository.getInventoryItem().
      * @param item Item to send to implementing class.
      */
-    void onGetInventoryItem(InventoryItem item);
+    abstract void onGetInventoryItem(InventoryItem item);
 }

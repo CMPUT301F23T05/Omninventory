@@ -95,7 +95,7 @@ public class ItemValue implements Serializable {
     public static String numToString(Long x) {
         // error checking
         if (x < 0) {
-            Log.d("InventoryItemValue", String.format("Converting negative value %d to $0.", x));
+//            Log.d("InventoryItemValue", String.format("Converting negative value %d to $0.", x));
             x = 0L;
         }
 
@@ -105,7 +105,7 @@ public class ItemValue implements Serializable {
 
         // using Locale.CANADA here makes a lot of assumptions, however dealing with different
         // currency formats is not within the scope of this project
-        Log.d("InventoryItemValue", String.format("Formatting values: %d, %d", dollarsNum, centsNum));
+//        Log.d("InventoryItemValue", String.format("Formatting values: %d, %d", dollarsNum, centsNum));
 
         return String.format(Locale.CANADA, "$%d.%02d", dollarsNum, centsNum);
     }
