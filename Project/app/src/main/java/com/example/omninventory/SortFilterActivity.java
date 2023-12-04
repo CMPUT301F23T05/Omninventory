@@ -512,9 +512,11 @@ public class SortFilterActivity extends AppCompatActivity {
     }
 
     /**
-     * Placeholder method to be implemented in Part 4.
-     * @param tags    Placeholder.
-     * @param adapter Placeholder.
+     * Filter the adapter of InventoryItems by applied tags. Will remove InventoryItems from the
+     * adapter if they do not have all tags.
+     * Changes are applied directly to the passed adapter.
+     * @param tags    the list of tag objects by which to filter
+     * @param adapter the adapter to filter
      */
     public static void applyTagsFilter(ArrayList<Tag> tags, ArrayAdapter<InventoryItem> adapter) {
         ArrayList<InventoryItem> itemsToRemove = new ArrayList<>();
@@ -533,6 +535,10 @@ public class SortFilterActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
+    /**
+     * Sets the current list of tags by which to filter and updates display.
+     * @param tagFilter the list of tags by which to filter.
+     */
     private void setTagFilter(ArrayList<Tag> tagFilter) {
         this.tagFilter = tagFilter;
 
@@ -556,6 +562,9 @@ public class SortFilterActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Displays a dialog to let the user select one or more tags by which to filter.
+     */
     private void tagFilterDialog() {
 
         tagFilterDialog.setCancelable(false);

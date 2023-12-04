@@ -738,6 +738,16 @@ public class InventoryRepository {
         return registration;
     }
 
+    /**
+     * Sets up two TagAdapters to contain contents of Firebase tags collection (one for those
+     * applied to the item and one for those that aren't), and be automatically updated when the
+     * list changes.
+     * @param appliedAdapter the adapter to contain the tags currently applied to item
+     * @param unappliedAdapter the adapter to contain the tags not currently applied to item
+     * @param currentUser the currently logged-in user
+     * @param item the InventoryItem being considered
+     * @return a snapshot listener for the collection that will automatically update the adapter
+     */
     public ListenerRegistration setupTagListsForItem(TagAdapter appliedAdapter, TagAdapter unappliedAdapter, User currentUser, InventoryItem item) {
         // set up listener
         ListenerRegistration registration = tagsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -800,20 +810,6 @@ public class InventoryRepository {
                             // write the updated item back to the db
                             item.setOriginalImages(item.getImages());
                             updateInventoryItem(item);
-//                            updateInventoryItem(new InventoryItem(
-//                                    item.getFirebaseId(),
-//                                    item.getName(),
-//                                    item.getDescription(),
-//                                    item.getComment(),
-//                                    item.getMake(),
-//                                    item.getModel(),
-//                                    item.getSerialNo(),
-//                                    item.getValue(),
-//                                    item.getDate(),
-//                                    item.getTags(),
-//                                    item.getImages(),
-//                                    item.getImages()
-//                            ));
                         }
                     });
         }
