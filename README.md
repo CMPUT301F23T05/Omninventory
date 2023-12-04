@@ -2,8 +2,7 @@
 
 Our project for CMPUT 301!
 
-<img src="assets/homepage_light.png" alt="Omninventory homepage in light mode" width="200"/>
-<img src="assets/homepage_dark.png" alt="Omninventory homepage in light mode" width="200"/>
+<img src="assets/homepage_light.png" alt="Omninventory homepage in light mode" width="200"/><img src="assets/homepage_dark.png" alt="Omninventory homepage in light mode" width="200"/>
 
 ## Directory
 * The `main` branch contains our project as of Part 4, the final checkpoint.
