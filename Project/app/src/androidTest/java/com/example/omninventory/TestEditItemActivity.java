@@ -47,10 +47,25 @@ public class TestEditItemActivity {
 
     @Before
     public void setup() {
+        try { //allow app to start
+            Thread.sleep(1000); // Sleep for 1 second
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
+
         onView(withId(R.id.login_username_edit_text)).perform(typeText("Tester"));
         onView(withId(R.id.login_password_edit_text))
                 .perform(typeText("Hahaha123!"), closeSoftKeyboard());
         onView(withId(R.id.login_btn)).perform(click());
+
+        //allow app to load in time
+        try {
+            Thread.sleep(2000); // Sleep for 1 second
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
     }
 
     @After

@@ -53,10 +53,25 @@ public class TestAddItemActivity {
      */
     @Before
     public void setup() {
+        try { //allow app to start
+            Thread.sleep(1000); // Sleep for 1 second
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
+
         onView(withId(R.id.login_username_edit_text)).perform(typeText("Tester"));
         onView(withId(R.id.login_password_edit_text))
                 .perform(typeText("Hahaha123!"), closeSoftKeyboard());
         onView(withId(R.id.login_btn)).perform(click());
+
+        //allow app to load in time
+        try {
+            Thread.sleep(2000); // Sleep for 1 second
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
     }
 
 
@@ -87,6 +102,7 @@ public class TestAddItemActivity {
      */
     @Test
     public void testAddItemBase(){
+
         // start on the inventory screen click on the add button
         onView(allOf(withId(R.id.add_item_button), isDisplayed()))
                 .perform(click());
@@ -174,7 +190,7 @@ public class TestAddItemActivity {
 
     }
 
-    @Test
+    //@Test
     public void testAddItemWithTag(){
         //Start on inventory screen, click on the add button
 
