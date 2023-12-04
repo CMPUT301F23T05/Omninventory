@@ -64,12 +64,6 @@ public class ManageTagsActivity extends AppCompatActivity {
         addTagDialog = new Dialog(this);
         deleteTagsDialog = new Dialog(this);
 
-//        // add taskbar
-//        LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//        View taskbarLayout = taskbarInflater.inflate(R.layout.taskbar_manage_tags, null);
-//        ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.taskbar_holder);
-//        taskbarHolder.addView(taskbarLayout);
-
         // get taskbar buttons
         final ImageButton backButton = findViewById(R.id.back_button);
         final ImageButton deleteTagButton = findViewById(R.id.delete_tag_button);
@@ -145,6 +139,7 @@ public class ManageTagsActivity extends AppCompatActivity {
 
     /**
      * Displays a dialog that allows the user to define a new tag or edit an existing one.
+     * @param tag the tag to edit (or null to create a new tag)
      */
     private void addEditTagDialog(@Nullable Tag tag) {
 

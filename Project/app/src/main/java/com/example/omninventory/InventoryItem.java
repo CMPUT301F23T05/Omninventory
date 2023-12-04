@@ -140,7 +140,7 @@ public class InventoryItem implements Serializable {
     }
 
     /**
-     * A method to generate a space-separated list of #-preceded tags as a single string for display
+     * Generates a space-separated list of #-preceded tags as a single string for display
      * @return A String in the form "#[tag_1_name] #[tag_2_name] etc
      */
     public String getTagsString() {
@@ -326,10 +326,14 @@ public class InventoryItem implements Serializable {
 
     /**
      * Getter for the InventoryItem's tags.
-     * @return InventoryItem's tags (an ArrayList of String objects)
+     * @return InventoryItem's tags (an ArrayList of Tag objects)
      */
     public ArrayList<Tag> getTags() { return tags; }
 
+    /**
+     * Gets the names of the tags applied to the InventoryItem
+     * @return the names of InventoryItem's tags (an ArrayList of String objects)
+     */
     public ArrayList<String> getTagNames() {
         ArrayList<String> tagNames = new ArrayList<>();
         this.tags.forEach(tag -> {
@@ -338,6 +342,10 @@ public class InventoryItem implements Serializable {
         return tagNames;
     }
 
+    /**
+     * Gets the IDs of the tags applied to the InventoryItem
+     * @return the IDs of InventoryItem's tags (an ArrayList of String objects)
+     */
     public ArrayList<String> getTagIds() {
         ArrayList<String> tagIds = new ArrayList<>();
         this.tags.forEach(tag -> {
@@ -369,8 +377,8 @@ public class InventoryItem implements Serializable {
 
     /**
      * Setter for the originalImages array.
-     * Note that this overrides normal functionality and should only be used intentionally.
-     * @param originalImages
+     * Note that this overrides normal functionality and should only be used with due consideration.
+     * @param originalImages a new list of ItemImages to replace the existing original image set
      */
     public void setOriginalImages(ArrayList<ItemImage> originalImages) {
         this.originalImages = originalImages;
