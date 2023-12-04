@@ -57,7 +57,9 @@ public class User implements Serializable {
          * @return The User's list of owned items, as an ArrayList of InventoryItem IDs.
          */
         public ArrayList<String> getItemsRefs() { return ownedItems; }
-
+        public void setUsername(String username) {
+                this.username = username;
+        }
         public void setName(String name) {
                 this.name = name;
         }

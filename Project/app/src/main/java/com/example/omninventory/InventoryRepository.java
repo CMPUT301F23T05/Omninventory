@@ -96,6 +96,7 @@ public class InventoryRepository {
                     Log.d("listenToUserUpdate", error.toString());
                     return;
                 }
+                // listens to the following changes: item addition/removal, name/password update
                 if (snapshot != null && snapshot.exists()) {
                     handler.onUserUpdate(convertDocumentToUser(snapshot));
                 }
@@ -849,29 +850,61 @@ public class InventoryRepository {
 
     }
 
-//    /**
-//     * Retrieve the contents of the User's inventory.
-//     * @param ownedItems IDs of all items in user's inventory
-//     */
-//    public void getItemDataList(ArrayList<String> ownedItems, GetInventoryItemHandler handler) {
-//        for (String itemID : ownedItems) {
-//            inventoryItemsRef.document(itemID).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//                @Override
-//                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                    if (task.isSuccessful()) {
-//                        DocumentSnapshot doc = task.getResult();
-//                        if (doc.exists()) {
-//                            Log.d(TAG, "DocumentSnapshot data: " + doc.getId());
-//                            handler.onGetInventoryItem(convertDocumentToInventoryItem(doc));
-//                        }
-//                        else {
-//                        Log.d(TAG, "Can't find item with ID: " + itemID);
-//                        }
-//                    }
-//                    else { Log.d(TAG, "Failed with ", task.getException()); }
-//                }
-//            });
-//        }
-//    }
+    public void isUsernameUnique(String username, UpdateUsernameHandler handler) {
+        DocumentReference userDocRef = db.collection("users").document(username);
+        Log.d("canUpdateUsername", "checking if this username already exists: " + username);
+        userDocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        Log.d("canUpdateUsername", "username taken");
+                        handler.onUsernameValidation(false, false, "");
+                    }
+                    else {
+                        Log.d("canUpdateUsername", "username available");
+                        handler.onUsernameValidation(true, false, username);
+                    }
+                }
+                else {
+                    Log.d(TAG, "Failed with: ", task.getException());
+                    handler.onUsernameValidation(false, false, "");
+                }
+            }
+        });
+    }
 
+    public void updateUsername(User user, String oldUsername) {
+        // create a new document
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("name", user.getName());
+        data.put("password", user.getPassword());
+        data.put("ownedItems", user.getItemsRefs());
+        usersRef.document(user.getUsername())
+                .set(data)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d("Firestore", "DocumentSnapshot successfully written!");
+                    }
+                });
+
+        // delete old document
+        usersRef.document(oldUsername)
+                .delete()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.d(TAG, "InventoryItem successfully deleted!");
+                    }
+                })
+
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error deleting item", e);
+                    }
+                });
+    }
 }
