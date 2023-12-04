@@ -5,6 +5,7 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -78,6 +79,41 @@ public class TestProfileActivity {
         onView(withId(R.id.ok_dialog_button)).perform(click());
         testItems.sleepProblemsAway(50);
         onView(withText("Tester Test")).check(matches(isDisplayed()));
+
+        //RISKY
+        onView(withId(R.id.change_password_btn)).perform(click());
+        testItems.sleepProblemsAway(100);
+        onView(withId(R.id.cancel_dialog_button)).perform(click());
+        onView(withId(R.id.old_password_editText)).check(doesNotExist());
+
+        onView(withId(R.id.change_password_btn)).perform(click());
+        testItems.sleepProblemsAway(100);
+        onView(withId(R.id.old_password_editText)).perform(typeText("Hahaha123!"));
+        onView(withId(R.id.new_password_editText)).perform(typeText("Hahaha321!"));
+        onView(withId(R.id.confirm_password_editText)).perform(typeText("Hahaha321!"));
+        onView(withId(R.id.ok_dialog_button)).perform(click());
+
+        testItems.sleepProblemsAway(100);
+        onView(withId(R.id.logout_btn)).perform(click());
+        testItems.sleepProblemsAway(100);
+        onView(withId(R.id.login_username_edit_text)).perform(typeText("Tester"));
+        onView(withId(R.id.login_password_edit_text))
+                .perform(typeText("Hahaha321!"), closeSoftKeyboard());
+        onView(withId(R.id.login_btn)).perform(click());
+
+        onView(allOf(withId(R.id.profile_button), isDisplayed()))
+                .perform(click());
+        //Validate profile screen contains profile stuff
+        onView(withText("Tester Test")).check(matches(isDisplayed()));
+        onView(withText("@Tester")).check(matches(isDisplayed()));
+
+        onView(withId(R.id.change_password_btn)).perform(click());
+        testItems.sleepProblemsAway(100);
+        onView(withId(R.id.old_password_editText)).perform(typeText("Hahaha321!"));
+        onView(withId(R.id.new_password_editText)).perform(typeText("Hahaha123!"));
+        onView(withId(R.id.confirm_password_editText)).perform(typeText("Hahaha123!"));
+        onView(withId(R.id.ok_dialog_button)).perform(click());
+        onView(withId(R.id.logout_btn)).perform(click());
 
     }
 
