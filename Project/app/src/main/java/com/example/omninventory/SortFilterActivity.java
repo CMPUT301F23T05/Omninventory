@@ -539,7 +539,7 @@ public class SortFilterActivity extends AppCompatActivity {
 
         if (this.tagFilter.isEmpty()) {
             tagFilterButton.setBackgroundColor(colorFilterNotApplied);
-            tagFilterText.setVisibility(View.GONE);
+            tagFilterText.setVisibility(View.INVISIBLE);
             tagsPressed = false;
         }
         else {
@@ -570,8 +570,7 @@ public class SortFilterActivity extends AppCompatActivity {
 
         TagAdapter tagListAdapter = new TagAdapter(this, tagListData);
         tagList.setAdapter(tagListAdapter);
-
-        ListenerRegistration registration = repo.setupTagList(tagListAdapter);
+        ListenerRegistration registration = repo.setupTagList(tagListAdapter, currentUser);
 
 
 
