@@ -5,11 +5,15 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Unit tests for ItemValue.
+ * @author Castor
+ */
 public class ItemValueUnitTest {
 
     /**
      * Unit test for Item value
-     * @author Castor Shem
+     * @author Castor
      */
     @Test
     public void test(){

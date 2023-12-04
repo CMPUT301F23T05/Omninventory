@@ -8,6 +8,10 @@ import org.junit.Test;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * Unit tests for sorting.
+ * @author Kevin
+ */
 public class SortUnitTest {
 
     private InventoryItem item1;
