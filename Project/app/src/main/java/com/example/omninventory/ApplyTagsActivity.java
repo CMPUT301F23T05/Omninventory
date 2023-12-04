@@ -92,7 +92,7 @@ public class ApplyTagsActivity extends AppCompatActivity  {
         appliedTagsListAdapter = new TagAdapter(this, appliedTagsListData);
         unappliedTagsListAdapter = new TagAdapter(this, unappliedTagsListData);
 
-        ListenerRegistration registration = repo.setupTagList(unappliedTagsListAdapter, currentUser);
+        ListenerRegistration registration = repo.setupTagListsForItem(appliedTagsListAdapter, unappliedTagsListAdapter, currentUser, selectedItems.get(0));
 
         appliedTagsList.setAdapter(appliedTagsListAdapter);
         unappliedTagsList.setAdapter(unappliedTagsListAdapter);
@@ -152,11 +152,12 @@ public class ApplyTagsActivity extends AppCompatActivity  {
                 @Override
                 public void onClick(View view) {
 
-                    appliedTagsListData.forEach(tag -> {
-                        if (!selectedItems.get(0).getTags().contains(tag.getId())) {
-                            selectedItems.get(0).addTag(tag);
-                        }
-                    });
+//                    appliedTagsListData.forEach(tag -> {
+//                        if (!selectedItems.get(0).getTags().contains(tag.getId())) {
+//                            selectedItems.get(0).addTag(tag);
+//                        }
+//                    });
+                    selectedItems.get(0).setTags(appliedTagsListData);
 
                     Intent itemReturn = new Intent();
                     itemReturn.putExtra("taggedItem", selectedItems.get(0));

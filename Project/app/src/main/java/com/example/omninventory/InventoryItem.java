@@ -367,4 +367,12 @@ public class InventoryItem implements Serializable {
         return originalImages;
     }
 
+    /**
+     * Setter for the originalImages array.
+     * Note that this overrides normal functionality and should only be used intentionally.
+     * @param originalImages
+     */
+    public void setOriginalImages(ArrayList<ItemImage> originalImages) {
+        this.originalImages = originalImages;
+    }
 }
