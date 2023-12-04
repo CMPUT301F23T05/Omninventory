@@ -653,7 +653,7 @@ public class InventoryRepository {
      * @param adapter the adapter to contain the tags
      * @return a snapshot listener for the collection that will automatically update the adapter
      */
-    public ListenerRegistration setupTagList(TagAdapter adapter) {
+    public ListenerRegistration setupTagList(TagAdapter adapter, User currentUser) {
         // set up listener
         ListenerRegistration registration = tagsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
@@ -666,9 +666,11 @@ public class InventoryRepository {
                     adapter.clear(); // clear existing list data
                     for (QueryDocumentSnapshot doc : snapshot) {
                         // get each item returned by query and add to adapter
-                        Tag tag = convertDocumentToTag(doc);
-                        tagDict.put(tag.getId(), tag);
-                        adapter.add(tag);
+                        if (currentUser.getUsername().equals(doc.getString("owner"))) {
+                            Tag tag = convertDocumentToTag(doc);
+                            tagDict.put(tag.getId(), tag);
+                            adapter.add(tag);
+                        }
                     }
                     adapter.sort(Comparator.reverseOrder());
                     adapter.notifyDataSetChanged();
