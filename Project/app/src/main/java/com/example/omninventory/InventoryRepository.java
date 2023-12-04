@@ -738,6 +738,40 @@ public class InventoryRepository {
         return registration;
     }
 
+    public ListenerRegistration setupTagListsForItem(TagAdapter appliedAdapter, TagAdapter unappliedAdapter, User currentUser, InventoryItem item) {
+        // set up listener
+        ListenerRegistration registration = tagsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.d("TagRepository", error.toString());
+                    return;
+                }
+                if (snapshot != null) {
+                    appliedAdapter.clear(); // clear existing list data
+                    unappliedAdapter.clear();
+                    for (QueryDocumentSnapshot doc : snapshot) {
+                        // get each item returned by query and add to adapter
+                        if (currentUser.getUsername().equals(doc.getString("owner"))) {
+                            Tag tag = convertDocumentToTag(doc);
+                            tagDict.put(tag.getId(), tag);
+                            if (item.getTagIds().contains(doc.getString("tags"))) {
+                                appliedAdapter.add(tag);
+                            } else {
+                                unappliedAdapter.add(tag);
+                            }
+                        }
+                    }
+                    appliedAdapter.sort(Comparator.reverseOrder());
+                    unappliedAdapter.sort(Comparator.reverseOrder());
+                    appliedAdapter.notifyDataSetChanged();
+                    unappliedAdapter.notifyDataSetChanged();
+                }
+            }
+        });
+        return registration;
+    }
+
     /**
      * Apply a list of tags to a list of items, correctly populating the fields of both so they
      * reference each other.

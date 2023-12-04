@@ -92,17 +92,10 @@ public class ApplyTagsActivity extends AppCompatActivity  {
         appliedTagsListAdapter = new TagAdapter(this, appliedTagsListData);
         unappliedTagsListAdapter = new TagAdapter(this, unappliedTagsListData);
 
-        ListenerRegistration registration = repo.setupTagList(unappliedTagsListAdapter, currentUser);
+        ListenerRegistration registration = repo.setupTagListsForItem(appliedTagsListAdapter, unappliedTagsListAdapter, currentUser, selectedItems.get(0));
 
         appliedTagsList.setAdapter(appliedTagsListAdapter);
         unappliedTagsList.setAdapter(unappliedTagsListAdapter);
-
-        if (selectedItems.size() == 1) {
-            selectedItems.get(0).getTags().forEach(tag -> {
-                appliedTagsListAdapter.add(tag);
-                unappliedTagsListAdapter.remove(tag);
-            });
-        }
 
         // === set up click actions
 
