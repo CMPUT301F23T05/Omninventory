@@ -36,8 +36,16 @@ import java.util.Arrays;
 @LargeTest
 public class TestDeleteItemActivity {
 
+    @Rule
+    public ActivityScenarioRule<MainActivity> scenario = new
+            ActivityScenarioRule<MainActivity>(MainActivity.class);
+
     TestItems testItems = new TestItems();
 
+    /**
+     * Setup for delete test
+     * @author Kevin
+     */
     @Before
     public void setup() {
 
@@ -52,12 +60,9 @@ public class TestDeleteItemActivity {
         testItems.sleepProblemsAway(1000);
     }
 
-    @Rule
-    public ActivityScenarioRule<MainActivity> scenario = new
-            ActivityScenarioRule<MainActivity>(MainActivity.class);
-
     /**
      * Base test case for deleting item from database
+     * @author Kevin
      */
     @Test
     public void testDeleteItem(){
@@ -84,6 +89,7 @@ public class TestDeleteItemActivity {
 
     /**
      * Test cases for deleting multiple items at once
+     * @author Kevin
      */
     @Test
     public void testDeleteMultipleItem(){

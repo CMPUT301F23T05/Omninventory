@@ -40,6 +40,10 @@ public class TestFilterItemActivity {
 
     TestItems testItems = new TestItems();
 
+    /**
+     * Setup for Filter item
+     * @author Kevin
+     */
     @Before
     public void setup() {
         testItems.sleepProblemsAway(1000);
@@ -55,14 +59,23 @@ public class TestFilterItemActivity {
         testItems.generateTestItems();
     }
 
+    /**
+     * Cleanup for Filter item
+     * @author Kevin
+     */
     @After
     public void cleanup(){
         testItems.sleepProblemsAway(500);
         testItems.wipeTestItems();
     }
 
+    /**
+     * test Filter by make
+     * @author Kevin
+     */
     @Test
     public void testFilterByMake(){
+
         //add data to test items
         onView(withText("TestItem1"))
                 .perform(scrollTo())
@@ -112,6 +125,10 @@ public class TestFilterItemActivity {
 
     }
 
+    /**
+     * test Filter by date
+     * @author Kevin
+     */
     @Test
     public void testFilterByDate(){
 
@@ -198,6 +215,10 @@ public class TestFilterItemActivity {
         onView(withId(R.id.back_button)).perform(click());
     }
 
+    /**
+     * test Filter by description
+     * @author Kevin
+     */
     @Test
     public void testFilterByDescription(){
         //add data to test items
@@ -246,16 +267,6 @@ public class TestFilterItemActivity {
         onView(withId(R.id.sort_filter_button)).perform(click());
         onView(withId(R.id.add_description_filter_button)).perform(click());
         onView(withId(R.id.back_button)).perform(click());
-    }
-
-
-    public void testFilterByTags(){
-        testItems.generateTestItems();
-        //From the inventory screen, select the sort/filter button
-        //Select the filter by tags button
-        //Select a set of tags to be filtered by
-        //validate the items are filtered by tags selected.
-        testItems.wipeTestItems();
     }
 
 }

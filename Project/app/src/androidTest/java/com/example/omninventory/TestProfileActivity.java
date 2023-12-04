@@ -37,6 +37,10 @@ public class TestProfileActivity {
 
     TestItems testItems = new TestItems();
 
+    /**
+     * Setup for deleteitem test
+     * @author Kevin
+     */
     @Before
     public void setUp(){
         testItems.sleepProblemsAway(1000);

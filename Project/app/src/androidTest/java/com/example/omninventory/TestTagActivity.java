@@ -41,6 +41,10 @@ public class TestTagActivity {
     public ActivityScenarioRule<MainActivity> scenario = new
             ActivityScenarioRule<MainActivity>(MainActivity.class);
 
+    /**
+     * setup for tag test
+     * @author Kevin
+     */
     @Before
     public void setup() {
         testItems.sleepProblemsAway(1000);
@@ -54,6 +58,10 @@ public class TestTagActivity {
         testItems.sleepProblemsAway(1000);
     }
 
+    /**
+     * test create and delete tag
+     * @author Kevin
+     */
     @Test
     public void testCreateAndDeleteTag(){
         //From inventory screen select tags button
@@ -80,6 +88,10 @@ public class TestTagActivity {
 
     }
 
+    /**
+     * Test cancel adding tag
+     * @author Kevin
+     */
     @Test
     public void testAddTagCancel(){
         //From inventory screen select tags button
@@ -98,6 +110,10 @@ public class TestTagActivity {
         onView(withText("CancelTag")).check(doesNotExist());
     }
 
+    /**
+     * test deleting multiple tags
+     * @author kevin
+     */
     @Test
     public void testDeleteMultipleTags(){
         //From inventory screen select tags button

@@ -13,6 +13,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.allOf;
 
 import android.widget.DatePicker;
@@ -42,9 +43,14 @@ public class TestEditItemActivity {
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new
             ActivityScenarioRule<MainActivity>(MainActivity.class);
-    TestItems testItems = new TestItems();
-    boolean singleItem = false;
 
+    TestItems testItems = new TestItems(); //util for tests
+    boolean singleItem = false; //bool for clean up
+
+    /**
+     * Setup for edit item
+     * @Author kevin
+     */
     @Before
     public void setup() {
 
@@ -59,6 +65,10 @@ public class TestEditItemActivity {
         testItems.sleepProblemsAway(2000);
     }
 
+    /**
+     * Clean up for edititem
+     * @author Kevin
+     */
     @After
     public void cleanup(){
         if(singleItem){
@@ -70,6 +80,7 @@ public class TestEditItemActivity {
 
     /**
      * Test case for base level edit item (only description)
+     * @author Kevin
      */
     @Test
     public void testEditItemBase(){
@@ -104,6 +115,10 @@ public class TestEditItemActivity {
 
     }
 
+    /**
+     * Test case for editing multiple fields of item
+     * @author Kevin
+     */
     @Test
     public void testEditItemMultipleField(){
         testItems.generateOneTestItems();
@@ -175,6 +190,7 @@ public class TestEditItemActivity {
 
     /**
      * Can edit an item with tag now
+     * @author Kevin
      */
     @Test
     public void testEditItemWithTag(){
@@ -209,6 +225,28 @@ public class TestEditItemActivity {
 
         testItems.sleepProblemsAway(1000);
 
+        //click the edit button
+        onView(allOf(withId(R.id.edit_button), isDisplayed()))
+                .perform(click());
+
+        //in the edit item screen, click on the edit tag
+        onView(withId(R.id.item_tags_button)).perform(click());
+
+        onView(withText("important"))
+                .perform(scrollTo())
+                .check(matches(isDisplayed()))
+                .perform(click());
+
+        onView(withId(R.id.confirm_tags_button)).perform(click());
+
+        onView(withId(R.id.save_button)).perform(click());
+
+        testItems.sleepProblemsAway(1000);
+
+        // Now check if the TextView contains the expected tag
+        onView(withId(R.id.item_tags_text))
+                .check(matches(not(withText(containsString("#important")))));
+
         onView(withId(R.id.back_button)).perform(click());
 
         //apply the changes
@@ -217,9 +255,10 @@ public class TestEditItemActivity {
 
 
     /**
-     * Not yet implemented
+     * Test case for adding tags to multiple items
+     * @author Kevin
      */
-    //@Test
+    @Test
     public void testEditMultipleItemWithTags(){
         testItems.generateTestItems();
         singleItem = false;
@@ -250,7 +289,7 @@ public class TestEditItemActivity {
 
         onView(withId(R.id.confirm_tags_button)).perform(click());
 
-        testItems.sleepProblemsAway(2000);
+        testItems.sleepProblemsAway(1000);
 
         //validate tags exist
         onView(withText("TestItem1"))
@@ -292,26 +331,6 @@ public class TestEditItemActivity {
 
         onView(withId(R.id.back_button)).perform(click());
 
-        //remove common tags from item
-
-        /**
-        onView(withText("TestItem1"))
-                .perform(scrollTo())
-                .perform(longClick());
-        onView(withText("TestItem2"))
-                .perform(scrollTo())
-                .perform(longClick());
-        onView(withText("TestItem2"))
-                .perform(scrollTo())
-                .perform(longClick());
-
-        //click tags
-        onView(withId(R.id.tag_button)).perform(click());
-         */
-
-
-        //apply the changes
-        //validate from the inventory screen that the item's tags are changed.
     }
 
 }
