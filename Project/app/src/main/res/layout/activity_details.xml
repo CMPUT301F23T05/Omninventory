@@ -13,6 +13,7 @@
     <include layout="@layout/title_bar"/>
 
     <ScrollView
+        android:id="@+id/act_details_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
@@ -22,13 +23,13 @@
             android:layout_height="wrap_content"
             android:padding="10dp">
 
-    <!--        halfway guideline -->
+            <!--        halfway guideline -->
             <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/half_guideline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/half_guideline"
-                app:layout_constraintGuide_percent="0.5"
-                android:orientation="vertical"/>
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.5" />
 
             <TextView
                 android:id="@+id/item_name_head"
@@ -83,62 +84,70 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/item_comment_head" />
 
-            <TextView style="@style/gray_text"
+            <TextView
                 android:id="@+id/item_make_head"
-                android:text="@string/item_make_head"
+                style="@style/gray_text"
                 android:layout_marginTop="10dp"
-                app:layout_constraintStart_toStartOf="parent"
+                android:text="@string/item_make_head"
                 app:layout_constraintEnd_toStartOf="@+id/half_guideline"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/item_comment_text" />
 
-            <TextView style="@style/gray_text"
+            <TextView
                 android:id="@+id/item_model_head"
+                style="@style/gray_text"
                 android:text="@string/item_model_head"
-                app:layout_constraintStart_toEndOf="@+id/half_guideline"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/half_guideline"
                 app:layout_constraintTop_toTopOf="@+id/item_make_head" />
 
-            <TextView style="@style/item_details_text"
+            <TextView
                 android:id="@+id/item_make_text"
+                style="@style/item_details_text"
                 android:text="@string/item_make_placeholder"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/half_guideline"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/item_make_head" />
 
-            <TextView style="@style/item_details_text"
+            <TextView
                 android:id="@+id/item_model_text"
+                style="@style/item_details_text"
                 android:text="@string/item_model_placeholder"
-                app:layout_constraintStart_toEndOf="@+id/half_guideline"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/half_guideline"
                 app:layout_constraintTop_toTopOf="@+id/item_make_text" />
 
-            <TextView style="@style/gray_text"
+            <TextView
                 android:id="@+id/item_serial_head"
-                android:text="@string/item_serial_head"
+                style="@style/gray_text"
                 android:layout_marginTop="10dp"
-                app:layout_constraintStart_toStartOf="parent"
+                android:text="@string/item_serial_head"
                 app:layout_constraintEnd_toStartOf="@+id/half_guideline"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/item_make_text" />
 
-            <TextView style="@style/gray_text"
+            <TextView
                 android:id="@+id/item_value_head"
+                style="@style/gray_text"
                 android:text="@string/item_value_head"
-                app:layout_constraintStart_toEndOf="@+id/half_guideline"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/half_guideline"
                 app:layout_constraintTop_toTopOf="@+id/item_serial_head" />
 
-            <TextView style="@style/item_details_text"
+            <TextView
                 android:id="@+id/item_serial_text"
+                style="@style/item_details_text"
                 android:text="@string/item_serial_placeholder"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/half_guideline"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/item_serial_head" />
 
-            <TextView style="@style/item_details_text"
+            <TextView
                 android:id="@+id/item_value_text"
+                style="@style/item_details_text"
                 android:text="@string/item_value_placeholder"
-                app:layout_constraintStart_toEndOf="@+id/half_guideline"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/half_guideline"
                 app:layout_constraintTop_toTopOf="@+id/item_serial_text" />
 
             <TextView
@@ -151,11 +160,12 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/item_serial_text" />
 
-            <TextView style="@style/item_details_text"
+            <TextView
                 android:id="@+id/item_date_text"
+                style="@style/item_details_text"
                 android:text="@string/item_date_placeholder"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/half_guideline"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/item_date_head" />
 
             <TextView
@@ -167,39 +177,40 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/item_date_text" />
 
-            <TextView style="@style/item_details_text"
+            <TextView
                 android:id="@+id/item_tags_text"
+                style="@style/item_details_text"
                 android:text="@string/item_tags_placeholder"
-                app:layout_constraintTop_toBottomOf="@+id/item_tags_head"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                app:layout_constraintTop_toBottomOf="@+id/item_tags_head" />
 
             <TextView
-                android:id="@+id/item_images_head"
+                android:id="@+id/item_images_head_date"
                 style="@style/gray_text"
                 android:layout_marginTop="10dp"
                 android:text="@string/item_text_head"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/item_tags_text"/>
+                app:layout_constraintTop_toBottomOf="@+id/item_tags_text" />
 
-        <LinearLayout
-            android:id="@+id/item_images_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/item_images_head"
-            android:orientation="vertical">
-
-            <ImageView
+            <LinearLayout
+                android:id="@+id/item_images_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_launcher_background" />
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/item_images_head_date">
 
-            <ImageView
+                <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/sort_64"/>
-        </LinearLayout>
+                    android:src="@drawable/ic_launcher_background" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/sort_64" />
+            </LinearLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
