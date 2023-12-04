@@ -3,9 +3,11 @@ package com.example.omninventory;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.longClick;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.swipeUp;
+import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -28,6 +30,7 @@ import androidx.test.filters.LargeTest;
 
 import org.hamcrest.Matchers;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,6 +51,14 @@ public class TestAddItemActivity {
     /**
      * PLEASE ONLY USE "AddItemTest" as the name for testing item.
      */
+    @Before
+    public void setup() {
+        onView(withId(R.id.login_username_edit_text)).perform(typeText("Tester"));
+        onView(withId(R.id.login_password_edit_text))
+                .perform(typeText("Hahaha123!"), closeSoftKeyboard());
+        onView(withId(R.id.login_btn)).perform(click());
+    }
+
 
     /**
      * Clean up for the item added during test
