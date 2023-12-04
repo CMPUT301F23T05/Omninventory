@@ -58,6 +58,8 @@
     <string name="date_filter_button_text">Add Date Filter</string>
     <string name="description_filter_button_text">Add Description Filter</string>
     <string name="filter_by_tags_button_text">Filter By Tags</string>
+    <string name="tag_filter_dialog_header">Filter By Tags</string>
+    <string name="tag_filter_dialog_button">Apply</string>
 
     <string-array name="sort_dropdown_options">
         <item>None</item>

@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
     private ItemDate filterStartDate;
     private ItemDate filterEndDate;
     private String filterDescription;
+    private ArrayList<Tag> filterTags;
     private User currentUser;
     private ListView itemList;
     private TextView titleText;
@@ -141,6 +142,9 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
             if (intent.getStringExtra("filterDescription") != null) {
                 filterDescription = intent.getStringExtra("filterDescription");
             }
+            if (intent.getSerializableExtra("filterTags") != null) {
+                filterTags = (ArrayList<Tag>) intent.getSerializableExtra("filterTags");
+            }
         }
 
         // ============== DATABASE SETUP ================
@@ -185,6 +189,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
             sortFilterIntent.putExtra("filterStartDate", filterStartDate);
             sortFilterIntent.putExtra("filterEndDate", filterEndDate);
             sortFilterIntent.putExtra("filterDescription", filterDescription);
+            sortFilterIntent.putExtra("filterTags", filterTags);
             MainActivity.this.startActivity(sortFilterIntent);
         });
 
@@ -368,6 +373,9 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         }
         if (filterDescription != null) {
             SortFilterActivity.applyDescriptionFilter(filterDescription, itemListAdapter);
+        }
+        if (filterTags != null) {
+            SortFilterActivity.applyTagsFilter(filterTags, itemListAdapter);
         }
     }
 
