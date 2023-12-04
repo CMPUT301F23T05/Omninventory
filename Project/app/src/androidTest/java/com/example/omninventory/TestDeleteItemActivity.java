@@ -40,12 +40,8 @@ public class TestDeleteItemActivity {
 
     @Before
     public void setup() {
-        try { //allow app to start
-            Thread.sleep(1000); // Sleep for 1 second
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return;
-        }
+
+        testItems.sleepProblemsAway(1000);
 
         onView(withId(R.id.login_username_edit_text)).perform(typeText("Tester"));
         onView(withId(R.id.login_password_edit_text))
@@ -53,12 +49,7 @@ public class TestDeleteItemActivity {
         onView(withId(R.id.login_btn)).perform(click());
 
         //allow app to load in time
-        try {
-            Thread.sleep(2000); // Sleep for 1 second
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return;
-        }
+        testItems.sleepProblemsAway(1000);
     }
 
     @Rule
@@ -108,12 +99,7 @@ public class TestDeleteItemActivity {
         onView(withId(R.id.delete_dialog_button)).perform(click());
 
         //stall is required to update the database properly
-        try {
-            Thread.sleep(2000); // Sleep for 1 second
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return;
-        }
+        testItems.sleepProblemsAway(2000);
 
         //validate the items are deleted.
         //todo: change to check for not displayed
