@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
 
     private InventoryRepository repo;
     private ArrayList<InventoryItem> itemListData;
-    private ArrayList<InventoryItem> completeItemList;
     private InventoryItemAdapter itemListAdapter;
     SharedPreferences sharedPrefs;
     private String sortBy;
@@ -75,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         setContentView(R.layout.activity_main);
 
         // TODO: this is testing code, replace when merged with Rose's code
-        currentUser = new User("erika", "erikausername", "password", new ArrayList<String>());
+        currentUser = new User("Erika", "erika", "password", new ArrayList<String>());
 
         selectedItems = new ArrayList<>();
 
@@ -121,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         if (intent != null) {
             if (intent.getSerializableExtra("itemListData") != null) {
                 itemListData = (ArrayList<InventoryItem>) intent.getSerializableExtra("itemListData");
-                completeItemList = (ArrayList<InventoryItem>) itemListData.clone();
+//                completeItemList = (ArrayList<InventoryItem>) itemListData.clone();
             }
             if (intent.getStringExtra("sortBy") != null) {
                 sortBy = intent.getStringExtra("sortBy");

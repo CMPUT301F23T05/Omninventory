@@ -44,7 +44,8 @@ dependencies {
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.github.yuriy-budiyev:code-scanner:2.3.2")
     compileOnly(files("${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"))
-
+    implementation("com.google.firebase:firebase-storage")
+    implementation ("com.squareup.picasso:picasso:2.8")
     androidTestImplementation("androidx.test.espresso:espresso-contrib:3.4.0") {
         exclude(group = "com.google.code.findbugs")
         exclude(group = "com.google.guava", module = "guava")
