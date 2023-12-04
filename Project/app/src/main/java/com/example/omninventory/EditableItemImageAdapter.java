@@ -31,7 +31,7 @@ public class EditableItemImageAdapter extends ItemImageAdapter {
      * Subclasses ItemImageAdapter.ViewHolder to add a getter for the delete button.
      */
     public static class ViewHolder extends ItemImageAdapter.ViewHolder {
-        ImageButton imageDeleteButton;
+        private ImageButton imageDeleteButton;
 
         /**
          * Constructor that (in addition to parent behaviour) gets the delete button ImageButton.
