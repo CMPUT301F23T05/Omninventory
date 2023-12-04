@@ -176,7 +176,7 @@ public class TestEditItemActivity {
     /**
      * Can edit an item with tag now
      */
-    //@Test
+    @Test
     public void testEditItemWithTag(){
         testItems.generateOneTestItems();
         singleItem = true;
@@ -201,13 +201,13 @@ public class TestEditItemActivity {
 
         onView(withId(R.id.save_button)).perform(click());
 
-        testItems.sleepProblemsAway(2000);
+        testItems.sleepProblemsAway(1000);
 
         // Now check if the TextView contains the expected tag
         onView(withId(R.id.item_tags_text))
                 .check(matches(withText(containsString("#important"))));
 
-        testItems.sleepProblemsAway(2000);
+        testItems.sleepProblemsAway(1000);
 
         onView(withId(R.id.back_button)).perform(click());
 
