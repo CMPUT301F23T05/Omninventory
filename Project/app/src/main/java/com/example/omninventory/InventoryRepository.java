@@ -299,22 +299,8 @@ public class InventoryRepository {
         DocumentReference currentUserRef = usersRef.document(currentUser.getUsername());
         // remove item from user's ownedItems in users collection
         currentUserRef.update("ownedItems", FieldValue.arrayRemove(itemId));
+        Log.w("deleteInventoryItem", "Deleting: " + itemId);
         // remove from inventoryItems collection
-        usersRef.document(itemId)
-                .delete()
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "DocumentSnapshot successfully deleted!");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(TAG, "Error deleting document", e);
-                    }
-                });
-
         inventoryItemsRef.document(itemId)
                 .delete()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {

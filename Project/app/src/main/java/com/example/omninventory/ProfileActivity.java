@@ -91,6 +91,7 @@ public class ProfileActivity extends AppCompatActivity {
         changeNameDialog.setCancelable(false);
         changeNameDialog.setContentView(R.layout.change_name_dialog);
         Log.d("ProfileActivity", "creating dialog for name changing");
+
         // UI Elements
         EditText newNameEditText = changeNameDialog.findViewById(R.id.change_name_editText);
         Button okDialogButton = changeNameDialog.findViewById(R.id.ok_dialog_button);

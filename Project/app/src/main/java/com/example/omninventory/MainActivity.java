@@ -185,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
             sortFilterIntent.putExtra("filterStartDate", filterStartDate);
             sortFilterIntent.putExtra("filterEndDate", filterEndDate);
             sortFilterIntent.putExtra("filterDescription", filterDescription);
+            sortFilterIntent.putExtra("user", currentUser);
             MainActivity.this.startActivity(sortFilterIntent);
         });
 
