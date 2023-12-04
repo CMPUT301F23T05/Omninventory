@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.Rect;
 import android.media.Image;
 import android.os.Bundle;
 import android.os.Looper;
@@ -53,6 +55,8 @@ public class SerialNoScanningActivity extends AppCompatActivity {
     private ExecutorService cameraExecutor;
     private TextView parsedSerialNoText;
     private String scannedText;
+    private View scanningBox;
+    private PreviewView previewView;
 
     /**
      * Method to dynamically request camera permissions for the barcode scanner
@@ -82,7 +86,7 @@ public class SerialNoScanningActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_serial_no_scanning);
 
-        PreviewView previewView = findViewById(R.id.preview_view);
+        previewView = findViewById(R.id.preview_view);
 
         // Dynamically request camera permissions
         checkCameraPermissions(this);
@@ -112,6 +116,7 @@ public class SerialNoScanningActivity extends AppCompatActivity {
         });
 
         parsedSerialNoText = findViewById(R.id.parsed_serialno_text);
+        scanningBox = findViewById(R.id.center_box);
 
         startCamera(previewView);
     }
@@ -149,8 +154,10 @@ public class SerialNoScanningActivity extends AppCompatActivity {
                         .addOnSuccessListener(result -> {
                             List<Text.TextBlock> blocks = result.getTextBlocks();
                             for (Text.TextBlock block : blocks) {
-                                String text = block.getText();
-                                handleScan(text);
+                                if (textInBox(block.getBoundingBox(), image.getWidth(), image.getHeight())) {
+                                    String text = block.getText();
+                                    handleScan(text);
+                                }
                             }
                         })
                         .addOnFailureListener(e -> {
@@ -162,20 +169,37 @@ public class SerialNoScanningActivity extends AppCompatActivity {
     }
 
     private void handleScan(String text) {
-        try{
-            Handler handler = new Handler(Looper.getMainLooper());
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    String displayText = "Parsed Serial Number: " + text;
-                    parsedSerialNoText.setText(displayText);
-                    scannedText = text;
-                }
-            });
+        if (text.length() >= 6 && text.matches("[a-zA-Z0-9]*")) {
+            try {
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        String displayText = "Parsed Serial Number: " + text;
+                        parsedSerialNoText.setText(displayText);
+                        scannedText = text;
+                    }
+                });
+            } catch (Exception e) {
+                Toast.makeText(SerialNoScanningActivity.this,
+                        "Could not parse serial number", Toast.LENGTH_LONG).show();
+            }
         }
-        catch (Exception e){
-            Toast.makeText(SerialNoScanningActivity.this,
-                    "Could not parse serial number", Toast.LENGTH_LONG).show();
-        }
+    }
+
+    private boolean textInBox(Rect textBounds, float imageWidth, float imageHeight) {
+        float widthScale = imageWidth/previewView.getWidth();
+        float heightScale = imageHeight/previewView.getHeight();
+
+        int verticalCenter = (textBounds.left + textBounds.right)/2;
+        int horizontalCenter = (textBounds.bottom + textBounds.top)/2;
+
+        float scanningBoxLeft = scanningBox.getLeft() * widthScale;
+        float scanningBoxRight = scanningBox.getRight() * widthScale;
+        float scanningBoxTop = scanningBox.getTop() * heightScale;
+        float scanningBoxBottom = scanningBox.getBottom() * heightScale;
+
+        return verticalCenter > scanningBoxLeft && verticalCenter < scanningBoxRight
+                && horizontalCenter < scanningBoxBottom && horizontalCenter > scanningBoxTop;
     }
 }
