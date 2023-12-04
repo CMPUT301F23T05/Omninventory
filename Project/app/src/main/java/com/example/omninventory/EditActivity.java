@@ -72,8 +72,9 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
             @Override
             public void onActivityResult(ActivityResult result) {
                 // Get the tagged item back from ApplyTagsActivity and repopulate fields
-                currentItem = (InventoryItem) result.getData().getExtras().get("taggedItem");
-                setFields(currentItem);
+                InventoryItem returnedItem = (InventoryItem) result.getData().getExtras().get("taggedItem");
+                currentItem.setTags(returnedItem.getTags());
+                itemTagsText.setText(currentItem.getTagsString());
             }
         });
 
