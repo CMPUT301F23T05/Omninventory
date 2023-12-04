@@ -13,7 +13,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@color/gray_background"
+        android:background="?colorSurface"
         android:orientation="vertical">
 
         <LinearLayout
@@ -32,12 +32,13 @@
 
                 <ImageButton
                     android:id="@+id/profile_picture"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:background="@color/gray_background"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="?colorSurface"
                     android:contentDescription="@string/profile_picture"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/profile_128" />
+                    android:scaleType="fitXY"
+                    android:padding="2dp"
+                    android:src="@drawable/omninventory_logo" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -51,7 +52,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginRight="5dp"
                         android:text="@string/full_name"
-                        android:textColor="@color/black"
+                        android:textColor="?colorOnSurface"
                         android:textSize="30sp"
                         android:textStyle="bold" />
 
@@ -61,7 +62,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginRight="5dp"
                         android:text="@string/username"
-                        android:textColor="@color/gray_text"
+                        android:textColor="?colorOnSurface"
                         android:textSize="20sp" />
 
                 </LinearLayout>
@@ -90,10 +91,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
+                android:layout_marginTop="14dp"
                 android:clickable="true"
                 android:paddingLeft="5dp"
                 android:text="Change name"
-                android:textColor="@color/black"
+                android:textColor="?colorOnSurface"
                 android:textSize="20sp" />
 
             <View
@@ -101,7 +103,7 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:background="@color/gray_banner" />
+                android:background="?colorPrimary" />
 
             <TextView
                 android:id="@+id/change_password_btn"
@@ -111,7 +113,7 @@
                 android:clickable="true"
                 android:paddingLeft="5dp"
                 android:text="Change password"
-                android:textColor="@color/black"
+                android:textColor="?colorOnSurface"
                 android:textSize="20sp" />
 
             <View
@@ -119,7 +121,7 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:background="@color/gray_banner" />
+                android:background="?colorPrimary" />
 
             <TextView
                 android:id="@+id/logout_btn"
@@ -129,7 +131,7 @@
                 android:clickable="true"
                 android:paddingLeft="5dp"
                 android:text="Log out"
-                android:textColor="@color/red"
+                android:textColor="?colorPrimary"
                 android:textSize="20sp" />
 
             <View
@@ -137,7 +139,7 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:background="@color/gray_banner" />
+                android:background="?colorPrimary" />
 
         </LinearLayout>
         <include layout="@layout/taskbar_profile"/>

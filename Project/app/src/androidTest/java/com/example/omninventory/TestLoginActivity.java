@@ -43,7 +43,6 @@ public class TestLoginActivity {
      * IMPORTANT: User needs to be deleted from database before running this test case
      * IMPORTANT: Incomplete test case (since functionality is not complete yet)
      */
-    @Test
     public void testSignup(){
         //From login screen, sign up for a new account
 
@@ -61,7 +60,6 @@ public class TestLoginActivity {
         //todo: this is not yet implemented, update when implemented
     }
 
-    @Test
     public void testLogin(){
         //From login screen, login to a already existing user
         //validate in user profile is the account just logged in
@@ -71,13 +69,12 @@ public class TestLoginActivity {
         //From login screen go to sign up screen, go back to login screen
     }
 
-    @Test
     public void testInvalidLogin(){
         //Try to login with invalid user information
         //Check for some kind of error message display
     }
 
-    @Test
+
     public void testInvalidSignup(){
         //Try to signup with invalid or not enough information
         //check that some kind of error message should display

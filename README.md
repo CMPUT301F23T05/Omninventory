@@ -21,7 +21,16 @@ Patrick Harvey | psharvey | PatchyH
 Zachary Schmidt | zschmidt | ZacharySchmidt0
 
 
-## Running FAQ
+## Other Information
+
+### Image Credits
+
+> Iconset: [Zondicons](https://www.iconfinder.com/iconsets/zondicons) \
+> Author: Steve Schoger \
+> License: [Creative Commons (Attribution 3.0 Unported)](http://creativecommons.org/licenses/by/3.0/) \
+> Download date: 2023-12-03
+
+### Running Issues
 
 If you are running the app on an emulator attempt to open the camera to take an image, scan a barcode, or read a serial number, you may see this funny little guy instead of your actual webcam feed.
 
@@ -33,3 +42,13 @@ This is Android's default emulated webcam feed. It is possible to change it to y
 3. Click 'Show Advanced Settings'
 4. Change the front and/or back cameras (whichever you are using) to 'Webcam' instead of 'Emulated'
 5. Restart your emulator and relaunch the app.
+
+
+## Testing FAQ
+Tests will only run when done through the android emulator. They will most likely fail of passed on to a physical device due to an unexplainable time that it takes for phone to load up certain views being slower than the tests itself. (There is no hard fix for this problem)
+
+If a test happens to fail, it may cause a series of tests following it to fail due to best practices of automating test cases. :(
+To avoid this, when a test and its following test fails Log in to the Tester account. 
+
+Tester Id:Tester
+Tester password: Hahah123!
