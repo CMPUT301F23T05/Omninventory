@@ -1,0 +1,1535 @@
+commit 45c7f3d217e2fa250bbd93828dd47ca10869e521
+Merge: 4f8982f 946d210
+Author: arongu321 <67613556+arongu321@users.noreply.github.com>
+Date:   Sun Dec 3 21:54:05 2023 -0700
+
+    Merge pull request #79 from CMPUT301F23T05/revert-78-dev_rose
+    
+    Revert 78 dev rose
+
+commit 946d2108ab40618de59cb32aa95578edfecb0b8d
+Author: arongu321 <67613556+arongu321@users.noreply.github.com>
+Date:   Sun Dec 3 21:52:51 2023 -0700
+
+    Revert "Dev rose"
+
+commit eea799da327d1d025d39a496c929e6ea44e62592
+Merge: 13ca586 39bc880
+Author: arongu321 <67613556+arongu321@users.noreply.github.com>
+Date:   Sun Dec 3 21:52:11 2023 -0700
+
+    Merge pull request #78 from CMPUT301F23T05/dev_rose
+    
+    Dev rose
+
+commit 39bc880952ed32a12b7ec1386ec2b779d9daa020
+Merge: 87bf2ea 4f8982f
+Author: nlhn <nlnguyen@ualberta.ca>
+Date:   Sun Dec 3 21:32:20 2023 -0700
+
+    Merge branch 'dev' of github.com:CMPUT301F23T05/Omninventory into dev_rose
+
+commit 87bf2ea25e025d853ea5f28225444e64314c1214
+Author: nlhn <nlnguyen@ualberta.ca>
+Date:   Sun Dec 3 21:30:41 2023 -0700
+
+    refactored login/signupActivity
+
+commit 4f8982f86bbe037d35ae8b2aafc23323e60c8fc5
+Merge: af5bde2 48c11e9
+Author: arongu321 <67613556+arongu321@users.noreply.github.com>
+Date:   Sun Dec 3 21:24:15 2023 -0700
+
+    Merge pull request #77 from CMPUT301F23T05/zachary
+    
+    Zachary
+
+commit 48c11e9bac53f03404a0c2cbac8527cb625812ff
+Merge: 4311896 af5bde2
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Sun Dec 3 21:13:26 2023 -0700
+
+    Merge remote-tracking branch 'origin/dev' into zachary
+
+commit af5bde2dbe3f3ad310b1b903e0e4fe7ef4a22481
+Merge: feb4a0a e2cd986
+Author: Kevin Huang <90703777+Kevin-was-here@users.noreply.github.com>
+Date:   Sun Dec 3 21:12:41 2023 -0700
+
+    Merge pull request #76 from CMPUT301F23T05/patrick
+    
+    Patrick
+
+commit 4311896f1dc8ddbdac3d037ba25d6a21ee57074c
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Sun Dec 3 21:10:50 2023 -0700
+
+    Tweaked sorting/filtering so intent passing current user stays logged in
+
+commit e2cd986f5e9c479146f796e094fdf67020cfc2dd
+Merge: 84afc6f feb4a0a
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Sun Dec 3 20:52:16 2023 -0700
+
+    Merge branch 'dev' into patrick
+    
+    # Conflicts:
+    #       Project/app/src/main/java/com/example/omninventory/InventoryItem.java
+    #       Project/app/src/main/java/com/example/omninventory/InventoryRepository.java
+    #       Project/app/src/main/java/com/example/omninventory/MainActivity.java
+    #       Project/app/src/main/res/layout/taskbar_apply_tags.xml
+    #       Project/app/src/main/res/layout/taskbar_manage_tags.xml
+
+commit 84afc6fe9f10cab2c99807a8d72e434512464ecf
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Sun Dec 3 20:39:23 2023 -0700
+
+    Added tag sort
+
+commit 21efab8d82e49d5197b025a93c3d07402b8b0ca5
+Merge: 5542a85 feb4a0a
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Sun Dec 3 20:26:50 2023 -0700
+
+    merged dev and added docstrings to SerialNoScanningActivity
+
+commit 9b97e16bd4a7591cfd99a6719c52658787f5e56e
+Merge: fb8c39f feb4a0a
+Author: nlhn <nlnguyen@ualberta.ca>
+Date:   Sun Dec 3 19:17:42 2023 -0700
+
+    Merge branch 'dev' of github.com:CMPUT301F23T05/Omninventory into dev_rose
+
+commit fb8c39fe95181d4c2c8146dfad7be11fbaee8721
+Author: nlhn <nlnguyen@ualberta.ca>
+Date:   Sun Dec 3 19:05:35 2023 -0700
+
+    debugged deleteInventoryItem
+
+commit 5542a8561dc906588c12b0fdd10c1d7b7c5c91c9
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Sun Dec 3 18:59:11 2023 -0700
+
+    Tweaks to serial number scanning
+
+commit feb4a0a6c0a9e6c21de583e2be0cdfc618f376b3
+Merge: 0ca1b84 48a81a6
+Author: Kevin Huang <90703777+Kevin-was-here@users.noreply.github.com>
+Date:   Sun Dec 3 18:52:54 2023 -0700
+
+    Merge pull request #74 from CMPUT301F23T05/castor
+    
+    Images
+
+commit 48a81a65814bfc616cae949f678c25296c9d3e33
+Merge: 3d58052 0ca1b84
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Dec 3 18:48:11 2023 -0700
+
+    fixed merge conflicts
+
+commit 13ca586e95a92f7cf600224dadea0349066c9836
+Merge: 8bad849 56b5bf2
+Author: Patrick Harvey <63984263+PatchyH@users.noreply.github.com>
+Date:   Sun Dec 3 18:44:25 2023 -0700
+
+    Merge pull request #73 from CMPUT301F23T05/patrick
+    
+    Patrick
+
+commit a1be4c27a9b8b5df0077f232af3ba6938b9e07c1
+Merge: 56b5bf2 0ca1b84
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Sun Dec 3 18:42:36 2023 -0700
+
+    Merge branch 'dev' into patrick
+    
+    # Conflicts:
+    #       Project/app/src/main/res/layout/activity_details.xml
+
+commit 3d58052786a5f685350553cbdfc7938982cd5dfc
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Dec 3 18:39:47 2023 -0700
+
+    finished cleaning up and documenting image code
+
+commit 56b5bf2052ff012b0e4029b6a30cb83f0aa0cce2
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Sun Dec 3 18:39:45 2023 -0700
+
+    Adjusted tags to work with multiple users (now by id instead of name)
+
+commit 02ad47318d92a6dc1cacd7e5a62207a9cb0e2b19
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Sun Dec 3 17:42:59 2023 -0700
+
+    Added cropping and regex matching for serial numbers to eliminate invalid options
+
+commit ae0530583633fafa7152636d01ec2d748133247f
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Dec 3 16:52:59 2023 -0700
+
+    more documentation
+
+commit 57bf5baa827de7430da05b2711e087f2bf52a54f
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Dec 3 16:44:08 2023 -0700
+
+    documentation, referencing, and cleanup for ItemImage and associated custom Adapters
+
+commit 0ca1b8474cf68d1483ce048a3eb4f7f62fbf079e
+Merge: 7034ec5 4c9eb8c
+Author: arongu321 <67613556+arongu321@users.noreply.github.com>
+Date:   Sun Dec 3 16:39:37 2023 -0700
+
+    Merge pull request #72 from CMPUT301F23T05/kevindev
+    
+    Date clicker + cleanup!!
+
+commit 4c9eb8c61ea0d72ecba0216669c41ac79e8dfa46
+Author: Kevin_was_here <xuyang4@ualberta.ca>
+Date:   Sun Dec 3 16:37:24 2023 -0700
+
+    Date clicker + cleanup!!
+
+commit 474837cf0cfb0b7dc4314870c67407822e390bbd
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Dec 3 16:18:40 2023 -0700
+
+    cleaned up EditActivity
+
+commit 88d7df181695ae2b005c8747ad08a94be32f8d3c
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Dec 3 15:38:33 2023 -0700
+
+    new icons, taskbar layout tweaks
+
+commit 7991a308e59f2dde7f42c9faefc56483a7e3e453
+Merge: f7a463b 7034ec5
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Sun Dec 3 15:23:55 2023 -0700
+
+    Merge remote-tracking branch 'origin/dev' into zachary
+
+commit 7034ec58bd12489365eb5557f1cb89805de1b44f
+Merge: 23abe1a 988a8cb
+Author: ZacharySchmidt0 <90704793+ZacharySchmidt0@users.noreply.github.com>
+Date:   Sun Dec 3 15:16:02 2023 -0700
+
+    Merge pull request #71 from CMPUT301F23T05/kevindev
+    
+    Kevindev
+
+commit f7a463baed2e69941c8a5ee43b1a1ada35f0b149
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Sun Dec 3 15:12:06 2023 -0700
+
+    Serial number scanning mostly working now
+
+commit 988a8cbb1db2ed967cbb47ed958f532b02f697b2
+Merge: 22929ea 23abe1a
+Author: Kevin_was_here <xuyang4@ualberta.ca>
+Date:   Sun Dec 3 14:17:37 2023 -0700
+
+    Merge remote-tracking branch 'origin/dev' into kevindev
+
+commit 22929eaf844c0a8ff35d153fcfa46e03cdef1d13
+Author: Kevin_was_here <xuyang4@ualberta.ca>
+Date:   Sun Dec 3 14:17:24 2023 -0700
+
+    tag add test complete, delete not implemented, cancel test complete
+
+commit e485a21d558bca2e100a9999e9f68309cfef55b0
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Sun Dec 3 13:50:51 2023 -0700
+
+    Able to use camera to parse serial number from image
+
+commit 868ad0a3072af295dd210f33d88946df7e59b1fa
+Author: Kevin_was_here <xuyang4@ualberta.ca>
+Date:   Sun Dec 3 12:28:46 2023 -0700
+
+    working add multiple tag
+
+commit 116b987721e3c3b2582517b3d12ce16101cf0466
+Merge: 0e16d6a 23abe1a
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Sun Dec 3 03:36:40 2023 -0700
+
+    Merge branch 'dev' into patrick
+    
+    # Conflicts:
+    #       Project/app/src/androidTest/java/com/example/omninventory/TestEditItemActivity.java
+
+commit 6fe21040f481467c6067f4dd0556d8d8fc2e71c8
+Author: Kevin_was_here <xuyang4@ualberta.ca>
+Date:   Sat Dec 2 23:15:51 2023 -0700
+
+    Not working edit multiple tag
+
+commit 447dee21c70273da9206f6710cb4f48506506cbb
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sat Dec 2 22:15:44 2023 -0700
+
+    fixed rotation issue
+
+commit 5c6496ab4c0f803f085e620cf5daef8ddd602583
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sat Dec 2 21:45:54 2023 -0700
+
+    partially fixed rotation issue
+
+commit 64430b4348640f29e940a2cef5d59abd47c5933e
+Author: kevin-was-here <code --wait>
+Date:   Sat Dec 2 21:22:02 2023 -0700
+
+    not working edititem
+
+commit c7bf1a7b7b3bbeb7b807f707373cc1bf68cfbd03
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sat Dec 2 20:48:47 2023 -0700
+
+    take image functional, but strange rotation bug
+
+commit e255e016ef5550c51cea54b4d419a6341d78d261
+Author: kevin-was-here <code --wait>
+Date:   Sat Dec 2 19:34:04 2023 -0700
+
+    Add tag test finally working!!
+
+commit 29de8b176d74b069f1ccabae3f24d6d6040c106c
+Author: kevin-was-here <code --wait>
+Date:   Sat Dec 2 19:16:46 2023 -0700
+
+    Add tag test no working still
+
+commit 28b42a30707094f6c41e80b870fb5ca16f787dd7
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sat Dec 2 18:28:51 2023 -0700
+
+    fixing bugs with RecyclerView resizing
+
+commit e02403059a6e28ad8f031cd5db1f1a67e8164f48
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sat Dec 2 17:59:06 2023 -0700
+
+    fixed issue with download failing for recent uploads, added custom NonScrollRecyclerView
+
+commit e0178ee78ec9d137c6de27bc85fac198c5d56522
+Author: kevin-was-here <code --wait>
+Date:   Sat Dec 2 17:36:14 2023 -0700
+
+    add multiple fields good
+
+commit f6c36b638e4a0c39ed6ef7d1d0f7be3545ed2c0b
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sat Dec 2 17:23:23 2023 -0700
+
+    steadily debugging image system
+
+commit a3dbd9dd81b5568cda2209981b1f6bd5245c36ce
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sat Dec 2 15:15:00 2023 -0700
+
+    adding image list to details page, debugging
+
+commit 29d22a5b8f26cb9b4598ea158ed71b31be80de61
+Author: kevin-was-here <code --wait>
+Date:   Sat Dec 2 14:48:17 2023 -0700
+
+    Add item many info not finished
+
+commit b34021b00d2ba50cc1813cbf89586226d33196ba
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sat Dec 2 14:12:44 2023 -0700
+
+    custom recyclerview and fiddling with layout to get image list working
+
+commit e276fa2bda85b07ee4d9b2319db1a2da25734e57
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sat Dec 2 12:51:49 2023 -0700
+
+    current progress on images; adding image works
+
+commit a48df0a8d5314cc4b149f27f8ad0925ae54b4012
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sat Dec 2 00:15:43 2023 -0700
+
+    partially-working code for uploading and deleting an image
+
+commit 23abe1aa67eb7b3d1310e0e7ff37d41697a5cd05
+Merge: 468e25c b49a253
+Author: arongu321 <67613556+arongu321@users.noreply.github.com>
+Date:   Fri Dec 1 12:09:21 2023 -0700
+
+    Merge pull request #70 from CMPUT301F23T05/aron
+    
+    Implemented barcode scanner to extract product information from barcode
+
+commit dd52dc03e68b9eecebda4db337f0dcfc8b605dd3
+Author: nlhn <nlnguyen@ualberta.ca>
+Date:   Fri Dec 1 08:32:52 2023 -0700
+
+    implemented profile/signup/loginactivity
+
+commit b49a253cea688aed3014d50ba840e6b6ec00a95a
+Author: agu12345 <agu1@ualberta.ca>
+Date:   Thu Nov 30 23:39:47 2023 -0700
+
+    Implemented barcode scanner to extract description and price of item from barcode
+
+commit 468e25ce8ca4d3b5d33cc827ebb554abc4313cf2
+Merge: 75e8874 dd2841d
+Author: Kevin Huang <90703777+Kevin-was-here@users.noreply.github.com>
+Date:   Thu Nov 30 18:26:08 2023 -0700
+
+    Merge pull request #69 from CMPUT301F23T05/aron
+    
+    Added camera to scan barcode(haven't tested if it actually scans barcode)
+
+commit dd2841dd930a2c758748c729b9a0cb4e8222b947
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Wed Nov 29 18:53:12 2023 -0700
+
+    Fixed camera permissions/access
+
+commit 75e8874ce9ddb503abd493cf72dc9273a83d8255
+Merge: 8bad849 b9129de
+Author: Castor Shem <c.shem@ualberta.ca>
+Date:   Wed Nov 29 17:12:15 2023 -0700
+
+    Merge pull request #68 from CMPUT301F23T05/kevindev
+    
+    Finally we've done it (test)
+
+commit b9129de8caf207bff38fde114315e03d3cd5ef85
+Author: kevin-was-here <code --wait>
+Date:   Wed Nov 29 17:05:25 2023 -0700
+
+    Finally we've done it
+
+commit a1ff162d647cce962dc3b3a7620fcbc2e4b4d11d
+Author: agu12345 <agu1@ualberta.ca>
+Date:   Mon Nov 27 16:29:32 2023 -0700
+
+    Added camera to scan barcode(haven't tested if it actually scans barcode)
+
+commit 8bad849ae8297ae1c3ed62c2eae175cb2c861858
+Merge: e6c66e7 c12a52c
+Author: Castor Shem <c.shem@ualberta.ca>
+Date:   Fri Nov 10 15:43:55 2023 -0700
+
+    Merge pull request #56 from CMPUT301F23T05/castor3
+    
+    Castor3
+
+commit c12a52c72e6b1c63218bb933e7e24723a9ec888c
+Author: Shem <castorsh3m@gmail.com>
+Date:   Fri Nov 10 15:42:47 2023 -0700
+
+    removed toast
+
+commit c23a5fadf2b563b7528488401e9b033d71a83dbb
+Author: Shem <castorsh3m@gmail.com>
+Date:   Fri Nov 10 15:40:29 2023 -0700
+
+    updated javadocs
+
+commit e6c66e77cdd01be912c2a01fd7a59a2fcdb18928
+Author: Shem <castorsh3m@gmail.com>
+Date:   Fri Nov 10 15:38:03 2023 -0700
+
+    Kevin's test cases
+
+commit 018fe012dc92cf5085ec45b49a342200a79cddf1
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Fri Nov 10 15:29:24 2023 -0700
+
+    Disabled profile button
+
+commit 0e16d6a2e62b477f70b57d2a9adbb0c6f0fea8ee
+Merge: 9a738f6 87936fd
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Fri Nov 10 15:02:00 2023 -0700
+
+    Merge remote-tracking branch 'origin/develope_3.0' into patrick
+
+commit 87936fd71de1e0553bf9cffb5e46545e38f61dd0
+Author: nlhn <nlnguyen@ualberta.ca>
+Date:   Fri Nov 10 14:58:46 2023 -0700
+
+    Edit item test works now !!!
+
+commit 9a738f6f6302c95f4bee52d26d418ecbed40e046
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Fri Nov 10 14:45:59 2023 -0700
+
+    Removed duplicate drawables directory inside drawables directory
+
+commit 225d26fb1241202275621bc730b3c8a7441b8bad
+Merge: 9d5e457 3c3ad87
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Fri Nov 10 14:44:32 2023 -0700
+
+    Merge remote-tracking branch 'origin/develope_3.0' into patrick
+
+commit 9d5e457cd60e49b46059868d0773d7a9c0a9614b
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Fri Nov 10 14:33:29 2023 -0700
+
+    Improved docs for ApplyTagsActivity and InventoryRepository
+
+commit 3c3ad879c22fad7bdf4b55f065c7cc906ee34e86
+Merge: 14f6813 7fef4d4
+Author: Nhung L Nguyen <44417787+nlhn@users.noreply.github.com>
+Date:   Fri Nov 10 14:21:55 2023 -0700
+
+    Merge pull request #48 from CMPUT301F23T05/kevin
+    
+    Kevin
+
+commit 7fef4d440cca32f30fd7ab0dfe2ffb39e97fa0ad
+Merge: 9d1954d 14f6813
+Author: kevin-was-here <code --wait>
+Date:   Fri Nov 10 14:13:36 2023 -0700
+
+    Merge remote-tracking branch 'origin/develope_3.0' into kevin
+
+commit 6b1a4a97059f4d043e476d2b094d36a4f20eca29
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Fri Nov 10 14:11:35 2023 -0700
+
+    Adjusted ApplyTagsActivity to use Boolean flag for mode
+
+commit 9d1954dd9188950d4e465f216473450a8dc28dce
+Author: kevin-was-here <code --wait>
+Date:   Fri Nov 10 13:38:31 2023 -0700
+
+    not working yet
+
+commit 9a2f3827cb6396aacf8c51e8ba070bc35e96753c
+Author: kevin-was-here <code --wait>
+Date:   Fri Nov 10 10:24:09 2023 -0700
+
+    current working sort and filter
+
+commit 14f681316fb6fc217fb7c145bfa47d933e8ee456
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Fri Nov 10 10:10:48 2023 -0700
+
+    Fixed sorting/filtering bug
+
+commit 43a6ce123af98862aad71329d6d2484a4abefc66
+Merge: 086dc6e 5dfedb4
+Author: Kevin Huang <90703777+Kevin-was-here@users.noreply.github.com>
+Date:   Fri Nov 10 09:53:42 2023 -0700
+
+    Merge pull request #46 from CMPUT301F23T05/castor
+    
+    Javadocs
+
+commit 5dfedb461f2c04e6d8332e467b3a433fb848fa5e
+Author: Shem <castorsh3m@gmail.com>
+Date:   Fri Nov 10 09:50:18 2023 -0700
+
+    merged with develop Again, fixed up javadoc
+
+commit 833cd0a455f73ef02185f7b2ba7124a4b6c46176
+Merge: 1592549 086dc6e
+Author: Shem <castorsh3m@gmail.com>
+Date:   Fri Nov 10 09:43:11 2023 -0700
+
+    Merge remote-tracking branch 'origin/develop' into castor
+
+commit 15925495a4d1e177fa3f592990140e76accad189
+Merge: 765cba7 e46808c
+Author: Shem <castorsh3m@gmail.com>
+Date:   Fri Nov 10 09:42:59 2023 -0700
+
+    fixed merge conflicts with new Tags code, fixed up docs
+
+commit 086dc6eaa47c79f7616a054dbabdef5bd603420d
+Merge: e46808c b7beb08
+Author: arongu321 <67613556+arongu321@users.noreply.github.com>
+Date:   Fri Nov 10 09:37:16 2023 -0700
+
+    Merge pull request #44 from CMPUT301F23T05/kevin
+    
+    Kevin
+
+commit 765cba792233d5f41dea513cf875b530d66a820d
+Author: Shem <castorsh3m@gmail.com>
+Date:   Fri Nov 10 09:26:43 2023 -0700
+
+    even more documentation
+
+commit b7beb08c8f4c500c38d72e2f192cbfa925669e16
+Author: kevin-was-here <code --wait>
+Date:   Fri Nov 10 09:19:15 2023 -0700
+
+    Delete item test complete!!
+
+commit 61305b478344eb0321b8002bb57dcdfd512eb146
+Author: kevin-was-here <code --wait>
+Date:   Fri Nov 10 09:03:58 2023 -0700
+
+    Filter UI hint update
+
+commit 116a34f6f021c2e41d25e90a0773dbcf000e15be
+Author: kevin-was-here <code --wait>
+Date:   Fri Nov 10 09:01:42 2023 -0700
+
+    Test cases for delete, edit, and login
+
+commit 1bc73c627f3d659fd4539ee301236ee1a6539d45
+Author: Shem <castorsh3m@gmail.com>
+Date:   Fri Nov 10 08:43:57 2023 -0700
+
+    more documentation
+
+commit 175e959e46f68850d7cc442365398f8a68bedbf5
+Author: kevin-was-here <code --wait>
+Date:   Fri Nov 10 08:26:35 2023 -0700
+
+    add and delete item test cases
+
+commit e46808c0d5b770a904120ada39ceaa8489320ec9
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Fri Nov 10 08:10:31 2023 -0700
+
+    fixed ApplyTagsActivity so it plays nice with the tag display in EditActivity
+
+commit 3e0c54fb9c0b7965589c5ecba507180223b8fbc4
+Merge: 1f68f47 9f332b1
+Author: Patrick Harvey <63984263+PatchyH@users.noreply.github.com>
+Date:   Fri Nov 10 08:04:30 2023 -0700
+
+    Merge pull request #43 from CMPUT301F23T05/patrick
+    
+    Patrick
+
+commit 9f332b147f03c006ffcc9533fdd682c60792725f
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Fri Nov 10 07:51:02 2023 -0700
+
+    tag system finished to halfway point
+
+commit 69b031f9899d6e40579097719fa0b76ec9ed2fe9
+Merge: 026492d 1f68f47
+Author: kevin-was-here <code --wait>
+Date:   Fri Nov 10 07:37:25 2023 -0700
+
+    Terrible merge, revert this if not working
+
+commit 026492defe8d33a7f69220cf1092d3bac7b168ce
+Author: kevin-was-here <code --wait>
+Date:   Fri Nov 10 00:22:11 2023 -0700
+
+    working state
+
+commit 7510006896c826451d6ab8ce9991385d4090a1c5
+Author: Shem <castorsh3m@gmail.com>
+Date:   Fri Nov 10 00:02:03 2023 -0700
+
+    more documentation
+
+commit 24d29b1a95fb9f4ffdb9329217d65a0f11da60e5
+Merge: d6c0197 1f68f47
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Thu Nov 9 23:41:07 2023 -0700
+
+    Merge remote-tracking branch 'origin/develop' into patrick
+    
+    # Conflicts:
+    #       Project/app/src/main/AndroidManifest.xml
+
+commit edc2fac79985d95de50871cb5ecaf943be0d6f26
+Author: Shem <castorsh3m@gmail.com>
+Date:   Thu Nov 9 23:40:17 2023 -0700
+
+    better documentation, adding javadoc
+
+commit d6c0197e19721727c97570b6df31aa781c99b9a1
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Thu Nov 9 23:39:34 2023 -0700
+
+    started apply tags
+
+commit be9a4bcb6cb07a4b845efcb7670699baf5af8695
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Thu Nov 9 22:32:35 2023 -0700
+
+    added tag creation from manage tags
+
+commit 328b32d1b23c3de2b0953f117014539b568af6a1
+Author: kevin-was-here <code --wait>
+Date:   Thu Nov 9 22:30:09 2023 -0700
+
+    everything is not workign again
+
+commit 1f68f4782fee1acdc601d6777d4b473f4a8fbd07
+Merge: 49bd4e8 f0b8521
+Author: arongu321 <67613556+arongu321@users.noreply.github.com>
+Date:   Thu Nov 9 22:25:33 2023 -0700
+
+    Merge pull request #41 from CMPUT301F23T05/castor
+    
+    Castor
+
+commit f0b85217fc4a6f37e6bfdfb977788c1dcd9837fa
+Author: Shem <castorsh3m@gmail.com>
+Date:   Thu Nov 9 22:17:49 2023 -0700
+
+    dark mode working again
+
+commit 65e1d9bff2b0fa3884af2de594238e7c3b5af763
+Merge: ef23fb4 49bd4e8
+Author: Shem <castorsh3m@gmail.com>
+Date:   Thu Nov 9 22:06:18 2023 -0700
+
+    app is working but dark mode is not
+
+commit 1b84263316e200a8c451467d34efff3430424552
+Merge: a3d3df0 49bd4e8
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Thu Nov 9 21:26:05 2023 -0700
+
+    Merge remote-tracking branch 'origin/develop' into patrick
+    
+    # Conflicts:
+    #       Project/app/src/main/java/com/example/omninventory/InventoryRepository.java
+
+commit a3d3df097103545160ff275af4adf632974651c5
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Thu Nov 9 21:07:31 2023 -0700
+
+    created basic tag functionality (can't yet apply or create)
+
+commit 9e44099f406e6adc3efb4cc0100a25f32c00d171
+Author: kevin-was-here <code --wait>
+Date:   Thu Nov 9 18:58:31 2023 -0700
+
+    updated styles for sort and filter
+
+commit a804ab7372acf80a9f36c02067ce9d76a03fd1ef
+Merge: bb501eb 49bd4e8
+Author: kevin-was-here <code --wait>
+Date:   Thu Nov 9 18:23:03 2023 -0700
+
+    Merge remote-tracking branch 'origin/zachary' into kevin
+
+commit bb501ebd15187aba4b70935c4e6bfca68fcf2e0e
+Author: kevin-was-here <code --wait>
+Date:   Thu Nov 9 18:17:10 2023 -0700
+
+    style updates
+
+commit ef23fb4075b461988a70ed08945305c38e38388f
+Author: Shem <castorsh3m@gmail.com>
+Date:   Wed Nov 8 23:07:05 2023 -0700
+
+    dark mode
+
+commit 49bd4e8c8d5122e5d9cf1b0529f19b31f9980265
+Merge: 33ae7e6 19a6942
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Wed Nov 8 17:56:10 2023 -0700
+
+    Merge remote-tracking branch 'origin/develop' into zachary
+
+commit 70ae91ae03a62218b6c437394731d47264763c14
+Merge: cafa91f dfcafe6
+Author: Shem <castorsh3m@gmail.com>
+Date:   Wed Nov 8 17:55:49 2023 -0700
+
+    Merge remote-tracking branch 'origin/develop' into castor
+
+commit 33ae7e6d6727ed7ff5e260880a5eb586092902a5
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Wed Nov 8 17:55:44 2023 -0700
+
+    Added docstrings/comments to SortFilterActivity
+
+commit cafa91f301ef44d2200b043321e691e2b2061045
+Author: Shem <castorsh3m@gmail.com>
+Date:   Wed Nov 8 17:55:05 2023 -0700
+
+    partial work on theme
+
+commit 19a6942c1949362f54d516c5524b91b1c945316e
+Merge: dfcafe6 8d150c4
+Author: Kevin Huang <90703777+Kevin-was-here@users.noreply.github.com>
+Date:   Wed Nov 8 17:08:14 2023 -0700
+
+    Merge pull request #40 from CMPUT301F23T05/aron
+    
+    Added functionality to delete selected items which will also delete the selected items in the database
+
+commit e72930db54293513874d3e2cd0043ecce2690830
+Author: Shem <castorsh3m@gmail.com>
+Date:   Wed Nov 8 16:28:15 2023 -0700
+
+    made taskbar buttons prettier
+
+commit 8d150c43f90a6d6a87797258fa4e4fd32996d59b
+Author: agu12345 <agu1@ualberta.ca>
+Date:   Wed Nov 8 16:27:36 2023 -0700
+
+    Removed bug in which selected items were not reset
+
+commit ca5a9755bf851d0d75037be0566f0d51d6db7a88
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Wed Nov 8 16:27:17 2023 -0700
+
+    Applying multiple filters working
+
+commit 1e6329b4f606132d27ab13cadfd5a24cd14a1316
+Author: agu12345 <agu1@ualberta.ca>
+Date:   Wed Nov 8 16:01:09 2023 -0700
+
+    Made changes to update database when deleting selected items
+
+commit 0e0cdffe0fee71cd228cd7cef311051f6c2bb573
+Author: agu12345 <agu1@ualberta.ca>
+Date:   Wed Nov 8 15:31:09 2023 -0700
+
+    Edited delete selected items functionality to also delete items from database
+
+commit e5227300835ef57fe9529b0c83f6342b142e3a66
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Wed Nov 8 15:06:34 2023 -0700
+
+    Filled in fields of sortfilter based on previously entered values (intent passing)
+
+commit db8ef3b042c98db9d322b45e65ce394f0f5125cd
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Wed Nov 8 14:29:02 2023 -0700
+
+    Removed unnecessary intent passing between main and sortfilter
+
+commit c35abe316e298e96b9e1c523099ea877a9c0b177
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Wed Nov 8 14:21:46 2023 -0700
+
+    Put sorting/filtering in callback function
+
+commit 1908532fc0625a1c81ebe616cda799c5be3df3c4
+Merge: 685dfe5 243cf08
+Author: Shem <castorsh3m@gmail.com>
+Date:   Wed Nov 8 12:36:34 2023 -0700
+
+    Merge remote-tracking branch 'origin/kevin' into castor
+
+commit 243cf08403a2e6d5788dc9c1a8e8191b6485e98a
+Author: Shem <castorsh3m@gmail.com>
+Date:   Wed Nov 8 12:34:40 2023 -0700
+
+    merge fixes
+
+commit 685dfe5bde0f89a2bc26f151406f0320a11e2fa4
+Author: Shem <castorsh3m@gmail.com>
+Date:   Wed Nov 8 12:11:34 2023 -0700
+
+    change default calendar date
+
+commit 217c59e093dcd3a1c2fbcdef5f071e45fddbc921
+Merge: 2e46bd7 da9770c
+Author: kevin-was-here <code --wait>
+Date:   Wed Nov 8 11:34:09 2023 -0700
+
+    merged rose/castor/zachary branches
+
+commit 2e46bd75cb548b65cdfce6944b96238cd6fe3c95
+Author: kevin-was-here <code --wait>
+Date:   Wed Nov 8 10:38:12 2023 -0700
+
+    cleared merge confs, may have invis confs
+
+commit d75f41c85713cce424e00a486bc186092556c3ef
+Merge: d9f46fd c411827
+Author: kevin-was-here <code --wait>
+Date:   Wed Nov 8 10:20:38 2023 -0700
+
+    merged zach +castor, updated merge confs, fixing in progress!
+
+commit d9f46fd904500124050428ff49457ff34a11585c
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Wed Nov 8 09:50:12 2023 -0700
+
+    Implemented ascending/descending sorting
+
+commit da9770c6efdaa5a298983341557207d49529beb7
+Author: nlhn <nlnguyen@ualberta.ca>
+Date:   Wed Nov 8 08:53:36 2023 -0700
+
+    changed password visibility
+
+commit e50e697fe26ce88ea1dcd582a0662757440f41f7
+Author: nlhn <nlnguyen@ualberta.ca>
+Date:   Wed Nov 8 08:42:47 2023 -0700
+
+    changed password visibility
+
+commit 3cab4419530e992514aff50ee0f1876658b97e2e
+Author: nlhn <nlnguyen@ualberta.ca>
+Date:   Wed Nov 8 02:48:40 2023 -0700
+
+    Debugged signupActivity and loginActivity. Added Utils for utility methods
+
+commit 360998cddcf4c380deec25861a52f95c20acc808
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Tue Nov 7 17:10:43 2023 -0700
+
+    Fixed datepicker issue
+
+commit 3f3d1e15ab67225d685daad556841da0690605ca
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Tue Nov 7 16:31:34 2023 -0700
+
+    Fixed intent passing between MainActivity and SortFilterActivity
+
+commit dfcafe6e0b6a7afae43b5889eb813b5559b5b447
+Merge: 6e96125 c411827
+Author: arongu321 <67613556+arongu321@users.noreply.github.com>
+Date:   Tue Nov 7 15:59:28 2023 -0700
+
+    Merge pull request #39 from CMPUT301F23T05/castor
+    
+    View/add/edit item, item-related database functionality & interfaces
+
+commit c4118270d9749f9307516a0391ce6615c5e5781d
+Author: Shem <castorsh3m@gmail.com>
+Date:   Tue Nov 7 15:29:54 2023 -0700
+
+    fixed issues with estimated value
+
+commit dd771e5f490850d282cc87d0f60cf709ccfed234
+Merge: be6288e 6e96125
+Author: Shem <castorsh3m@gmail.com>
+Date:   Tue Nov 7 15:15:06 2023 -0700
+
+    fixed conflict, still debugging issues with estimated value
+
+commit f804ea5c446622e522f5dcb058cfb22eefc18d6c
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Tue Nov 7 14:19:13 2023 -0700
+
+    Tweaks to get switching between main and sortfilter activities working
+
+commit 71c0073f9714892f9e8d1b107559a47d3cf4f675
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Tue Nov 7 13:45:56 2023 -0700
+
+    Abstracted sorting into classes implementing Comparator, started intent passing
+
+commit be6288e99c4ac7bea69dd30c1bcee3edcf6ed9ef
+Author: Shem <castorsh3m@gmail.com>
+Date:   Tue Nov 7 13:44:07 2023 -0700
+
+    fixed activity switching for Main/Details/Edit Activities
+
+commit 99ecab93bc1396e2073134a0d2dceff189a01bc7
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Tue Nov 7 12:26:36 2023 -0700
+
+    Added setDate to ItemDate changed all date types to ItemDate in SortFilterActivity
+
+commit ecae708824f3bc33770f9b305ead406ddd2ca9e1
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Tue Nov 7 12:14:18 2023 -0700
+
+    Finished methods for sorting
+
+commit b17a352782f4769b71d8625f91274381d754a6ea
+Author: nlhn <nlnguyen@ualberta.ca>
+Date:   Tue Nov 7 08:21:39 2023 -0700
+
+    Added loginactivity, signupactivity (fully implemented, not tested) and their respective layouts. Added methods for adding users to database and delete items from inventory
+
+commit fcfc52b561069eb3fc773365800f9edb6308d5b4
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Mon Nov 6 18:27:25 2023 -0700
+
+    Added filtering methods for make, date, and description keywords
+
+commit b6f6704a07dbc8ef46b2953652af7ec1689f75bc
+Merge: ce7fe1a 35e225f
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Mon Nov 6 17:53:28 2023 -0700
+
+    Secondary merge of castor's branch
+
+commit ce7fe1a655bc13493212fd9e1e65ad2b553e078c
+Merge: 9ba67e4 6c5ef9c
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Mon Nov 6 17:50:45 2023 -0700
+
+    Merged in castor's branch
+
+commit 35e225f967af558a458e66b780731e8292ed4d55
+Author: Shem <castorsh3m@gmail.com>
+Date:   Mon Nov 6 12:35:17 2023 -0700
+
+    item date fields with ItemDate seem to be functional across DetailsActivity and EditActivity
+
+commit d4b79c18d41fa6d48b1ae9f042946af7a8e82ee1
+Author: Shem <castorsh3m@gmail.com>
+Date:   Mon Nov 6 10:48:38 2023 -0700
+
+    calendar widget for EditActivity
+
+commit 9d7e4c6ca20302ce6b76560097452132e52719a9
+Merge: dbb5f4c 9ba67e4
+Author: Shem <castorsh3m@gmail.com>
+Date:   Mon Nov 6 10:28:14 2023 -0700
+
+    merged with Zach's code
+
+commit dbb5f4cee1f67a9159c9aade06cf7bcae4f840e2
+Author: Shem <castorsh3m@gmail.com>
+Date:   Mon Nov 6 10:23:37 2023 -0700
+
+    fixed issues with value field not reliably updating
+
+commit 9ba67e4e86a9a41b210a8ab4294c9127713fe655
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Mon Nov 6 09:40:09 2023 -0700
+
+    Added listeners for all buttons, abstracted sorting/filtering into methods
+
+commit 6c5ef9c9dd8b739e67b536e3eade43ccc3a24720
+Author: Shem <castorsh3m@gmail.com>
+Date:   Mon Nov 6 09:16:09 2023 -0700
+
+    More documentation
+
+commit 2b34e758b0d25560b113699acad9fd4a0a350d0e
+Author: Shem <castorsh3m@gmail.com>
+Date:   Mon Nov 6 08:38:31 2023 -0700
+
+    documentation
+
+commit bee6fea1bc7ee6ac20b4ceb5761d7848ce1e9e56
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Nov 5 23:38:08 2023 -0700
+
+    working on standardizing fields to use InventoryItemValue
+
+commit 0cb8bbb3feeca35f888177148edad3692aad2224
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Nov 5 21:27:16 2023 -0700
+
+    tweaks to ValueTextWatcher behaviour
+
+commit f951aabec520c66c55044b3244f4b24fee1f3903
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Nov 5 21:02:58 2023 -0700
+
+    dynamic input correction for Value field
+
+commit bcf81bb485d6ed04e456c70d500ea9979c4daa27
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Nov 5 19:56:50 2023 -0700
+
+    DetailsActivity now updates when item is updated from EditActivity. required creating GetInventoryItemHandler interface
+
+commit 2c30fdef6e795edb5bda0021dbd3cd49d743e9ac
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Sun Nov 5 19:34:20 2023 -0700
+
+    Set DatePickers so user can only have endDate > startDate
+
+commit caedd1c260c3ccedab4db9ce32b5c816d2edbfc7
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Nov 5 19:28:22 2023 -0700
+
+    not currently functional, fixing bugs with ids and items passed around the InventoryRepository
+
+commit c89f018935dceb6e00d1fd194d8c305b99848c99
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Sun Nov 5 19:13:39 2023 -0700
+
+    Received selection from sorting dropdown
+
+commit 03fb8b4fc7ba1d0c1f7164b44b40455db76d519a
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Nov 5 19:09:12 2023 -0700
+
+    partial implementation of updating item in DetailsActivity after successful edit
+
+commit 5bfcaac847ef77e4bac57dd1dca457f790e690e3
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Sun Nov 5 18:53:43 2023 -0700
+
+    Set up navigation/intent passing from MainActivity to SortFilterActivity
+
+commit 1b10267d94979a3c084e5528c4b7ab689817d124
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Nov 5 18:29:43 2023 -0700
+
+    layout for activity_edit with most fields, still needs work
+
+commit ddf1e19acc235a4d641154a01a5c318555d7bf10
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Sun Nov 5 17:49:21 2023 -0700
+
+    Picked up all relevant components in java file and added todo list
+
+commit f52fcfdddab57bcb9ccd52a3eb394e91b05e8343
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Nov 5 17:38:59 2023 -0700
+
+    debugging, small tweaks
+
+commit cfe6433833cec1bc3a3c54735933650483df5881
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Sun Nov 5 17:38:58 2023 -0700
+
+    Added date picker buttons and back button image
+
+commit f7a94d14d5eb9411ae79c276488b9a819da2d95c
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Sun Nov 5 17:14:45 2023 -0700
+
+    Added all components to layout for sorting/filtering
+
+commit 54b881b99ded3c8177f4885fd6638bd94aaea6d2
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Nov 5 16:50:56 2023 -0700
+
+    more helper methods for dealing with InventoryItems and Firebase
+
+commit 706056bb4db4bbea209c91be8df3c69a99fa3873
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Nov 5 16:32:58 2023 -0700
+
+    hooked up Firebase to homepage ListView, methods for making db easier to work with, documentation
+
+commit e0621fa22a1efc7aaf237f35924648c75ca580c0
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Nov 5 16:09:45 2023 -0700
+
+    database addInventoryItem working now
+
+commit 1bf5c2392dcbc6d9548320f6b81c2f77e926ddce
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Nov 5 16:00:11 2023 -0700
+
+    working on modifying database setup
+
+commit 6e961255de2f44087af7e66516c1619e47c711c4
+Merge: 964abce 2decaf1
+Author: arongu321 <67613556+arongu321@users.noreply.github.com>
+Date:   Sun Nov 5 15:33:21 2023 -0700
+
+    Merge pull request #38 from CMPUT301F23T05/aron
+    
+    Add functionality to delete selected inventory items and calculate total estimated value of inventory items
+
+commit 69f7670df290d8050b02cf0083025fa34674d51c
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Nov 5 14:49:27 2023 -0700
+
+    acceptable-for-now style for textinputlayout
+
+commit dd079c41ddffd504b1cb6776ffd02c66ba40dcbd
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Nov 5 14:15:30 2023 -0700
+
+    fiddling with styles for text input views
+
+commit f1dd3e1a6eb390d6c88d5e3b7029f2cb4076aa44
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Nov 5 13:44:08 2023 -0700
+
+    new EditActivity accessible from DetailsActivity
+
+commit 2ba8443c0e63e9374dc723ea85e58b69c6095b79
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Nov 5 13:34:40 2023 -0700
+
+    code to set item details from InventoryItem object
+
+commit 96be76b0c7a9e47227c17cdbc157874239e1ec91
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Nov 5 13:13:41 2023 -0700
+
+    fixed scrolling in item details, fixed listview row width in homepage
+
+commit 82451ecf31a50353837d3f48bfd2d6ee87df3278
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Nov 5 12:39:02 2023 -0700
+
+    incomplete item details layout
+
+commit 3b72eada349bdd5dfa003c27d9e34e54d124740d
+Author: Shem <castorsh3m@gmail.com>
+Date:   Sun Nov 5 11:22:35 2023 -0700
+
+    made template for taskbar, dynamically updated in code.
+
+commit 2decaf18c16e3db6ac1b4e44ca7794c2fbfb346b
+Author: agu12345 <agu1@ualberta.ca>
+Date:   Sat Nov 4 23:54:14 2023 -0600
+
+    Added functionality to calculate total estimated value of items in inventory
+
+commit 0615f2bb140925a8b1e6ef21d5d6b4ec68586458
+Merge: 42cab99 964abce
+Author: agu12345 <agu1@ualberta.ca>
+Date:   Sat Nov 4 22:47:48 2023 -0600
+
+    Added functionality to delete selected items from item list
+
+commit ca8684c4a6c4308fbe199ef12ea2ccf25681ce25
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Sat Nov 4 17:21:31 2023 -0600
+
+    Initial setup of sort/filter activity
+
+commit 42cab997398cdb97677a77859d2d82a8f58d66a0
+Author: agu12345 <agu1@ualberta.ca>
+Date:   Sat Nov 4 10:47:14 2023 -0600
+
+    Added long press to items in item list
+
+commit 964abceb450bd6a4c575bf96d346d065b81a6a27
+Author: kevin-was-here <code --wait>
+Date:   Sat Nov 4 02:56:14 2023 -0600
+
+    Updated and completed skeleton test cases
+
+commit dd83eb5af387e22f358eefcdb14ac59cae4f0805
+Author: kevin-was-here <code --wait>
+Date:   Sat Nov 4 02:19:29 2023 -0600
+
+    Test cases for Filter and sort item activity
+
+commit 7e147df8dfc32e9f696a08efcdab9aeadc8091d2
+Author: kevin-was-here <code --wait>
+Date:   Fri Nov 3 20:01:37 2023 -0600
+
+    added testItem class to handle generalized test set methods and started on testSort
+
+commit 75bc56fb8d299ce317906ddfd7b74e639a0dbb61
+Author: kevin-was-here <code --wait>
+Date:   Fri Nov 3 19:16:32 2023 -0600
+
+    Test cases for delete item activity
+
+commit 5a459e5420e4ea00f47e45f7682e8bf38ae4c09e
+Merge: 4e303ab 4c9fa73
+Author: kevin-was-here <code --wait>
+Date:   Fri Nov 3 11:48:48 2023 -0600
+
+    Merge remote-tracking branch 'origin/rose' into develop
+
+commit 4c9fa73fc7feed6fe75c2bf874cd23d3b592d591
+Author: nlhn <nlnguyen@ualberta.ca>
+Date:   Fri Nov 3 11:48:01 2023 -0600
+
+    added variables
+
+commit 4e303ab2d22f8a3e69944831af7349cd4df41309
+Merge: d163189 597f6f0
+Author: kevin-was-here <code --wait>
+Date:   Fri Nov 3 11:43:02 2023 -0600
+
+    Merge branch 'develop' of github.com:CMPUT301F23T05/Omninventory into develop
+
+commit d1631894a481c1368bf802a5c22c90769a3d4871
+Author: kevin-was-here <code --wait>
+Date:   Fri Nov 3 11:31:56 2023 -0600
+
+    test edit item complete
+
+commit dccd42601db359ed15be0d6fff2d7756dfd2478f
+Author: kevin-was-here <code --wait>
+Date:   Fri Nov 3 05:27:27 2023 -0600
+
+    update InventoryItem
+
+commit 7977531ef08df03bb1625ffaad6e45f15436e588
+Merge: b546e5b caaa510
+Author: kevin-was-here <code --wait>
+Date:   Fri Nov 3 05:26:30 2023 -0600
+
+    Merge remote-tracking branch 'origin/rose' into kevin
+
+commit b546e5bab8e4ab9db95d5177f4b59ea9d915e016
+Author: kevin-was-here <code --wait>
+Date:   Fri Nov 3 05:23:40 2023 -0600
+
+    started edit item
+
+commit beab56636e325059740a906eca4fdcf5fc2dfaf5
+Merge: e053ae3 8dd7164
+Author: kevin-was-here <code --wait>
+Date:   Fri Nov 3 05:08:26 2023 -0600
+
+    Merge remote-tracking branch 'origin/castor' into kevin
+
+commit caaa510d9baacaaa5c7f6d5da349261c3db19b74
+Author: nlhn <nlnguyen@ualberta.ca>
+Date:   Thu Nov 2 22:55:58 2023 -0600
+
+    set up firestore and User class
+
+commit 597f6f0d62ed83cd9776a32a85d2e54fdfb92b1a
+Merge: 507f728 8dd7164
+Author: Castor Shem <c.shem@ualberta.ca>
+Date:   Wed Nov 1 18:01:45 2023 -0600
+
+    Merge pull request #36 from CMPUT301F23T05/castor
+    
+    some basic list/item functionality, UI tweaks
+
+commit e053ae313fdd6d66cbc921da2899014c2bc18b3e
+Author: kevin-was-here <code --wait>
+Date:   Wed Nov 1 17:10:55 2023 -0600
+
+    added test add item, test profile, and updated test login
+
+commit 14891fa1fbcf9977282a8906d894063711acaec3
+Merge: 72bc503 7351dfe
+Author: nlhn <nlnguyen@ualberta.ca>
+Date:   Wed Nov 1 15:24:22 2023 -0600
+
+    Merge remote-tracking branch 'origin/rose' into rose
+
+commit 099b6ecb707776fb0d83cb42bb6f066425262d89
+Author: kevin-was-here <code --wait>
+Date:   Wed Nov 1 14:40:50 2023 -0600
+
+    Wrote skeleton for login activity test along with test case explainations
+
+commit 8dd7164dc7be5ab6117073c7a8ba105e939cdeb6
+Author: Shem <castorsh3m@gmail.com>
+Date:   Wed Nov 1 12:54:28 2023 -0600
+
+    made UI for item list elements and item details a little nicer
+
+commit db86b76585d9e07c30b4f1175aaf1d7ff487461e
+Merge: 77806e5 a9ca72b
+Author: kevin-was-here <code --wait>
+Date:   Wed Nov 1 12:28:38 2023 -0600
+
+    Merge branch 'main' into kevin
+
+commit 507f728d256cce472724836ae4ef53a0df645b78
+Merge: 7351dfe 72bc503
+Author: Castor Shem <c.shem@ualberta.ca>
+Date:   Wed Nov 1 12:28:04 2023 -0600
+
+    Merge pull request #27 from CMPUT301F23T05/main
+    
+    No change just to remove a falty revert change
+
+commit dfd108ef865a139052d29b0ae7215b0d7142c2ca
+Author: Shem <castorsh3m@gmail.com>
+Date:   Wed Nov 1 12:26:01 2023 -0600
+
+    skeleton code to display details of item clicked in DetailsActivity
+
+commit 77806e56a8eed9b6dceeed4b515c82d3870afb23
+Author: kevin-was-here <code --wait>
+Date:   Wed Nov 1 12:21:29 2023 -0600
+
+    test
+
+commit 72bc5031f88b468501e927ddd8f9b253376caf63
+Author: kevin-was-here <code --wait>
+Date:   Wed Nov 1 12:14:37 2023 -0600
+
+    Revert "Skeleton for tests for login"
+    
+    This reverts commit 89fa95a8fd0eefddbc343678ab3d598e832454a9.
+
+commit a9ca72b3cd2130b21fd636a0f0b144bcd9eb2208
+Author: kevin-was-here <code --wait>
+Date:   Wed Nov 1 12:08:49 2023 -0600
+
+    Revert "Skeleton for tests for login"
+    
+    This reverts commit 89fa95a8fd0eefddbc343678ab3d598e832454a9.
+
+commit d74eac89b7a0583120467fb83f408e55dba4ca0a
+Author: Shem <castorsh3m@gmail.com>
+Date:   Wed Nov 1 12:00:40 2023 -0600
+
+    back button from DetailsActivity
+
+commit f3cdf93e6ff7f97d107b281efa948ef192e9b6af
+Merge: 89fa95a 7351dfe
+Author: kevin-was-here <code --wait>
+Date:   Wed Nov 1 11:46:43 2023 -0600
+
+    Merge remote-tracking branch 'origin/develop'
+
+commit 89fa95a8fd0eefddbc343678ab3d598e832454a9
+Author: kevin-was-here <code --wait>
+Date:   Wed Nov 1 11:44:03 2023 -0600
+
+    Skeleton for tests for login
+
+commit 7351dfea329300f7534d7492aae827800850b828
+Merge: c598d5a c8ea069
+Author: Kevin Huang <90703777+Kevin-was-here@users.noreply.github.com>
+Date:   Wed Nov 1 11:41:53 2023 -0600
+
+    Merge pull request #26 from CMPUT301F23T05/castor
+    
+    Skeletal item list and view item functionality, tweaks to Layout structure
+
+commit 6e55bcfae9659a46771c59dafe926e3f97428fe5
+Author: Shem <castorsh3m@gmail.com>
+Date:   Wed Nov 1 11:14:28 2023 -0600
+
+    change template title in Activity code for both activities
+
+commit c8ea0698064c634160ce0326b15f591cd8ce3a2e
+Author: Shem <castorsh3m@gmail.com>
+Date:   Wed Nov 1 11:04:47 2023 -0600
+
+    moved title bar design into reusable template
+
+commit 012014abd5a1e73499775c5267084b1a30b3e985
+Author: Shem <castorsh3m@gmail.com>
+Date:   Wed Nov 1 10:30:33 2023 -0600
+
+    click on list item now switches to new DetailsActivity
+
+commit 7af6e59fb2a34200ad63c9f7455fc14f8813c8c3
+Author: Shem <castorsh3m@gmail.com>
+Date:   Wed Nov 1 10:27:25 2023 -0600
+
+    preliminary code to display items in list, custom adapter, class for InventoryItem
+
+commit c598d5a771f88f2f1b7eb270ae28adc201161bbd
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Sun Oct 29 23:24:14 2023 -0600
+
+    tweaked colours back
+
+commit af2d7417ae8164ac99b9869d70e4740cc7cdfe56
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Sun Oct 29 23:19:23 2023 -0600
+
+    finished adding taskbar icons, tweaked colours to match storyboard
+
+commit 8c39887d10c07ab52c2b02b99a7fddcf1ae1690e
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Sun Oct 29 22:53:26 2023 -0600
+
+    started adding add, delete, and user icons to taskbar
+
+commit 07a097a20d558deb645b31dedf9a8108290ed42b
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Sun Oct 29 22:40:22 2023 -0600
+
+    added sort & tag icons, reworked main mage layout
+
+commit 51f26b4d78220a253374569bb7ba111b9f96e676
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Sun Oct 29 22:39:32 2023 -0600
+
+    added sort & tag icons, reworked main page layout
+
+commit ee6be5a1d1c967f3d90eb119d56d977232073c64
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Mon Oct 23 16:35:37 2023 -0600
+
+    Updated names of margins to conform to standards
+
+commit 4806572f7135cd45e6e7aaa5654112ec7507764b
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Mon Oct 23 16:34:49 2023 -0600
+
+    Added item list content xml file
+
+commit 8731b5478908a9f37b1ba93f1362479782e90ae0
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Mon Oct 23 16:06:43 2023 -0600
+
+    Outline of homepage layout
+
+commit c6aec93701220924660e4984d25186f0b672d26a
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Mon Oct 23 15:37:28 2023 -0600
+
+    Work on homepage formatting
+
+commit 02ee14d26841832299752d4f7ebd41a4a37fed0b
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Mon Oct 23 15:02:23 2023 -0600
+
+    android studio project created
+
+commit a3f8ac04b499574f37b1c31cb11e92f15784ddda
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Mon Oct 23 15:01:57 2023 -0600
+
+    new .gitignore file to reflect new file structure
+
+commit 203ef53d4cdb1b463543cb290dfeef9681302e81
+Merge: 2ec7708 f9443ab
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Wed Oct 4 17:48:47 2023 -0600
+
+    Merge branch 'main' of github.com:CMPUT301F23T05/Omninventory into main
+
+commit 2ec770839c1b5a997e0cdcd33c1296a3f96d1e19
+Merge: abfe370 013fb3f
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Wed Oct 4 17:47:41 2023 -0600
+
+    Merge branch 'main' of github.com:CMPUT301F23T05/Omninventory into main
+
+commit f9443abe4c81f4eab14a7d4173f1b3695f754bb2
+Author: nlhn <nlnguyen@ualberta.ca>
+Date:   Wed Oct 4 17:46:10 2023 -0600
+
+    ccid updated
+
+commit 013fb3fdaa2832ceb7fafc1ba0f50826d1b47575
+Author: Kevin Huang <90703777+Kevin-was-here@users.noreply.github.com>
+Date:   Wed Oct 4 23:44:11 2023 +0000
+
+    hi
+
+commit 5a2f57384bcffd21533addc0d7a2fe33186eaaea
+Merge: 1773dc2 5648596
+Author: Shem <castorsh3m@gmail.com>
+Date:   Wed Oct 4 17:42:30 2023 -0600
+
+    fixed merge conflict
+
+commit 1773dc2df6384f27c61af229613d51218b2e4c8c
+Author: Shem <castorsh3m@gmail.com>
+Date:   Wed Oct 4 17:39:03 2023 -0600
+
+    added self to team.txt
+
+commit 56485964805d3fe7896b4e40fb7aace3e066b762
+Author: Zachary Schmidt <zacharyaschmidt@hotmail.ca>
+Date:   Wed Oct 4 17:38:56 2023 -0600
+
+    Z Schmidt added to team.txt
+
+commit abfe370ed28ceacfd3935e1f8b1df7d906ac2320
+Author: Patrick Harvey <patrick.s.harvey1@gmail.com>
+Date:   Wed Oct 4 17:37:28 2023 -0600
+
+    added name to doc
+
+commit 04db091939db98d92b99755187a6fd29a414421d
+Author: arongu321 <aron.gu321@gmail.com>
+Date:   Wed Oct 4 12:24:02 2023 -0600
+
+    Added doc directory
+
+commit a1e9ce5252147bcfe627984566b1b4c73e263ea0
+Author: arongu321 <67613556+arongu321@users.noreply.github.com>
+Date:   Wed Oct 4 12:22:48 2023 -0600
+
+    Initial commit
