@@ -347,8 +347,8 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
      * are updated when items are actually loaded in asynchronously from Firestore.
      */
     public void onItemListUpdate() {
-        this.calcValue();
         this.sortAndFilter();
+        this.calcValue();
     }
 
     /**
