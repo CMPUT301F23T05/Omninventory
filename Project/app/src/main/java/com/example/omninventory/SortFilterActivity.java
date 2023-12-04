@@ -4,6 +4,8 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.ColorInt;
@@ -535,11 +537,11 @@ public class SortFilterActivity extends AppCompatActivity {
         this.tagFilter = tagFilter;
 
         Button tagFilterButton = findViewById(R.id.filter_by_tags_button);
-        TextView tagFilterText = findViewById(R.id.tag_filter_text);
+        TextView tagFilterText = findViewById(R.id.tag_filter_text_content);
 
         if (this.tagFilter.isEmpty()) {
             tagFilterButton.setBackgroundColor(colorFilterNotApplied);
-            tagFilterText.setVisibility(View.INVISIBLE);
+            tagFilterText.setVisibility(View.GONE);
             tagsPressed = false;
         }
         else {
@@ -572,7 +574,8 @@ public class SortFilterActivity extends AppCompatActivity {
         tagList.setAdapter(tagListAdapter);
         ListenerRegistration registration = repo.setupTagList(tagListAdapter, currentUser);
 
-
+        // make background transparent for our rounded corners
+        tagFilterDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         tagList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
