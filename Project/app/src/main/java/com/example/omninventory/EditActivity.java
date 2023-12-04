@@ -283,7 +283,7 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
                 ArrayList<InventoryItem> itemList = new ArrayList<>();
                 itemList.add(currentItem);
 
-                // pass the current item to ApplyTagsActivity in "return" mode
+                // pass the current item to ApplyTagsActivity in "return" mode (i.e. not apply)
                 // this makes sure we get it back instead of writing it to the db
                 applyTagsIntent.putExtra("selectedItems", itemList);
                 applyTagsIntent.putExtra("apply", false);

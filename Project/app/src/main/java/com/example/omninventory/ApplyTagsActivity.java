@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -68,11 +70,7 @@ public class ApplyTagsActivity extends AppCompatActivity  {
 
         // === get references to views
         final TextView titleText = findViewById(R.id.title_text);
-        if (apply) {
-            titleText.setText(R.string.apply_tags_title_text);
-        } else {
-            titleText.setText("EDIT TAGS");
-        }
+
         appliedTagsList = findViewById(R.id.applied_tag_list);
         unappliedTagsList = findViewById(R.id.unapplied_tag_list);
         backButton = findViewById(R.id.back_button);
@@ -83,11 +81,18 @@ public class ApplyTagsActivity extends AppCompatActivity  {
         // === load info passed in from previous activity
         selectedItems = (ArrayList<InventoryItem>) getIntent().getExtras().get("selectedItems");
         apply = (Boolean) getIntent().getExtras().get("apply"); // "return" or "apply", controls what to do on return
+
         if (getIntent().getExtras().getSerializable("user") == null) {
             Log.d("ApplyTagsActivity", "ApplyTagsActivity opened without a User; possibly concerning");
         }
         else {
             currentUser = (User) getIntent().getExtras().getSerializable("user");
+        }
+
+        if (apply) {
+            titleText.setText(R.string.apply_tags_title_text);
+        } else {
+            titleText.setText("EDIT TAGS");
         }
 
         // === set up the ListViews, Adapters, etc
@@ -192,11 +197,16 @@ public class ApplyTagsActivity extends AppCompatActivity  {
     /**
      * Displays a dialog that allows the user to specify a new tag, which will appear in the
      * unapplied tags list.
+     * @param tagList the full list of tags
+     * @param tag the tag to edit (or null to create a new tag)
      */
     private void addTagDialog(ArrayList<Tag> tagList, @Nullable Tag tag) {
 
         addTagDialog.setCancelable(false);
         addTagDialog.setContentView(R.layout.add_tag_dialog);
+
+        // make background transparent for our rounded corners
+        addTagDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         // UI Elements
         EditText tagNameEditText = addTagDialog.findViewById(R.id.new_tag_name_editText);

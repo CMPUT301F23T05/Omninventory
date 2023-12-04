@@ -116,6 +116,9 @@ public class ProfileActivity extends AppCompatActivity implements UpdateUsername
         Button okDialogButton = changeUsernameDialog.findViewById(R.id.ok_dialog_button);
         Button cancelDialogButton = changeUsernameDialog.findViewById(R.id.cancel_dialog_button);
 
+        // make background transparent for our rounded corners
+        changeUsernameDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
         dialogTitle.setText("CHANGE USERNAME");
         // Update user's username or cancel dialog
         okDialogButton.setOnClickListener(new View.OnClickListener() {

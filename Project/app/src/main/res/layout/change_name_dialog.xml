@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:minWidth="300dp"
     android:background="@drawable/rounded_dialog">
 
     <!-- title hard-written in so we don't have to deal with setting title field on a dialog -->
