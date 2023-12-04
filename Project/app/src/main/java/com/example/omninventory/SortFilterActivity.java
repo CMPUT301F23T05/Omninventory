@@ -62,6 +62,7 @@ public class SortFilterActivity extends AppCompatActivity {
     private boolean datePressed;
     private boolean descriptionPressed;
     private boolean tagsPressed;
+    private User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,6 +143,9 @@ public class SortFilterActivity extends AppCompatActivity {
             if (intent.getSerializableExtra("filterTags") != null) {
                 setTagFilter((ArrayList<Tag>) intent.getSerializableExtra("filterTags"));
 
+            }
+            if (intent.getSerializableExtra("login") != null) {
+                currentUser = (User) intent.getSerializableExtra("login");
             }
         }
 
@@ -263,7 +267,6 @@ public class SortFilterActivity extends AppCompatActivity {
                     makePressed = false;
                 }
                 else {
-                    makeText = makeFilterEditText.getText().toString();
                     makeFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
                     makePressed = true;
                 }
@@ -292,7 +295,6 @@ public class SortFilterActivity extends AppCompatActivity {
                     descriptionPressed = false;
                 }
                 else {
-                    descriptionText = descriptionFilterEditText.getText().toString();
                     descriptionFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
                     descriptionPressed = true;
                 }
@@ -315,8 +317,11 @@ public class SortFilterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent myIntent = new Intent(SortFilterActivity.this, MainActivity.class);
+                makeText = makeFilterEditText.getText().toString();
+                descriptionText = descriptionFilterEditText.getText().toString();
                 putFieldsIntent(myIntent, makePressed, datePressed, descriptionPressed, tagsPressed);
                 SortFilterActivity.this.startActivity(myIntent);
+                finish();
             }
         });
     }
@@ -327,12 +332,12 @@ public class SortFilterActivity extends AppCompatActivity {
      * @param makePressed - true if "apply make filter" is toggled to on
      * @param datePressed - true if "apply date filter" is toggled to on
      * @param descriptionPressed - true if "apply description filter" is toggled to on
-     * @param
      */
     private void putFieldsIntent(Intent myIntent, boolean makePressed,
                                  boolean datePressed, boolean descriptionPressed, boolean tagsPressed) {
         myIntent.putExtra("sortBy", dropdownSelection);
         myIntent.putExtra("sortOrder", sortOrder);
+        myIntent.putExtra("login", currentUser);
         if (makePressed) {
             myIntent.putExtra("filterMake", makeText);
         }

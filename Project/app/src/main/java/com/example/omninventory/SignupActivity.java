@@ -26,10 +26,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Pattern;
-
 /**
- * Signup screen of the app. Allows a user to sign up with a new account.
- * @author Rose
+ * Activity for creating a new account
+ *
+ * @author Rose Nguyen
  */
 public class SignupActivity extends AppCompatActivity {
     private EditText nameEditText;
@@ -63,7 +63,7 @@ public class SignupActivity extends AppCompatActivity {
         // set title text
         titleText.setText(getString(R.string.signup_title_text));
 
-        // === signup button callback function
+        // === signup button onclick function
         signupButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 String name = nameEditText.getText().toString();
@@ -73,19 +73,17 @@ public class SignupActivity extends AppCompatActivity {
 
                 validateUserInput(name, username, password, confirmPassword, new ValidationResultCallback() {
                     @Override
-                    public void onValidationResult(boolean isValid, String message) {
+                    public void onValidationResult(boolean isValid, String message, User user) {
                         // === add user to database if their input passes all validation tests
                         if (isValid) {
-                            String name = nameEditText.getText().toString();
-                            String username = usernameEditText.getText().toString();
-                            String password = passwordEditText.getText().toString();
-                            String hashedPass = Utils.sha256(password);
                             InventoryRepository repo = new InventoryRepository();
-                            repo.addUser(new User(name, username, hashedPass, new ArrayList<String>()));
+                            repo.addUser(user);
+                            Log.d("SignUpActivity", user.getName());
                             // have user logged in and go back to main activity
                             Intent intent = new Intent(SignupActivity.this, MainActivity.class);
-                            intent.putExtra("loggedInUser", username);
+                            intent.putExtra("login", user);
                             startActivity(intent);
+                            Log.d("SignUpActivity", "Signed up successfully");
                             finish();
                         } else if (message == "emptyName") {
                             nameEditText.setError("Please fill out this field");
@@ -111,9 +109,16 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     /**
-     * Validates the data in input fields on the signup screen. Requires ensuring all fields have
-     * contents, and checking that a User with the same username does not already exist in the
-     * database.
+     * Go to the login screen if user clicks on the login link
+     */
+    public void onClickLogInLink(View v) {
+        Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    /**
+     * Validate and authenticate user's signup credentials
      * @param name              Contents of 'Name' field.
      * @param username          Contents of 'Username' field.
      * @param password          Contents of 'Password' field.
@@ -123,24 +128,25 @@ public class SignupActivity extends AppCompatActivity {
     private void validateUserInput(String name, String username, String password, String confirmPassword, ValidationResultCallback callback) {
         // check for empty input
         if (name.isEmpty()) {
-            callback.onValidationResult(false, "emptyName");
+            callback.onValidationResult(false, "emptyName", null);
         }
         else if (username.isEmpty()) {
-            callback.onValidationResult(false, "emptyUsername");
+            callback.onValidationResult(false, "emptyUsername", null);
         }
         else if (password.isEmpty()) {
-            callback.onValidationResult(false, "password");
+            callback.onValidationResult(false, "password", null);
         }
         else if (confirmPassword.isEmpty()) {
-            callback.onValidationResult(false, "emptyConfirmPassword");
+            callback.onValidationResult(false, "emptyConfirmPassword", null);
         }
         else if (!Utils.validatePassword(password)) {
-            callback.onValidationResult(false, "weakPassword");
+            callback.onValidationResult(false, "weakPassword", null);
         }
         else if (!password.equals(confirmPassword)) {
-            callback.onValidationResult(false, "unmatchedPasswords");
+            callback.onValidationResult(false, "unmatchedPasswords", null);
         }
         else {
+            Log.d("SignUpActivity", "checking if username exists");
             DocumentReference userDocRef = db.collection("users").document(username);
             userDocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -148,17 +154,18 @@ public class SignupActivity extends AppCompatActivity {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
-                            Log.d("login", "username taken");
-                            callback.onValidationResult(false, "usernameTaken");
+                            Log.d("SignUpActivity", "username taken");
+                            callback.onValidationResult(false, "usernameTaken", null);
                         }
                         else {
-                            Log.d("login", "success");
-                            callback.onValidationResult(true, "valid");
+                            Log.d("SignUpActivity", "success");
+                            callback.onValidationResult(true, "valid", new User(name, username, Utils.sha256(password), new ArrayList<String>()));
+                            Log.d("SignUpActivity", name);
                         }
                     }
                     else {
                         Log.d(TAG, "Failed with: ", task.getException());
-                        callback.onValidationResult(false, "error");
+                        callback.onValidationResult(false, "error", null);
                     }
                 }
             });

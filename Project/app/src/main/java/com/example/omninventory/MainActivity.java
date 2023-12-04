@@ -39,13 +39,12 @@ import java.util.ArrayList;
  * @author Rose
  * @author Zachary
  */
-public class MainActivity extends AppCompatActivity implements InventoryUpdateHandler {
+public class MainActivity extends AppCompatActivity implements InventoryUpdateHandler, GetInventoryItemHandler, UserUpdateHandler {
 
     private InventoryRepository repo;
     private ArrayList<InventoryItem> itemListData;
     private ArrayList<InventoryItem> completeItemList;
     private InventoryItemAdapter itemListAdapter;
-    SharedPreferences sharedPrefs;
     private String sortBy;
     private String sortOrder;
     private String filterMake;
@@ -63,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
     private ArrayList<InventoryItem> selectedItems;
 
     private Dialog deleteDialog;
+    private ListenerRegistration registration;
 
     /**
      * Method called on Activity creation. Contains most of the logic of this Activity; programmatically
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         setContentView(R.layout.activity_main);
 
         // TODO: this is testing code, replace when merged with Rose's code
-        currentUser = new User("Erika", "erika", "password", new ArrayList<String>());
+//        currentUser = new User("Erika", "erika", "password", new ArrayList<String>());
 
         selectedItems = new ArrayList<>();
 
@@ -98,18 +98,22 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
 
         // ============== USER SETUP ================
 
-        // this will store user's login state to keep them logged in
-        sharedPrefs = getSharedPreferences("login", MODE_PRIVATE);
+        // check if user has logged in
+        Intent intent = getIntent();
+        if (intent.getExtras() != null)  {
+            if (intent.getSerializableExtra("login") != null) {
+                // user just logged in
+                currentUser = (User) getIntent().getSerializableExtra("login");
+                Log.d("main", "Logged in as: " + currentUser.getName());
+            }
+        }
 
-        // check if user just logged in
-        if (getIntent().getExtras() != null)  {
-            // user just logged in
-            String user = getIntent().getExtras().getString("loggedInUser");
-            sharedPrefs.edit().putBoolean("logged", true).apply();
-            sharedPrefs.edit().putString("username", user).apply();
-            Log.d("login", "Logged in as: " + user);
-            // todo: for testing purposes only, will remove later
-//            Toast.makeText(getApplicationContext(), "Logged in as , " + user, Toast.LENGTH_LONG).show();
+        if (currentUser == null) {
+            Log.d("main", "need to login");
+            Intent loginIntent = new Intent(this, LoginActivity.class);
+            startActivity(loginIntent);
+            finish();
+            return;
         }
 
         // set up itemList owned by logged in user
@@ -118,7 +122,6 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         // ============== RETRIEVE DATA ================
 
         // retrieve data passed from SortFilterActivity: itemListData and sortBy
-        Intent intent = getIntent();
         if (intent != null) {
             if (intent.getSerializableExtra("itemListData") != null) {
                 itemListData = (ArrayList<InventoryItem>) intent.getSerializableExtra("itemListData");
@@ -152,8 +155,8 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         repo = new InventoryRepository();
         itemListAdapter = new InventoryItemAdapter(this, itemListData);
         itemList.setAdapter(itemListAdapter);
-        ListenerRegistration registration = repo.setupInventoryItemList(itemListAdapter, this); // set up listener for getting Firestore data
-
+        ListenerRegistration user_registration = repo.listenToUserUpdate(currentUser.getUsername(), this);
+        registration = repo.setupInventoryItemList(itemListAdapter, this, currentUser.getItemsRefs());
         // ============== SELECT/DELETE SETUP ================
 
         // Setup delete items dialog
@@ -190,6 +193,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
             sortFilterIntent.putExtra("filterEndDate", filterEndDate);
             sortFilterIntent.putExtra("filterDescription", filterDescription);
             sortFilterIntent.putExtra("filterTags", filterTags);
+            sortFilterIntent.putExtra("login", currentUser);
             MainActivity.this.startActivity(sortFilterIntent);
         });
 
@@ -210,21 +214,6 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
                 }
             }
         });
-
-        // on profile button click, go to LoginActivity
-//        profileBtn.setOnClickListener(new View.OnClickListener() {
-//            public void onClick(View v) {
-//                // todo: this logs out the current user, for testing only, will remove this later
-//                sharedPrefs.edit().putBoolean("logged",false).apply();
-//                // check if user is logged in
-//                if (!sharedPrefs.getBoolean("logged",false)) {
-//                    startLoginActivity();
-//                }
-//                else {
-//                    // start ProfileActivity
-//                }
-//            }
-//        });
 
         // on long press on item list, select item
         itemList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -265,7 +254,15 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
                 }
             }
         });
+
+        profileBtn.setOnClickListener((v) -> {
+            Intent addIntent = new Intent(MainActivity.this, ProfileActivity.class);
+            // intent launched without an InventoryItem
+            addIntent.putExtra("user", currentUser);
+            startActivity(addIntent);
+        });
     }
+
 
     /**
      * Dialog shown once the delete button is clicked. Gives the user options to either delete the
@@ -302,7 +299,6 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
                         repo.deleteInventoryItem(currentUser, selectedItem.getFirebaseId());
                     }
                     itemListData.remove(selectedItem);
-                    itemListAdapter.notifyDataSetChanged();
                 }
                 calcValue();
                 resetSelectedItems();
@@ -378,14 +374,15 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
             SortFilterActivity.applyTagsFilter(filterTags, itemListAdapter);
         }
     }
-
-    /**
-     * Starts LoginActivity in order to log in a new user.
-     */
-    private void startLoginActivity() {
-        Intent loginIntent = new Intent(this, LoginActivity.class);
-        startActivity(loginIntent);
-        finish();
+    public void onGetInventoryItem(InventoryItem item) { itemListData.add(item); }
+    public void onUserUpdate(User user) {
+        currentUser = user;
+        // remove old listener that listens to items in user's inventory before user adds/removes an item
+        if (registration != null) {
+            registration.remove();
+        }
+        // set up new listener that listener to items in user's inventory after user adds/removes an item
+        registration = repo.setupInventoryItemList(itemListAdapter, this, currentUser.getItemsRefs());
     }
 }
             

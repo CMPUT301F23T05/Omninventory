@@ -124,7 +124,8 @@ public class TestEditItemActivity {
         onView(withId(R.id.item_date_button)).perform(click());
 
         // Set the date on the DatePicker
-        onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(2002, 2, 22));
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
+                .perform(PickerActions.setDate(2002, 2, 22));
 
         // Click the OK button on the dialog
         onView(withId(android.R.id.button1)).perform(click());
