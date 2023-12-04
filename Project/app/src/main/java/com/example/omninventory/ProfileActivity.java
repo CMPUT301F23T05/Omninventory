@@ -2,6 +2,8 @@ package com.example.omninventory;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -97,6 +99,9 @@ public class ProfileActivity extends AppCompatActivity {
         Button okDialogButton = changeNameDialog.findViewById(R.id.ok_dialog_button);
         Button cancelDialogButton = changeNameDialog.findViewById(R.id.cancel_dialog_button);
 
+        // make background transparent for our rounded corners
+        changeNameDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
         // Update user's name or cancel dialog
         okDialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,6 +138,9 @@ public class ProfileActivity extends AppCompatActivity {
         EditText confirmPasswordEditText = changePasswordDialog.findViewById(R.id.confirm_password_editText);
         Button okDialogButton = changePasswordDialog.findViewById(R.id.ok_dialog_button);
         Button cancelDialogButton = changePasswordDialog.findViewById(R.id.cancel_dialog_button);
+
+        // make background transparent for our rounded corners
+        changePasswordDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         // Update user's password or cancel dialog
         okDialogButton.setOnClickListener(new View.OnClickListener() {

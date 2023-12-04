@@ -13,7 +13,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@color/gray_background"
+        android:background="?colorSurface"
         android:orientation="vertical">
 
         <LinearLayout
@@ -31,7 +31,7 @@
                 android:layout_marginBottom="20dp"
                 android:gravity="center_horizontal"
                 android:text="Join us to keep track of your stuff!"
-                android:textColor="?attr/colorOnSurface"
+                android:textColor="?colorOnSurface"
                 android:textSize="18dp" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -107,7 +107,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:text="Already have an account?"
-                    android:textColor="?attr/colorOnSurface"
+                    android:textColor="?colorOnSurface"
                     android:textSize="18dp" />
 
                 <TextView
@@ -118,7 +118,7 @@
                     android:onClick="onClickLogInLink"
                     android:padding="3dp"
                     android:text="Log In"
-                    android:textColor="?attr/colorPrimary"
+                    android:textColor="?colorPrimary"
                     android:textSize="18dp"
                     android:textStyle="bold" />
 
@@ -131,9 +131,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
-                android:backgroundTint="?attr/colorSecondary"
+                android:backgroundTint="?colorSecondary"
                 android:text="Sign up"
-                android:textColor="?attr/colorOnSecondary"
+                android:textColor="?colorOnSecondary"
                 android:textSize="18dp"
                 android:textStyle="bold"
                 app:cornerRadius="20dp" />
