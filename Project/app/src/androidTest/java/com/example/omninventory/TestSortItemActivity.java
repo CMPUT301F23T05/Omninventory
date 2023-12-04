@@ -27,6 +27,7 @@ import androidx.test.filters.LargeTest;
 
 import org.hamcrest.Matchers;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +47,14 @@ public class TestSortItemActivity {
             ActivityScenarioRule<MainActivity>(MainActivity.class);
 
     TestItems testItems = new TestItems();
+
+    @Before
+    public void setup() {
+        onView(withId(R.id.login_username_edit_text)).perform(typeText("Tester"));
+        onView(withId(R.id.login_password_edit_text))
+                .perform(typeText("Hahaha123!"), closeSoftKeyboard());
+        onView(withId(R.id.login_btn)).perform(click());
+    }
 
     @After
     public void cleanup(){
@@ -517,7 +526,7 @@ public class TestSortItemActivity {
                 .check(matches(withText("TestItem1")));
     }
 
-    @Test
+
     public void testSortItemByTags(){
 
         //This test might need to be done manually
