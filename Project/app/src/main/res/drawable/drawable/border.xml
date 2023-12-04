@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-
-<!--Source: https://stackoverflow.com/questions/18003021/how-to-add-border-around-tablelayout -->
-<shape
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape= "rectangle">
-    <solid android:color="#ffffff"/>
-    <stroke android:width="2dp" android:color="#000000"/>
-</shape>

@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,13 +24,17 @@ import java.util.ArrayList;
 import java.util.ListIterator;
 
 /**
- * Activity for applying tags to one or more items.
+ * Activity for applying tags to one or more items. Accepts a flag as part of the intent passed by
+ * the parent function to determine whether it will immediately apply the tag changes upon completion
+ * or return an inventoryItem object with the tags added.
+ *
  * @author Patrick
  */
 public class ApplyTagsActivity extends AppCompatActivity  {
     private InventoryRepository repo;
     private ArrayList<InventoryItem> selectedItems;
-    private String action;
+    private Boolean apply;
+    private User currentUser;
 
     private ArrayList<Tag> appliedTagsListData;
     private ArrayList<Tag> unappliedTagsListData;
@@ -43,7 +48,13 @@ public class ApplyTagsActivity extends AppCompatActivity  {
     private ImageButton addTagButton;
     private ImageButton confirmTagsButton;
 
-
+    /**
+     * Method called on Activity creation. Contains most of the logic of this Activity; programmatically
+     * modifying UI elements, reading information from previous activity, setting up connection to
+     * the database, and setting up click listeners to enable functionality.
+     *
+     * @param savedInstanceState Information about this Activity's saved state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,11 +63,6 @@ public class ApplyTagsActivity extends AppCompatActivity  {
         // === set up database
         repo = new InventoryRepository();
 
-        // === add taskbar
-        LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View taskbarLayout = taskbarInflater.inflate(R.layout.taskbar_apply_tags, null);
-        ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.taskbar_holder);
-        taskbarHolder.addView(taskbarLayout);
 
         // === get references to views
         final TextView titleText = findViewById(R.id.title_text);
@@ -70,7 +76,13 @@ public class ApplyTagsActivity extends AppCompatActivity  {
 
         // === load info passed in from previous activity
         selectedItems = (ArrayList<InventoryItem>) getIntent().getExtras().get("selectedItems");
-        action = (String) getIntent().getExtras().get("action"); // "return" or "apply", controls what to do on return
+        apply = (Boolean) getIntent().getExtras().get("apply"); // "return" or "apply", controls what to do on return
+        if (getIntent().getExtras().getSerializable("user") == null) {
+            Log.d("ApplyTagsActivity", "ApplyTagsActivity opened without a User; possibly concerning");
+        }
+        else {
+            currentUser = (User) getIntent().getExtras().getSerializable("user");
+        }
 
         // === set up the ListViews, Adapters, etc
         appliedTagsListData = new ArrayList<>();
@@ -115,7 +127,7 @@ public class ApplyTagsActivity extends AppCompatActivity  {
                 toast.show();
 
                 // if in "return" mode we return the same item we were passed
-                if (action.equals("return")) {
+                if (!apply) {
                     Intent itemReturn = new Intent();
                     itemReturn.putExtra("taggedItem", selectedItems.get(0));
                     setResult(RESULT_OK, itemReturn);
@@ -134,14 +146,14 @@ public class ApplyTagsActivity extends AppCompatActivity  {
         });
 
         // if in "return" mode, the confirm button should apply the tags to a local InventoryItem and return it
-        if (action.equals("return")) {
+        if (!apply) {
             confirmTagsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
                     appliedTagsListData.forEach(tag -> {
-                        if (!selectedItems.get(0).getTags().contains(tag.getName())) {
-                            selectedItems.get(0).addTag(tag.getName());
+                        if (!selectedItems.get(0).getTags().contains(tag.getId())) {
+                            selectedItems.get(0).addTag(tag);
                         }
                     });
 
@@ -218,7 +230,7 @@ public class ApplyTagsActivity extends AppCompatActivity  {
                 }
 
                 // If not empty and not a duplicate, create the tag and dismiss the dialog
-                repo.addTag(new Tag(tagName));
+                repo.addTag(new Tag(tagName, currentUser.getUsername()));
                 CharSequence toastText = "Tag added successfully!";
                 Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
                 toast.show();

@@ -7,9 +7,20 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static junit.framework.TestCase.fail;
 import static org.hamcrest.Matchers.allOf;
 
+import static java.lang.Thread.sleep;
+
 import androidx.test.espresso.action.ViewActions;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Test class that sets up default database InventoryItem data for testing.
@@ -54,7 +65,7 @@ public class TestItems {
     /**
      * Deletes test items generated for test cases
      */
-    public void wipeTestItems(){
+    public void wipeTestItems() {
         //todo: change to delete item if it exists
 
         //Clear generated test items from the database
@@ -72,6 +83,15 @@ public class TestItems {
         onView(allOf(withId(R.id.delete_item_button), isDisplayed()))
                 .perform(click());
         onView(withId(R.id.delete_dialog_button)).perform(click());
+
+        try {
+            Thread.sleep(2000); // Sleep for 1 second
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
+
     }
+
 
 }
