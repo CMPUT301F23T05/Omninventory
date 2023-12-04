@@ -155,6 +155,7 @@ public class ManageTagsActivity extends AppCompatActivity {
         Button addTagDialogButton = addTagDialog.findViewById(R.id.add_tag_dialog_button);
         Button cancelDialogButton = addTagDialog.findViewById(R.id.cancel_dialog_button);
         TextView dialogHeader = addTagDialog.findViewById(R.id.dialog_tag_text);
+
         if (tag != null) {
             Log.d("ManageTagsActivity", "ManageTagsActivity is here");
             tagNameEditText.setText(tag.getName());
@@ -169,12 +170,28 @@ public class ManageTagsActivity extends AppCompatActivity {
             public void onClick(View view) {
                 // Check tag name not empty
                 String tagName = tagNameEditText.getText().toString();
-                int priority = Integer.parseInt(tagPriorityEditText.getText().toString());
+                String tagPriorityString = tagPriorityEditText.getText().toString();
+                int priority = 0;
+
                 if (tagName.isEmpty()) {
                     CharSequence toastText = "Tag name cannot be empty!";
                     Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
                     toast.show();
                     return;
+                }
+                try {
+                    priority = Integer.parseInt(tagPriorityEditText.getText().toString());
+                } catch(NumberFormatException e) {
+                    CharSequence toastText = "Invalid priority! Setting to 0...";
+                    Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
+                    toast.show();
+                    priority = 0;
+                }
+                if (priority < 0) {
+                    CharSequence toastText = "Invalid priority! Setting to 0...";
+                    Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
+                    toast.show();
+                    priority = 0;
                 }
 
                 // Check tag isn't a duplicate of an existing one
