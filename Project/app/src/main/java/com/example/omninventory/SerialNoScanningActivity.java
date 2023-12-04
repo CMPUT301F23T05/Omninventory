@@ -57,6 +57,7 @@ public class SerialNoScanningActivity extends AppCompatActivity {
     private String scannedText;
     private View scanningBox;
     private PreviewView previewView;
+    private Button confirmButton;
 
     /**
      * Method to dynamically request camera permissions for the barcode scanner
@@ -102,7 +103,7 @@ public class SerialNoScanningActivity extends AppCompatActivity {
             }
         });
 
-        Button confirmButton = findViewById(R.id.serialno_confirm_button);
+        confirmButton = findViewById(R.id.serialno_confirm_button);
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -155,8 +156,9 @@ public class SerialNoScanningActivity extends AppCompatActivity {
                             List<Text.TextBlock> blocks = result.getTextBlocks();
                             for (Text.TextBlock block : blocks) {
                                 if (textInBox(block.getBoundingBox(), image.getWidth(), image.getHeight())) {
-                                    String text = block.getText();
-                                    handleScan(text);
+                                    for (String line : block.getText().split("\n")) {
+                                        handleScan(line);
+                                    }
                                 }
                             }
                         })
@@ -169,15 +171,18 @@ public class SerialNoScanningActivity extends AppCompatActivity {
     }
 
     private void handleScan(String text) {
+        text = text.replace(" ", "");
         if (text.length() >= 6 && text.matches("[a-zA-Z0-9]*")) {
             try {
                 Handler handler = new Handler(Looper.getMainLooper());
+                String finalText = text;
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        String displayText = "Parsed Serial Number: " + text;
+                        String displayText = "Parsed Serial Number: " + finalText;
                         parsedSerialNoText.setText(displayText);
-                        scannedText = text;
+                        scannedText = finalText;
+                        confirmButton.setVisibility(View.VISIBLE);
                     }
                 });
             } catch (Exception e) {
