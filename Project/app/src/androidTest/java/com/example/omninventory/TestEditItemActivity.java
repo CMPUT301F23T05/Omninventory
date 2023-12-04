@@ -205,6 +205,8 @@ public class TestEditItemActivity {
         onView(allOf(withId(R.id.edit_button), isDisplayed()))
                 .perform(click());
 
+        testItems.sleepProblemsAway(100);
+
         //in the edit item screen, click on the edit tag
         onView(withId(R.id.item_tags_button)).perform(click());
 
@@ -212,6 +214,8 @@ public class TestEditItemActivity {
                 .perform(scrollTo())
                 .check(matches(isDisplayed()))
                 .perform(click());
+
+        testItems.sleepProblemsAway(100);
 
         onView(withId(R.id.confirm_tags_button)).perform(click());
 
@@ -230,6 +234,8 @@ public class TestEditItemActivity {
         onView(allOf(withId(R.id.edit_button), isDisplayed()))
                 .perform(click());
 
+        testItems.sleepProblemsAway(100);
+
         //in the edit item screen, click on the edit tag
         onView(withId(R.id.item_tags_button)).perform(click());
 
@@ -237,6 +243,8 @@ public class TestEditItemActivity {
                 .perform(scrollTo())
                 .check(matches(isDisplayed()))
                 .perform(click());
+
+        testItems.sleepProblemsAway(100);
 
         onView(withId(R.id.confirm_tags_button)).perform(click());
 
