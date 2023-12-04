@@ -21,42 +21,42 @@
         <ImageButton style="@style/taskbar_button"
             android:id="@+id/sort_filter_button"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/sort_button_label"
-            android:src="@drawable/icon_filter" />
+            android:src="@drawable/taskbar_sort" />
 
         <ImageButton style="@style/taskbar_button"
             android:id="@+id/tag_button"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/tag_button_label"
-            android:src="@drawable/icon_tag" />
+            android:src="@drawable/taskbar_tag" />
 
         <ImageButton style="@style/taskbar_button"
             android:id="@+id/add_item_button"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/add_button_label"
-            android:src="@drawable/icon_add" />
+            android:src="@drawable/taskbar_add" />
 
         <ImageButton style="@style/taskbar_button"
             android:id="@+id/delete_item_button"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/delete_button_label"
-            android:src="@drawable/icon_trash" />
+            android:src="@drawable/taskbar_delete" />
 
         <ImageButton style="@style/taskbar_button"
             android:id="@+id/profile_button"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/profile_button_label"
-            android:src="@drawable/icon_profile"/>
+            android:src="@drawable/taskbar_profile" />
 
     </LinearLayout>
 

@@ -2,21 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-<!--    <uses-permission android:name="android.permission.CAMERA"/>-->
-<!--    <uses-feature-->
-<!--        android:name="android.hardware.camera"-->
-<!--        android:required="false" />-->
-
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.media.action.IMAGE_CAPTURE"
-        android:required="true"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="true" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+        android:required="false" />
 
-    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -28,9 +19,6 @@
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.Omninventory"
         tools:targetApi="31">
-        <activity
-            android:name=".SerialNoScanningActivity"
-            android:exported="false" />
         <activity
             android:name=".ApplyTagsActivity"
             android:exported="false" />
@@ -54,16 +42,6 @@
         <activity android:name=".BarcodeActivity"
             android:screenOrientation="portrait"
             android:stateNotNeeded="true"/>
-
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths" />
-        </provider>
-
     </application>
+
 </manifest>

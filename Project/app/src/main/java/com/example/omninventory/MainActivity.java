@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         setContentView(R.layout.activity_main);
 
         // TODO: this is testing code, replace when merged with Rose's code
-        currentUser = new User("Erika", "erika", "password", new ArrayList<String>());
+        currentUser = new User("erika", "erika", "password", new ArrayList<String>());
 
         selectedItems = new ArrayList<>();
 
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         if (intent != null) {
             if (intent.getSerializableExtra("itemListData") != null) {
                 itemListData = (ArrayList<InventoryItem>) intent.getSerializableExtra("itemListData");
-//                completeItemList = (ArrayList<InventoryItem>) itemListData.clone();
+                completeItemList = (ArrayList<InventoryItem>) itemListData.clone();
             }
             if (intent.getStringExtra("sortBy") != null) {
                 sortBy = intent.getStringExtra("sortBy");
@@ -185,7 +185,6 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
             sortFilterIntent.putExtra("filterStartDate", filterStartDate);
             sortFilterIntent.putExtra("filterEndDate", filterEndDate);
             sortFilterIntent.putExtra("filterDescription", filterDescription);
-            sortFilterIntent.putExtra("login", currentUser);
             MainActivity.this.startActivity(sortFilterIntent);
         });
 

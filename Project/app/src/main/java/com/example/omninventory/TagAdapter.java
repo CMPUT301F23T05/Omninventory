@@ -77,7 +77,7 @@ public class TagAdapter extends ArrayAdapter<Tag>  {
 
         // set fields
         tagNameText.setText(tag.getName());
-        tagDetailText.setText(String.format("Priority: %d", tag.getPriority()));
+        tagDetailText.setText(String.format("Currently applied to %d items", tag.getItemCount()));
 
         return view;
     }

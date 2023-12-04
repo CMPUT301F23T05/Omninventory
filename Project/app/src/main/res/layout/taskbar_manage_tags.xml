@@ -15,45 +15,33 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:orientation="horizontal"
-        android:background="@drawable/color_secondary_draw">
+        android:background="@drawable/color_primary_draw">
 
         <ImageButton style="@style/taskbar_button"
             android:id="@+id/back_button"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/back_button_label"
-            android:src="@drawable/icon_back"
+            android:src="@drawable/taskbar_back"
             />
-
-        <!-- to keep spacing consistent with layout_weight -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal"/>
 
         <ImageButton style="@style/taskbar_button"
             android:id="@+id/delete_tag_button"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/delete_tag_button_label"
-            android:src="@drawable/icon_trash" />
+            android:src="@drawable/taskbar_delete" />
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal"/>
 
         <ImageButton style="@style/taskbar_button"
             android:id="@+id/add_tag_button"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:contentDescription="@string/add_tag_button_label"
-            android:src="@drawable/icon_add"/>
+            android:src="@drawable/taskbar_add"/>
 
 
     </LinearLayout>
