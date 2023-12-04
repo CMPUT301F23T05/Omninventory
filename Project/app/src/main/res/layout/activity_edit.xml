@@ -74,6 +74,7 @@
                 android:id="@+id/description_camera_button"
                 android:src="@drawable/icon_camera"
                 android:layout_margin="2dp"
+                android:layout_height="50dp"
                 app:layout_constraintBottom_toBottomOf="@+id/item_description_text"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/item_description_text"
@@ -187,8 +188,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/item_date_head" />
 
-            <!--            TODO: make the scaling on this better -->
-            <ImageButton  style="@style/rounded_button"
+            <ImageButton style="@style/rounded_button"
                 android:id="@+id/item_date_button"
                 android:src="@drawable/icon_calendar"
                 android:layout_margin="2dp"
@@ -196,8 +196,6 @@
                 app:layout_constraintEnd_toStartOf="@+id/half_guideline"
                 app:layout_constraintStart_toEndOf="@+id/item_date_text"
                 app:layout_constraintTop_toTopOf="@+id/item_date_head" />
-
-            <!--            TODO: make the scaling on this better -->
 
             <TextView
                 android:id="@+id/edit_tags_text"
@@ -248,7 +246,6 @@
 
             <ImageButton style="@style/rounded_button"
                 android:id="@+id/image_take_button"
-                android:layout_width="wrap_content"
                 android:layout_marginTop="2dp"
                 android:src="@drawable/icon_camera"
                 app:layout_constraintStart_toStartOf="parent"
@@ -256,7 +253,6 @@
 
             <ImageButton style="@style/rounded_button"
                 android:id="@+id/image_upload_button"
-                android:layout_width="wrap_content"
                 android:layout_marginTop="2dp"
                 android:layout_marginStart="6dp"
                 android:src="@drawable/icon_upload"

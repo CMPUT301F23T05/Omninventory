@@ -177,7 +177,6 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
 
         // clear adapter in case we had anything in there (otherwise downloading new images will cause duplicates)
         imageAdapter.resetData(currentItem.getImages().size());
-        imageAdapter.notifyItemRangeChanged(0, imageAdapter.getItemCount());
 
         setFields(); // finally can set fields for display (and attempt to download images)
     }
