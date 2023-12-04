@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".ApplyTagsActivity"
-    android:background="@color/gray_background">
+    android:background="?attr/colorSurface">
 
     <include layout="@layout/title_bar"/>
 
@@ -79,7 +79,7 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <include layout="@layout/taskbar_holder" />
+    <include layout="@layout/taskbar_apply_tags" />
     <!--        add apply_tags_taskbar.xml layout to this in code -->
 
 

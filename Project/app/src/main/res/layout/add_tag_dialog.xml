@@ -4,23 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?attr/colorSurface">
 
     <TextView
         android:id="@+id/add_tag_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/salmon_banner"
+        android:background="?attr/colorPrimary"
         android:text="@string/add_tag_dialog"
         android:textAlignment="center"
-        android:textColor="@color/white"
+        android:textColor="?attr/colorOnPrimary"
         android:textSize="30sp"/>
 
     <TextView
         android:id="@+id/title_band2"
         android:layout_width="match_parent"
         android:layout_height="10dp"
-        android:background="@color/blue_banner"/>
+        android:background="?attr/colorSecondary"/>
 
     <EditText
         android:id="@+id/new_tag_name_editText"
@@ -28,7 +29,17 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/add_tag_dialog_hint"
-        android:inputType="text" />
+        android:inputType="text"
+        android:theme="@style/item_edit_edittext"/>
+
+    <EditText
+        android:id="@+id/new_tag_priority_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Tag Priority"
+        android:inputType="number"
+        android:theme="@style/item_edit_edittext"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

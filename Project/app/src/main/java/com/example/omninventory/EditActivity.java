@@ -256,7 +256,8 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
                 // pass the current item to ApplyTagsActivity in "return" mode
                 // this makes sure we get it back instead of writing it to the db
                 applyTagsIntent.putExtra("selectedItems", itemList);
-                applyTagsIntent.putExtra("action", "return");
+                applyTagsIntent.putExtra("apply", false);
+                applyTagsIntent.putExtra("user", currentUser);
                 mDefineTags.launch(applyTagsIntent);
             }
         });
