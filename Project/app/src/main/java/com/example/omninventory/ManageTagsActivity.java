@@ -1,14 +1,13 @@
 package com.example.omninventory;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -18,10 +17,7 @@ import android.widget.Toast;
 
 import com.google.firebase.firestore.ListenerRegistration;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.ListIterator;
 
 /**
@@ -89,6 +85,13 @@ public class ManageTagsActivity extends AppCompatActivity {
 
         // === set up click actions
 
+        tagList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                addEditTagDialog(tagListData.get(i));
+            }
+        });
+
         // back button should return to MainActivity
         backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -99,17 +102,16 @@ public class ManageTagsActivity extends AppCompatActivity {
         // add tag button will open a dialog to define a new tag
         addTagButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                addTagDialog();
+                addEditTagDialog(null);
             }
         });
 
     }
 
     /**
-     * Displays a dialog that allows the user to define a new tag, which will appear in the
-     * taglist.
+     * Displays a dialog that allows the user to define a new tag or edit an existing one.
      */
-    private void addTagDialog() {
+    private void addEditTagDialog(@Nullable Tag tag) {
 
         addTagDialog.setCancelable(false);
         addTagDialog.setContentView(R.layout.add_tag_dialog);
@@ -119,7 +121,15 @@ public class ManageTagsActivity extends AppCompatActivity {
         EditText tagPriorityEditText = addTagDialog.findViewById(R.id.new_tag_priority_editText);
         Button addTagDialogButton = addTagDialog.findViewById(R.id.add_tag_dialog_button);
         Button cancelDialogButton = addTagDialog.findViewById(R.id.cancel_dialog_button);
+        TextView dialogHeader = addTagDialog.findViewById(R.id.filter_by_tags_header_text);
 
+        if (tag != null) {
+            tagNameEditText.setText(tag.getName());
+            tagPriorityEditText.setText(Long.toString(tag.getPriority()));
+            dialogHeader.setText("EDIT TAG");
+        } else {
+            dialogHeader.setText("ADD TAG");
+        }
         // Add tag button will create a new tag with the specified name
         addTagDialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,12 +143,13 @@ public class ManageTagsActivity extends AppCompatActivity {
                     toast.show();
                     return;
                 }
+
                 // Check tag isn't a duplicate of an existing one
                 boolean duplicate = false;
                 ListIterator<Tag> tagIter = tagListData.listIterator();
                 while (tagIter.hasNext()) {
                     Tag nextTag = tagIter.next();
-                    if (tagName.equals(nextTag.getName())) {
+                    if (tagName.equals(nextTag.getName()) && (tag == null || !tag.getId().equals(nextTag.getId()))) {
                         duplicate = true;
                     }
                 }
@@ -150,12 +161,19 @@ public class ManageTagsActivity extends AppCompatActivity {
                 }
 
                 // If not empty and not a duplicate, create the tag and dismiss the dialog
-                repo.addTag(new Tag(tagName, currentUser.getUsername(), priority));
-                CharSequence toastText = "Tag added successfully!";
+                CharSequence toastText = "";
+                if (tag == null) {
+                    repo.addTag(new Tag(tagName, currentUser.getUsername(), priority));
+                    toastText = "Tag added successfully!";
+                } else {
+                    tag.setName(tagName);
+                    tag.setPriority(priority);
+                    repo.updateTag(tag);
+                    toastText = "Tag updated successfully!";
+                }
                 Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
                 toast.show();
                 addTagDialog.dismiss();
-
 
             }
         });
