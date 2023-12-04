@@ -1,8 +1,21 @@
 package com.example.omninventory;
 
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
+import static androidx.test.espresso.action.ViewActions.typeText;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -14,16 +27,58 @@ import org.junit.runner.RunWith;
 @LargeTest
 public class TestFilterItemActivity {
 
-    TestItems testItems;
+    TestItems testItems = new TestItems();
+
+    @Before
+    public void setup(){
+        testItems.generateTestItems();
+    }
+
+    @After
+    public void cleanup(){
+        testItems.wipeTestItems();
+    }
 
     @Test
     public void testFilterByMake(){
-        testItems.generateTestItems();
+        //add data to test items
+        onView(withText("TestItem1"))
+                .perform(scrollTo())
+                .perform(click());
+        onView(withId(R.id.edit_button)).perform(click());
+        onView(withId(R.id.item_make_edittext)).perform(typeText("FilterTestA"));
+        onView(withId(R.id.save_button)).perform(click());
+        onView(withId(R.id.back_button)).perform(click());
+
+        onView(withText("TestItem2"))
+                .perform(scrollTo())
+                .perform(click());
+        onView(withId(R.id.edit_button)).perform(click());
+        onView(withId(R.id.item_make_edittext)).perform(typeText("FilterTestA"));
+        onView(withId(R.id.save_button)).perform(click());
+        onView(withId(R.id.back_button)).perform(click());
+
+        onView(withText("TestItem3"))
+                .perform(scrollTo())
+                .perform(click());
+        onView(withId(R.id.edit_button)).perform(click());
+        onView(withId(R.id.item_make_edittext)).perform(typeText("FilterTestB"));
+        onView(withId(R.id.save_button)).perform(click());
+        onView(withId(R.id.back_button)).perform(click());
+
         //From the inventory screen, select the sort/filter button
+        onView(withId(R.id.sort_filter_button)).perform(click());
+
         //In the InputBox above the filter by make button enter the make to be filtered by
-        //Select the filter by make button.
+        onView(withId(R.id.make_filter_edit_text))
+                .perform(typeText("FilterTestA"), closeSoftKeyboard());
+        onView(withId(R.id.add_make_filter_button)).perform(click());
+
         //validate the items are filtered by make.
-        testItems.wipeTestItems();
+        onView(withText("TestItem1")).check(matches(isDisplayed()));
+        onView(withText("TestItem2")).check(matches(isDisplayed()));
+        onView(withText("TestItem3")).check(doesNotExist());
+
     }
 
     @Test
