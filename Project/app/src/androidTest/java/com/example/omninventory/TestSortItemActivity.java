@@ -62,7 +62,7 @@ public class TestSortItemActivity {
         testItems.sleepProblemsAway(2000);
     }
 
-    //@After
+    @After
     public void cleanup(){
         testItems.wipeTestItems();
     }
