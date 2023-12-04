@@ -266,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
 
 
     /**
-     * Dialog shown once the delete button is clicked. Gives the user options to either delete the
+     * Displays dialog once the delete icon is clicked. Gives the user options to either delete the
      * items currently selected or to cancel the deletion.
      */
     private void deleteDialog() {
@@ -284,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         for (InventoryItem selectedItem : selectedItems) {
             defaultText += selectedItem.getName();
             if (index == selectedItems.size() - 1) {
-                defaultText += ")";
+                defaultText += ")?";
             } else {
                 defaultText += ", ";
             }
@@ -295,21 +295,29 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         // make background transparent for our rounded corners
         deleteDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
+        // Delete the selected items
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                // Update the firestore database for the user's inventory once deleting the selected items
                 for (InventoryItem selectedItem : selectedItems) {
                     if (selectedItem != null) {
                         repo.deleteInventoryItem(currentUser, selectedItem.getFirebaseId());
                     }
                     itemListData.remove(selectedItem);
                 }
+
+                // Recalculate the estimated value after deletion of selected times
                 calcValue();
+
+                // Reset selection of items and exit dialog
                 resetSelectedItems();
                 deleteDialog.dismiss();
             }
         });
 
+        // Cancel the deletion of the selected items
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
