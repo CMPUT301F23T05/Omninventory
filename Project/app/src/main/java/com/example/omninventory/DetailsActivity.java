@@ -189,7 +189,7 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
 
     public void onImageDownloadFailed(int pos) {
         // just keep trying to download the image
-        Log.d("DetailsActivity", String.format("onImageDownloadFailed called for pos %d, trying again after 1s...", pos));
+        Log.d("DetailsActivity", String.format("onImageDownloadFailed called for pos %d, trying again...", pos));
 
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -197,6 +197,6 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
             public void run() {
                 repo.attemptDownloadImage(currentItem, pos, DetailsActivity.this);
             }
-        }, 1000); // try again after 1s
+        }, 1500); // try again after 1.5s
     }
 }

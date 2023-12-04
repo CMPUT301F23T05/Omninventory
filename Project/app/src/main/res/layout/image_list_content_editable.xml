@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:paddingVertical="10dp"
-    android:paddingHorizontal="10dp">
+    android:paddingVertical="10dp">
 <!--        use android:background="@drawable/border" for debugging -->
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -18,8 +17,8 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     android:scaleType="centerInside"
-                    android:adjustViewBounds="true"
-                    android:src="@drawable/placeholder_cat" />
+                    android:adjustViewBounds="true" />
+<!--                android:src="@drawable/placeholder_cat" -->
 
                 <ImageButton
                     android:id="@+id/image_delete_button"
@@ -33,6 +32,18 @@
                     android:src="@drawable/delete_64"
                     app:layout_constraintEnd_toEndOf="@+id/image_content"
                     app:layout_constraintTop_toTopOf="@+id/image_content" />
+
+                <ProgressBar
+                    android:id="@+id/loading_placeholder"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:indeterminate="true"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:visibility="visible"/>
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
