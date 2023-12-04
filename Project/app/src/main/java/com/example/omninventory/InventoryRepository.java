@@ -53,7 +53,6 @@ public class InventoryRepository {
     private CollectionReference inventoryItemsRef;
     private CollectionReference tagsRef;
     private HashMap<String, Tag> tagDict;
-
     private FirebaseStorage storage;
     private StorageReference storageRef;
 
