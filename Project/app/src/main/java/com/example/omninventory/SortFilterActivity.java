@@ -3,11 +3,14 @@ package com.example.omninventory;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
-import android.nfc.Tag;
+import android.content.res.Resources;
 import android.os.Bundle;
+
+import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -15,9 +18,14 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.firestore.ListenerRegistration;
+
+import org.checkerframework.checker.units.qual.A;
 
 import java.lang.reflect.Array;
 import java.time.LocalDate;
@@ -49,6 +57,7 @@ public class SortFilterActivity extends AppCompatActivity {
     private String dropdownSelection;
     private ItemDate startDate;
     private ItemDate endDate;
+    private ArrayList<Tag> tagFilter;
     private String sortOrder;
     private String makeText;
     private String descriptionText;
@@ -56,7 +65,11 @@ public class SortFilterActivity extends AppCompatActivity {
     private boolean makePressed;
     private boolean datePressed;
     private boolean descriptionPressed;
+    private boolean tagsPressed;
     private User currentUser;
+
+    @ColorInt int colorFilterApplied;
+    @ColorInt int colorFilterNotApplied;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +86,8 @@ public class SortFilterActivity extends AppCompatActivity {
         final EditText descriptionFilterEditText = findViewById(R.id.description_filter_edit_text);
         final Button descriptionFilterButton = findViewById(R.id.add_description_filter_button);
         final Button filterByTagsButton = findViewById(R.id.filter_by_tags_button);
+
+        tagFilter = new ArrayList<>();
         tagFilterDialog = new Dialog(this);
 
         final ImageButton backButton = findViewById(R.id.back_button);
@@ -81,6 +96,7 @@ public class SortFilterActivity extends AppCompatActivity {
         titleText.setText(getString(R.string.sort_filter_title_text));
 
         final Spinner sortDropdown = findViewById(R.id.sort_dropdown_spinner);
+
         // ArrayAdapter for dropdown choices. Choices stored in strings.xml
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this,
@@ -91,10 +107,20 @@ public class SortFilterActivity extends AppCompatActivity {
         sortDropdown.setAdapter(adapter);
 
         TextView startDateText = findViewById(R.id.start_date_text);
-        Button startDateBtn = findViewById(R.id.start_date_button);
+        ImageButton startDateBtn = findViewById(R.id.start_date_button);
 
         TextView endDateText = findViewById(R.id.end_date_text);
-        Button endDateBtn = findViewById(R.id.end_date_button);
+        ImageButton endDateBtn = findViewById(R.id.end_date_button);
+
+        // ==== get theme colours for setting button colours on selection
+        Resources.Theme theme = this.getTheme();
+        TypedValue typedValue = new TypedValue();
+
+        theme.resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true);
+        colorFilterApplied = typedValue.data;
+
+        theme.resolveAttribute(com.google.android.material.R.attr.colorSecondary, typedValue, true);
+        colorFilterNotApplied = typedValue.data;
 
         // to restore previous selections, get the data from intent
         // if restoring value, set button background color to R.color.clicked_filter_button
@@ -114,7 +140,7 @@ public class SortFilterActivity extends AppCompatActivity {
             if (intent.getStringExtra("filterMake") != null) {
                 makeText = intent.getStringExtra("filterMake");
                 makeFilterEditText.setText(makeText);
-                makeFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
+                makeFilterButton.setBackgroundColor(colorFilterApplied);
                 makePressed = true;
             }
             if (intent.getSerializableExtra("filterStartDate") != null) {
@@ -129,8 +155,12 @@ public class SortFilterActivity extends AppCompatActivity {
             if (intent.getStringExtra("filterDescription") != null) {
                 descriptionText = intent.getStringExtra("filterDescription");
                 descriptionFilterEditText.setText(descriptionText);
-                descriptionFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
+                descriptionFilterButton.setBackgroundColor(colorFilterApplied);
                 descriptionPressed = true;
+            }
+            if (intent.getSerializableExtra("filterTags") != null) {
+                setTagFilter((ArrayList<Tag>) intent.getSerializableExtra("filterTags"));
+
             }
             if (intent.getSerializableExtra("login") != null) {
                 currentUser = (User) intent.getSerializableExtra("login");
@@ -138,7 +168,7 @@ public class SortFilterActivity extends AppCompatActivity {
         }
 
         if (startDate != null && endDate != null) {
-            dateFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
+            dateFilterButton.setBackgroundColor(colorFilterApplied);
         }
 
         // store dropdown selection (how we will sort the items)
@@ -251,11 +281,12 @@ public class SortFilterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (makePressed) {
-                    makeFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.unclicked_filter_button));
+                    makeFilterButton.setBackgroundColor(colorFilterNotApplied);
                     makePressed = false;
                 }
                 else {
-                    makeFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
+                    makeText = makeFilterEditText.getText().toString();
+                    makeFilterButton.setBackgroundColor(colorFilterApplied);
                     makePressed = true;
                 }
             }
@@ -265,11 +296,11 @@ public class SortFilterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (datePressed) {
-                    dateFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.unclicked_filter_button));
+                    dateFilterButton.setBackgroundColor(colorFilterNotApplied);
                     datePressed = false;
                 }
                 else {
-                    dateFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
+                    dateFilterButton.setBackgroundColor(colorFilterApplied);
                     datePressed = true;
                 }
             }
@@ -279,11 +310,12 @@ public class SortFilterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (descriptionPressed) {
-                    descriptionFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.unclicked_filter_button));
+                    descriptionFilterButton.setBackgroundColor(colorFilterNotApplied);
                     descriptionPressed = false;
                 }
                 else {
-                    descriptionFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
+                    descriptionText = descriptionFilterEditText.getText().toString();
+                    descriptionFilterButton.setBackgroundColor(colorFilterApplied);
                     descriptionPressed = true;
                 }
             }
@@ -292,7 +324,11 @@ public class SortFilterActivity extends AppCompatActivity {
         filterByTagsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //applyTagsFilter(tags, adapter);
+                if (tagFilter.isEmpty()) {
+                    tagFilterDialog();
+                } else {
+                    setTagFilter(new ArrayList<>());
+                }
             }
         });
 
@@ -303,8 +339,9 @@ public class SortFilterActivity extends AppCompatActivity {
                 Intent myIntent = new Intent(SortFilterActivity.this, MainActivity.class);
                 makeText = makeFilterEditText.getText().toString();
                 descriptionText = descriptionFilterEditText.getText().toString();
-                putFieldsIntent(myIntent, makePressed, datePressed, descriptionPressed);
+                putFieldsIntent(myIntent, makePressed, datePressed, descriptionPressed, tagsPressed);
                 SortFilterActivity.this.startActivity(myIntent);
+                finish();
             }
         });
     }
@@ -317,7 +354,7 @@ public class SortFilterActivity extends AppCompatActivity {
      * @param descriptionPressed - true if "apply description filter" is toggled to on
      */
     private void putFieldsIntent(Intent myIntent, boolean makePressed,
-                                 boolean datePressed, boolean descriptionPressed) {
+                                 boolean datePressed, boolean descriptionPressed, boolean tagsPressed) {
         myIntent.putExtra("sortBy", dropdownSelection);
         myIntent.putExtra("sortOrder", sortOrder);
         myIntent.putExtra("login", currentUser);
@@ -330,6 +367,9 @@ public class SortFilterActivity extends AppCompatActivity {
         }
         if (descriptionPressed) {
             myIntent.putExtra("filterDescription", descriptionText);
+        }
+        if (tagsPressed) {
+            myIntent.putExtra("filterTags", tagFilter);
         }
     }
 
@@ -474,76 +514,91 @@ public class SortFilterActivity extends AppCompatActivity {
      * @param tags    Placeholder.
      * @param adapter Placeholder.
      */
-    public static void applyTagsFilter(Tag[] tags, ArrayAdapter<InventoryItem> adapter) {
-        // do nothing for now, implemented in part 4
+    public static void applyTagsFilter(ArrayList<Tag> tags, ArrayAdapter<InventoryItem> adapter) {
+        ArrayList<InventoryItem> itemsToRemove = new ArrayList<>();
+        for (int i = 0; i < adapter.getCount(); i++) {
+            InventoryItem item = adapter.getItem(i);
+            for (int j = 0; j < tags.size(); j++) {
+                if (!tags.get(j).getItemIds().contains(item.getFirebaseId())) {
+                    itemsToRemove.add(item);
+                    break;
+                }
+            }
+        }
+        for (InventoryItem item : itemsToRemove) {
+            adapter.remove(item);
+        }
+        adapter.notifyDataSetChanged();
     }
 
-//    private void tagFilterDialog() {
-//
-//        tagFilterDialog.setCancelable(false);
-//        tagFilter.setContentView(R.layout.add_tag_dialog);
-//
-//        // UI Elements
-//        EditText tagNameEditText = addTagDialog.findViewById(R.id.new_tag_name_editText);
-//        EditText tagPriorityEditText = addTagDialog.findViewById(R.id.new_tag_priority_editText);
-//        Button addTagDialogButton = addTagDialog.findViewById(R.id.add_tag_dialog_button);
-//        Button cancelDialogButton = addTagDialog.findViewById(R.id.cancel_dialog_button);
-//
-//        // Add tag button will create a new tag with the name specified in tagNameEditText
-//        addTagDialogButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                // Check tag name not empty
-//                String tagName = tagNameEditText.getText().toString();
-//                int priority = Integer.parseInt(tagPriorityEditText.getText().toString());
-//                if (tagName.isEmpty()) {
-//                    CharSequence toastText = "Tag name cannot be empty!";
-//                    Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
-//                    toast.show();
-//                    return;
-//                }
-//                // Check tag isn't a duplicate of an existing one
-//                boolean duplicate = false;
-//                ListIterator<com.example.omninventory.Tag> tagIter = appliedTagsListData.listIterator();
-//                while (tagIter.hasNext()) {
-//                    com.example.omninventory.Tag nextTag = tagIter.next();
-//                    if (tagName.equals(nextTag.getName())) {
-//                        duplicate = true;
-//                    }
-//                }
-//                tagIter = unappliedTagsListData.listIterator();
-//                while (tagIter.hasNext()) {
-//                    com.example.omninventory.Tag nextTag = tagIter.next();
-//                    if (tagName.equals(nextTag.getName())) {
-//                        duplicate = true;
-//                    }
-//                }
-//                if (duplicate) {
-//                    CharSequence toastText = "This tag already exists!";
-//                    Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
-//                    toast.show();
-//                    return;
-//                }
-//
-//                // If not empty and not a duplicate, create the tag and dismiss the dialog
-//                repo.addTag(new com.example.omninventory.Tag(tagName, currentUser.getUsername(), priority));
-//                CharSequence toastText = "Tag added successfully!";
-//                Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
-//                toast.show();
-//                addTagDialog.dismiss();
-//
-//
-//            }
-//        });
-//
-//        // The cancel button will dismiss the dialog without creating the tag
-//        cancelDialogButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                addTagDialog.dismiss();
-//            }
-//        });
-//
-//        addTagDialog.show();
-//    }
+    private void setTagFilter(ArrayList<Tag> tagFilter) {
+        this.tagFilter = tagFilter;
+
+        Button tagFilterButton = findViewById(R.id.filter_by_tags_button);
+        TextView tagFilterText = findViewById(R.id.tag_filter_text);
+
+        if (this.tagFilter.isEmpty()) {
+            tagFilterButton.setBackgroundColor(colorFilterNotApplied);
+            tagFilterText.setVisibility(View.GONE);
+            tagsPressed = false;
+        }
+        else {
+            String tagString = "";
+            for (int i = 0; i < tagFilter.size(); i++) {
+                tagString = String.join(" ", tagString, String.format("#%s", tagFilter.get(i).getName()));
+            }
+            tagFilterButton.setBackgroundColor(colorFilterApplied);
+            tagFilterText.setText(tagString);
+            tagFilterText.setVisibility(View.VISIBLE);
+            tagsPressed = true;
+        }
+    }
+
+    private void tagFilterDialog() {
+
+        tagFilterDialog.setCancelable(false);
+        tagFilterDialog.setContentView(R.layout.tag_filter_dialog);
+
+        InventoryRepository repo = new InventoryRepository();
+        ArrayList<Tag> selectedTags = new ArrayList<>();
+
+        // UI Elements
+        ListView tagList = tagFilterDialog.findViewById(R.id.tag_filter_list);
+        Button filterButton = tagFilterDialog.findViewById(R.id.tag_filter_dialog_button);
+
+        ArrayList<Tag> tagListData = new ArrayList<>();
+
+        TagAdapter tagListAdapter = new TagAdapter(this, tagListData);
+        tagList.setAdapter(tagListAdapter);
+
+        ListenerRegistration registration = repo.setupTagList(tagListAdapter);
+
+
+
+        tagList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Tag tag = tagListData.get(i);
+                if (tag.isSelected()) {
+                    tag.setSelected(false);
+                    selectedTags.remove(tag);
+                } else {
+                    tag.setSelected(true);
+                    selectedTags.add(tag);
+                }
+                // colours are set to reflect selection in TagAdapter
+                tagListAdapter.notifyDataSetChanged();
+            }
+        });
+
+        filterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setTagFilter(selectedTags);
+                tagFilterDialog.dismiss();
+            }
+        });
+
+        tagFilterDialog.show();
+    }
 }

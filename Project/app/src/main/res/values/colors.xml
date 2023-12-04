@@ -7,6 +7,7 @@
     <color name="gray_banner">#B6B6B6</color>
     <color name="gray_text">#8E8E8E</color>
     <color name="gray_background">#EFEFEF</color>
+    <color name="red">#D56E6E</color>
 
     <color name="light_blue_1">#9FE0F3</color>
     <color name="light_pink_1">#F3A8A8</color>
@@ -23,7 +24,6 @@
     <color name="dark_blue_1">#0038A8</color>
     <color name="dark_purple_1">#9B4F96</color>
 
-    <color name="ascending_descending_button">#306F71</color>
     <color name="unclicked_filter_button">#9FE0F3</color> <!-- Same as blue button -->
-    <color name="clicked_filter_button">#59AE3A</color>
+    <color name="clicked_filter_button">?colorPrimary</color>
 </resources>

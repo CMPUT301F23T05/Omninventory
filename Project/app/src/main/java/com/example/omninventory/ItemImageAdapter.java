@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -52,6 +53,7 @@ public class ItemImageAdapter extends RecyclerView.Adapter<ItemImageAdapter.View
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageContent;
+        ProgressBar loadingPlaceholder;
 
         /**
          * Constructor that gets the image content ImageView.
@@ -61,6 +63,7 @@ public class ItemImageAdapter extends RecyclerView.Adapter<ItemImageAdapter.View
             super(view);
             // Define click listener for the ViewHolder's View
             imageContent = view.findViewById(R.id.image_content);
+            loadingPlaceholder = view.findViewById(R.id.loading_placeholder);
         }
 
         /**
@@ -69,6 +72,14 @@ public class ItemImageAdapter extends RecyclerView.Adapter<ItemImageAdapter.View
          */
         public ImageView getImageView() {
             return imageContent;
+        }
+
+        /**
+         * Getter for loading progress bar placeholder ProgressBar.
+         * @return
+         */
+        public ProgressBar getLoadingPlaceholder() {
+            return loadingPlaceholder;
         }
     }
 
@@ -103,6 +114,9 @@ public class ItemImageAdapter extends RecyclerView.Adapter<ItemImageAdapter.View
 
         if (image != null && image.getUri() != null) {
             Log.d("ItemImageAdapter", String.format("Image %d can be displayed, uri is %s", position, image.getUri()));
+            // remove loading bar
+            holder.getLoadingPlaceholder().setVisibility(View.GONE);
+
             // set content field (image display) for this image from its URI
             // this works for both local URIs and internet firebase storage URIs
             Picasso.get()
@@ -113,12 +127,7 @@ public class ItemImageAdapter extends RecyclerView.Adapter<ItemImageAdapter.View
         }
         else {
             Log.d("ItemImageAdapter", String.format("Image %d not loaded yet", position));
-            // image not loaded yet; use placeholder
-            // seemingly images usually load fast enough that this is never visible. but hey
-            Picasso.get()
-                    .load(R.drawable.image_placeholder)
-                    .placeholder(R.drawable.image_placeholder)
-                    .into(imageContent);
+            // image not loaded yet
         }
     }
 

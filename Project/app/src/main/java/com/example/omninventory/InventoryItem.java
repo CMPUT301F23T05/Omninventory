@@ -100,6 +100,7 @@ public class InventoryItem implements Serializable {
     public InventoryItem(String firebaseId, String name, String description, String comment,
                          String make, String model, String serialNo, ItemValue value, ItemDate date,
                          ArrayList<Tag> tags, ArrayList<ItemImage> images, ArrayList<ItemImage> originalImages) {
+        Log.d("InventoryItem", "created with price " + value);
         // full constructor
         this.firebaseId = firebaseId;
         this.name = name;

@@ -6,7 +6,7 @@
         <item name="colorOnPrimary">@color/white</item>
 
         <item name="colorSecondary">@color/dark_blue_1</item>
-        <item name="colorOnSecondary">@color/white</item>
+        <item name="colorOnSecondary">@color/white</item>A
 
         <item name="colorTertiary">@color/dark_purple_1</item>
         <item name="colorOnTertiary">@color/white</item>

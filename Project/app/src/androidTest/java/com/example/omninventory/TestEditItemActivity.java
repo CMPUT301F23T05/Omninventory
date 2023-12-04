@@ -2,6 +2,7 @@ package com.example.omninventory;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.longClick;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
@@ -24,6 +25,7 @@ import androidx.test.filters.LargeTest;
 
 import org.hamcrest.Matchers;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,6 +44,14 @@ public class TestEditItemActivity {
             ActivityScenarioRule<MainActivity>(MainActivity.class);
     TestItems testItems = new TestItems();
     boolean singleItem = false;
+
+    @Before
+    public void setup() {
+        onView(withId(R.id.login_username_edit_text)).perform(typeText("Tester"));
+        onView(withId(R.id.login_password_edit_text))
+                .perform(typeText("Hahaha123!"), closeSoftKeyboard());
+        onView(withId(R.id.login_btn)).perform(click());
+    }
 
     @After
     public void cleanup(){
@@ -124,7 +134,8 @@ public class TestEditItemActivity {
         onView(withId(R.id.item_date_button)).perform(click());
 
         // Set the date on the DatePicker
-        onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(2002, 2, 22));
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
+                .perform(PickerActions.setDate(2002, 2, 22));
 
         // Click the OK button on the dialog
         onView(withId(android.R.id.button1)).perform(click());

@@ -14,8 +14,11 @@ import static org.hamcrest.Matchers.allOf;
 import static java.lang.Thread.sleep;
 
 import androidx.test.espresso.action.ViewActions;
+import androidx.test.ext.junit.rules.ActivityScenarioRule;
 
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.junit.Rule;
 
 import java.util.Arrays;
 import java.util.List;

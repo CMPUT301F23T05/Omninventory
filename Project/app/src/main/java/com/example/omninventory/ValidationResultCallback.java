@@ -15,5 +15,5 @@ public interface ValidationResultCallback {
      * @param message An error message or some other description to be handled by the implementing
      *                class.
      */
-    void onValidationResult(boolean isValid, String message);
+    void onValidationResult(boolean isValid, String message, User user);
 }
