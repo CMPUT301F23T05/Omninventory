@@ -111,7 +111,7 @@ public class ProfileActivity extends AppCompatActivity implements UpdateUsername
         Log.d("ProfileActivity", "creating dialog for changing username");
 
         // UI Elements
-        TextView dialogTitle = changeUsernameDialog.findViewById(R.id.change_name_title);
+        TextView dialogTitle = changeUsernameDialog.findViewById(R.id.delete_items_text);
         EditText newUsernameEditText = changeUsernameDialog.findViewById(R.id.change_name_editText);
         Button okDialogButton = changeUsernameDialog.findViewById(R.id.ok_dialog_button);
         Button cancelDialogButton = changeUsernameDialog.findViewById(R.id.cancel_dialog_button);

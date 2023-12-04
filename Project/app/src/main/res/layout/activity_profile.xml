@@ -68,15 +68,17 @@
                 </LinearLayout>
             </LinearLayout>
 
+
             <TextView
                 android:id="@+id/change_username_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
+                android:layout_marginTop="14dp"
                 android:clickable="true"
                 android:paddingLeft="5dp"
                 android:text="Change username"
-                android:textColor="@color/black"
+                android:textColor="?colorOnSurface"
                 android:textSize="20sp" />
 
             <View
@@ -84,14 +86,14 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:background="@color/gray_banner" />
+                android:background="?colorPrimary" />
+
 
             <TextView
                 android:id="@+id/change_name_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
-                android:layout_marginTop="14dp"
                 android:clickable="true"
                 android:paddingLeft="5dp"
                 android:text="Change name"
