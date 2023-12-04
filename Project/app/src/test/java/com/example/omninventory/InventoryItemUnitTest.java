@@ -8,6 +8,10 @@ import org.junit.Test;
 
 import java.util.Calendar;
 
+/**
+ * Unit tests for InventoryItem.
+ * @author Kevin
+ */
 public class InventoryItemUnitTest {
 
     public InventoryItem item;

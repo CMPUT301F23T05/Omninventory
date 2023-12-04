@@ -5,6 +5,10 @@ import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Test;
 
+/**
+ * Unit tests for Utils.
+ * @author Castor
+ */
 public class UtilsUnitTest {
 
     /**

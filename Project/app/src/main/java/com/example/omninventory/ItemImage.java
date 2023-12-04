@@ -15,6 +15,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 
+/**
+ * Encapsulates functionality related to an image attached to an item; the URI, path in storage
+ * and/or on system, etc.
+ *
+ * @auther Castor
+ */
 public class ItemImage implements Serializable {
 
     // uri of downloaded image. might get de-set whenever this ItemImage passed between activities,

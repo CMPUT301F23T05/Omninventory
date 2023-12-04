@@ -9,6 +9,10 @@ import org.junit.runners.JUnit4;
 
 import java.util.Calendar;
 
+/**
+ * Unit tests for ItemDate.
+ * @author Kevin
+ */
 public class ItemDateUnitTest {
 
     Calendar temp = Calendar.getInstance();

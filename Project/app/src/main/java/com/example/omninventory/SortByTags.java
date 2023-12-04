@@ -3,6 +3,10 @@ package com.example.omninventory;
 import java.util.Comparator;
 import java.util.Iterator;
 
+/**
+ * Implements comparing an InventoryItem by Tags.
+ * @author Patrick
+ */
 public class SortByTags implements Comparator<InventoryItem> {
     @Override
     public int compare(InventoryItem ie1, InventoryItem ie2) {
