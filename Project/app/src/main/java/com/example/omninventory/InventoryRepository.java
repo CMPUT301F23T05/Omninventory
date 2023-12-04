@@ -763,7 +763,22 @@ public class InventoryRepository {
                             }
 
                             // write the updated item back to the db
+                            item.setOriginalImages(item.getImages());
                             updateInventoryItem(item);
+//                            updateInventoryItem(new InventoryItem(
+//                                    item.getFirebaseId(),
+//                                    item.getName(),
+//                                    item.getDescription(),
+//                                    item.getComment(),
+//                                    item.getMake(),
+//                                    item.getModel(),
+//                                    item.getSerialNo(),
+//                                    item.getValue(),
+//                                    item.getDate(),
+//                                    item.getTags(),
+//                                    item.getImages(),
+//                                    item.getImages()
+//                            ));
                         }
                     });
         }
