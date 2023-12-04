@@ -4,6 +4,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -32,7 +34,11 @@ public class ManageTagsActivity extends AppCompatActivity {
     private ListView tagList;
     private TextView titleText;
     private Dialog addTagDialog;
+
+    private Dialog deleteTagsDialog;
     private User currentUser;
+
+    private ArrayList<Tag> selectedTags;
 
     /**
      * Method called on Activity creation. Contains most of the logic of this Activity; programmatically
@@ -45,6 +51,7 @@ public class ManageTagsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manage_tags);
 
+        selectedTags = new ArrayList<>();
         // === set up database
         repo = new InventoryRepository();
 
@@ -55,6 +62,7 @@ public class ManageTagsActivity extends AppCompatActivity {
         // === UI setup
         titleText.setText(getString(R.string.manage_tags_title_text)); // set title text
         addTagDialog = new Dialog(this);
+        deleteTagsDialog = new Dialog(this);
 
 //        // add taskbar
 //        LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -106,6 +114,31 @@ public class ManageTagsActivity extends AppCompatActivity {
             }
         });
 
+        deleteTagButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                deleteTagsDialog();
+            }
+        });
+
+        // on long press on item list, select item
+        tagList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Tag tag = tagListData.get(position);
+                if (tag.isSelected()) {
+                    tag.setSelected(false);
+                    selectedTags.remove(tag);
+                } else {
+                    tag.setSelected(true);
+                    selectedTags.add(tag);
+                }
+                // colours are set to reflect selection in TagAdapter
+                tagListAdapter.notifyDataSetChanged();
+                return true;
+            }
+        });
+
     }
 
     /**
@@ -121,9 +154,9 @@ public class ManageTagsActivity extends AppCompatActivity {
         EditText tagPriorityEditText = addTagDialog.findViewById(R.id.new_tag_priority_editText);
         Button addTagDialogButton = addTagDialog.findViewById(R.id.add_tag_dialog_button);
         Button cancelDialogButton = addTagDialog.findViewById(R.id.cancel_dialog_button);
-        TextView dialogHeader = addTagDialog.findViewById(R.id.filter_by_tags_header_text);
-
+        TextView dialogHeader = addTagDialog.findViewById(R.id.dialog_tag_text);
         if (tag != null) {
+            Log.d("ManageTagsActivity", "ManageTagsActivity is here");
             tagNameEditText.setText(tag.getName());
             tagPriorityEditText.setText(Long.toString(tag.getPriority()));
             dialogHeader.setText("EDIT TAG");
@@ -188,4 +221,78 @@ public class ManageTagsActivity extends AppCompatActivity {
 
         addTagDialog.show();
     }
+
+    /**
+     * Displays dialog once the delete icon is clicked. Gives the user options to either delete the
+     * tags currently selected or to cancel the deletion.
+     */
+    private void deleteTagsDialog() {
+        deleteTagsDialog.setCancelable(false);
+        deleteTagsDialog.setContentView(R.layout.delete_dialog);
+
+        // UI Elements of Dialog
+        TextView deleteTagsText = deleteTagsDialog.findViewById(R.id.delete_message);
+        Button deleteButton = deleteTagsDialog.findViewById(R.id.delete_dialog_button);
+        Button cancelButton = deleteTagsDialog.findViewById(R.id.cancel_dialog_button);
+        TextView deleteTagsHeader = deleteTagsDialog.findViewById(R.id.delete_items_text);
+
+        deleteTagsHeader.setText("DELETE TAGS");
+        // Fill out TextView with information
+        String defaultText = "Are you sure you would like to delete the selected tags (";
+        int index = 0;
+        for (Tag selectedTag : selectedTags) {
+            defaultText += selectedTag.getName();
+            if (index == selectedTags.size() - 1) {
+                defaultText += ")?";
+            } else {
+                defaultText += ", ";
+            }
+            index += 1;
+        }
+        deleteTagsText.setText(defaultText);
+
+        // Make background transparent for our rounded corners
+        deleteTagsDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        // Delete the selected tags
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // Update the firestore database for the user's tags once deleting the selected tags
+                for (Tag selectedTag : selectedTags) {
+                    if (selectedTag != null) {
+                        repo.deleteTag(selectedTag, currentUser.getUsername());
+                    }
+                    tagListData.remove(selectedTag);
+                }
+
+                // Reset selection of items and exit dialog
+                resetSelectedTags();
+                deleteTagsDialog.dismiss();
+            }
+        });
+
+        // Cancel the deletion of the selected tags the selected tags
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resetSelectedTags();
+                deleteTagsDialog.dismiss();
+            }
+        });
+
+        deleteTagsDialog.show();
+    }
+
+    /**
+     * Deselect all currently selected items in the ListView.
+     */
+    private void resetSelectedTags() {
+        for (Tag selectedTag: selectedTags) {
+            selectedTag.setSelected(false);
+        }
+        selectedTags.clear();
+    }
+
 }
