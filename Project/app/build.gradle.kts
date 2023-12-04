@@ -32,6 +32,7 @@ android {
     }
 }
 
+
 dependencies {
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
@@ -39,7 +40,7 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
+    implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.github.yuriy-budiyev:code-scanner:2.3.2")
     implementation("com.google.android.gms:play-services-mlkit-text-recognition:17.0.0")
@@ -48,4 +49,12 @@ dependencies {
     implementation("androidx.camera:camera-lifecycle:1.1.0-beta01")
     implementation("androidx.camera:camera-view:1.0.0-alpha30")
     compileOnly(files("${android.sdkDirectory}/platforms/${android.compileSdkVersion}/android.jar"))
+    implementation("com.google.firebase:firebase-storage")
+    implementation ("com.squareup.picasso:picasso:2.8")
+    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.4.0") {
+        exclude(group = "com.google.code.findbugs")
+        exclude(group = "com.google.guava", module = "guava")
+        exclude(group = "com.google.protobuf", module = "protobuf-lite")
+        // Add any other exclusions here as necessary
+    }
 }

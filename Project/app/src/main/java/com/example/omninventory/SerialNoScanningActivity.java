@@ -1,12 +1,9 @@
 package com.example.omninventory;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Rect;
 import android.media.Image;
 import android.os.Bundle;
@@ -47,7 +44,8 @@ import androidx.camera.core.ImageAnalysis;
 import androidx.lifecycle.LifecycleOwner;
 
 /**
- * Activity for scanning serial numbers from an image taken from the camera.
+ * Activity for scanning serial numbers from an image taken from the camera. Scanning is done
+ * using Google's computer vision "mlkit" package (https://developers.google.com/ml-kit/vision/text-recognition/v2).
  *
  * @author Zachary
  */
@@ -78,8 +76,8 @@ public class SerialNoScanningActivity extends AppCompatActivity {
 
     /**
      * Method called on Activity creation. Contains most of the logic of this Activity; programmatically
-     * modifying UI elements, creating Intents to move to other Activites, and setting up connection
-     * to the database.
+     * modifying UI elements, creating Intents to move back to MainActivity, connecting to the
+     * camera and setting an image analyzer.
      * @param savedInstanceState Information about this Activity's saved state.
      */
     @Override
@@ -94,7 +92,7 @@ public class SerialNoScanningActivity extends AppCompatActivity {
         cameraExecutor = Executors.newSingleThreadExecutor();
 
         Button cancelButton = findViewById(R.id.serialno_cancel_button);
-        // Back button that takes user back to EditActivity if no barcode is scanned
+        // Back button that takes user back to EditActivity if no serial number is scanned
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -103,6 +101,7 @@ public class SerialNoScanningActivity extends AppCompatActivity {
             }
         });
 
+        // confirm button sends scanned serial number back to EditActivity
         confirmButton = findViewById(R.id.serialno_confirm_button);
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,6 +121,11 @@ public class SerialNoScanningActivity extends AppCompatActivity {
         startCamera(previewView);
     }
 
+    /**
+     * Connects to the phone's camera and displays output from the camera to the screen's PreviewView.
+     * Images from the camera's feed are sent to the analyzer periodically to do the scanning.
+     * @param previewView Element on the screen that the camera's video feed is displayed to.
+     */
     private void startCamera(PreviewView previewView) {
         ListenableFuture<ProcessCameraProvider> cameraProviderFuture = ProcessCameraProvider.getInstance(this);
 
@@ -133,9 +137,11 @@ public class SerialNoScanningActivity extends AppCompatActivity {
                 CameraSelector cameraSelector = new CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK).build();
                 ImageAnalysis imageAnalysis = new ImageAnalysis.Builder().build();
 
+                // connect camera feed to scanner (TextAnalyzer.analyze)
                 imageAnalysis.setAnalyzer(cameraExecutor, new TextAnalyzer());
                 cameraProvider.bindToLifecycle((LifecycleOwner)this, cameraSelector, preview, imageAnalysis);
 
+                // send camera feed to PreviewView element
                 preview.setSurfaceProvider(previewView.getSurfaceProvider());
             } catch (Exception e) {
                 e.printStackTrace();
@@ -143,9 +149,20 @@ public class SerialNoScanningActivity extends AppCompatActivity {
         }, ContextCompat.getMainExecutor(this));
     }
 
+    /**
+     * Inner class that implements the mlkit Analyzer interface. Images from the camera's feed are
+     * periodically sent to the analyze method where they are interpreted and scanned for
+     * serial numbers.
+     */
     private class TextAnalyzer implements ImageAnalysis.Analyzer {
         private final TextRecognizer textRecognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
 
+        /**
+         * Images from the camera's feed are periodically sent here to be scanned for serial numbers.
+         * Images are automatically scanned for text. If the center of the text is inside the
+         * bouding box and is a valid potential serial number, it is accepted as one.
+         * @param imageProxy The image to analyze
+         */
         @OptIn(markerClass = ExperimentalGetImage.class) @Override
         public void analyze(@NonNull ImageProxy imageProxy) {
             @SuppressLint("UnsafeExperimentalUsageError") Image mediaImage = imageProxy.getImage();
@@ -153,6 +170,8 @@ public class SerialNoScanningActivity extends AppCompatActivity {
                 InputImage image = InputImage.fromMediaImage(mediaImage, imageProxy.getImageInfo().getRotationDegrees());
                 textRecognizer.process(image)
                         .addOnSuccessListener(result -> {
+                            // text is found in the image. For every line of text
+                            // in the bounding box, pass it to handleScan()
                             List<Text.TextBlock> blocks = result.getTextBlocks();
                             for (Text.TextBlock block : blocks) {
                                 if (textInBox(block.getBoundingBox(), image.getWidth(), image.getHeight())) {
@@ -170,8 +189,14 @@ public class SerialNoScanningActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Check if the scanned text is a valid potential serial number and pass it to the intent
+     * that will be sent back to EditActivity
+     * @param text Scanned text from the camera
+     */
     private void handleScan(String text) {
         text = text.replace(" ", "");
+        // serial numbers are alphanumeric and at least 6 characters long
         if (text.length() >= 6 && text.matches("[a-zA-Z0-9]*")) {
             try {
                 Handler handler = new Handler(Looper.getMainLooper());
@@ -179,6 +204,7 @@ public class SerialNoScanningActivity extends AppCompatActivity {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
+                        // serial number is valid. Add it to the intent and make the confirm button visible
                         String displayText = "Parsed Serial Number: " + finalText;
                         parsedSerialNoText.setText(displayText);
                         scannedText = finalText;
@@ -192,7 +218,16 @@ public class SerialNoScanningActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Check whether a scanned text element's center point is contained in the bounding box.
+     * @param textBounds Rectangle that represents the bounds of the scanned text element
+     * @param imageWidth Width of the image in pixels
+     * @param imageHeight Height of the image in pixels
+     * @return True if the text element is in the bounding box, false otherwise.
+     */
     private boolean textInBox(Rect textBounds, float imageWidth, float imageHeight) {
+        // need to be operating on the same scale. textbounds is based on image's scale,
+        // scanningBox is based on phone's scale.
         float widthScale = imageWidth/previewView.getWidth();
         float heightScale = imageHeight/previewView.getHeight();
 

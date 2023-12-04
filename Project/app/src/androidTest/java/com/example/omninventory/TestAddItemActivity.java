@@ -21,11 +21,13 @@ import static java.lang.Thread.sleep;
 import android.widget.DatePicker;
 
 import androidx.test.espresso.action.ViewActions;
+import androidx.test.espresso.contrib.PickerActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
 import org.hamcrest.Matchers;
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,10 +52,10 @@ public class TestAddItemActivity {
     /**
      * Clean up for the item added during test
      */
-    private void cleanup(){
+    @After
+    public void cleanup(){
         onView(withText("AddItemTest"))
-                .perform(scrollTo())
-                .check(matches(isDisplayed()));
+                .perform(scrollTo());
 
         onView(withText("AddItemTest")).perform(longClick());
         onView(allOf(withId(R.id.delete_item_button), isDisplayed()))
@@ -86,11 +88,10 @@ public class TestAddItemActivity {
         onView(withId(R.id.save_button)).perform(click());
 
         //validate in the inventory screen that the item was added
-        //may crash if the database is not reset before hand.
-        //todo: update to check with onData instead
-        onView(withText("AddItemTest")).check(matches(isDisplayed()));
+        onView(withText("AddItemTest"))
+                .perform(scrollTo())
+                .check(matches(isDisplayed()));
 
-        cleanup();
     }
 
     @Test
@@ -121,6 +122,15 @@ public class TestAddItemActivity {
         onView(withId(R.id.item_serial_edittext)).perform(ViewActions.
                 typeText("2222"));
 
+        // Click the button to open the DatePickerDialog
+        onView(withId(R.id.item_date_button)).perform(click());
+
+        // Set the date on the DatePicker
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(2002, 2, 22));
+
+        // Click the OK button on the dialog
+        onView(withId(android.R.id.button1)).perform(click());
+
         //add the item
         onView(withId(R.id.save_button)).perform(click());
 
@@ -135,6 +145,7 @@ public class TestAddItemActivity {
         onView(withText("AddItemTest")).perform(click());
 
         //check in item info
+        onView(withText("2002-02-22")).check(matches(isDisplayed()));
         onView(withText("AddItemTest description test")).check(matches(isDisplayed()));
         onView(withText("AddItemTest Comment test")).check(matches(isDisplayed()));
         onView(withText("Make Test")).check(matches(isDisplayed()));
@@ -150,7 +161,6 @@ public class TestAddItemActivity {
 
         onView(withId(R.id.back_button)).perform(click());
 
-        cleanup();
     }
 
     @Test
@@ -212,7 +222,6 @@ public class TestAddItemActivity {
 
         onView(withId(R.id.back_button)).perform(click());
 
-        cleanup();
     }
 
 }
