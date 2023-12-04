@@ -167,7 +167,7 @@ public class InventoryRepository {
                 doc.getString("make"),
                 doc.getString("model"),
                 doc.getString("serialno"),
-                new ItemValue(doc.getLong("value)")), // convert to ItemValue
+                new ItemValue(doc.getLong("value")), // convert to ItemValue
                 new ItemDate(doc.getDate("date")), // convert to ItemDate
                 tagList,
                 images

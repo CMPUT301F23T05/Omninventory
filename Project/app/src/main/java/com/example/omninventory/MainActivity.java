@@ -11,6 +11,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -285,6 +286,9 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
             index += 1;
         }
         deleteItemsText.setText(defaultText);
+
+        // make background transparent for our rounded corners
+        deleteDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override

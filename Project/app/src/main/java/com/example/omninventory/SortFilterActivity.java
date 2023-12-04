@@ -3,11 +3,15 @@ package com.example.omninventory;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.nfc.Tag;
 import android.os.Bundle;
+
+import androidx.annotation.ColorInt;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -81,6 +85,7 @@ public class SortFilterActivity extends AppCompatActivity {
         titleText.setText(getString(R.string.sort_filter_title_text));
 
         final Spinner sortDropdown = findViewById(R.id.sort_dropdown_spinner);
+
         // ArrayAdapter for dropdown choices. Choices stored in strings.xml
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 this,
@@ -91,10 +96,20 @@ public class SortFilterActivity extends AppCompatActivity {
         sortDropdown.setAdapter(adapter);
 
         TextView startDateText = findViewById(R.id.start_date_text);
-        Button startDateBtn = findViewById(R.id.start_date_button);
+        ImageButton startDateBtn = findViewById(R.id.start_date_button);
 
         TextView endDateText = findViewById(R.id.end_date_text);
-        Button endDateBtn = findViewById(R.id.end_date_button);
+        ImageButton endDateBtn = findViewById(R.id.end_date_button);
+
+        // ==== get theme colours for setting button colours on selection
+        Resources.Theme theme = this.getTheme();
+        TypedValue typedValue = new TypedValue();
+
+        theme.resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true);
+        @ColorInt int colorFilterApplied = typedValue.data;
+
+        theme.resolveAttribute(com.google.android.material.R.attr.colorSecondary, typedValue, true);
+        @ColorInt int colorFilterNotApplied = typedValue.data;
 
         // to restore previous selections, get the data from intent
         // if restoring value, set button background color to R.color.clicked_filter_button
@@ -114,7 +129,7 @@ public class SortFilterActivity extends AppCompatActivity {
             if (intent.getStringExtra("filterMake") != null) {
                 makeText = intent.getStringExtra("filterMake");
                 makeFilterEditText.setText(makeText);
-                makeFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
+                makeFilterButton.setBackgroundColor(colorFilterApplied);
                 makePressed = true;
             }
             if (intent.getSerializableExtra("filterStartDate") != null) {
@@ -129,7 +144,7 @@ public class SortFilterActivity extends AppCompatActivity {
             if (intent.getStringExtra("filterDescription") != null) {
                 descriptionText = intent.getStringExtra("filterDescription");
                 descriptionFilterEditText.setText(descriptionText);
-                descriptionFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
+                descriptionFilterButton.setBackgroundColor(colorFilterApplied);
                 descriptionPressed = true;
             }
             if (intent.getSerializableExtra("login") != null) {
@@ -138,7 +153,7 @@ public class SortFilterActivity extends AppCompatActivity {
         }
 
         if (startDate != null && endDate != null) {
-            dateFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
+            dateFilterButton.setBackgroundColor(colorFilterApplied);
         }
 
         // store dropdown selection (how we will sort the items)
@@ -251,11 +266,12 @@ public class SortFilterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (makePressed) {
-                    makeFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.unclicked_filter_button));
+                    makeFilterButton.setBackgroundColor(colorFilterNotApplied);
                     makePressed = false;
                 }
                 else {
-                    makeFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
+                    makeText = makeFilterEditText.getText().toString();
+                    makeFilterButton.setBackgroundColor(colorFilterApplied);
                     makePressed = true;
                 }
             }
@@ -265,11 +281,11 @@ public class SortFilterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (datePressed) {
-                    dateFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.unclicked_filter_button));
+                    dateFilterButton.setBackgroundColor(colorFilterNotApplied);
                     datePressed = false;
                 }
                 else {
-                    dateFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
+                    dateFilterButton.setBackgroundColor(colorFilterApplied);
                     datePressed = true;
                 }
             }
@@ -279,11 +295,12 @@ public class SortFilterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (descriptionPressed) {
-                    descriptionFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.unclicked_filter_button));
+                    descriptionFilterButton.setBackgroundColor(colorFilterNotApplied);
                     descriptionPressed = false;
                 }
                 else {
-                    descriptionFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
+                    descriptionText = descriptionFilterEditText.getText().toString();
+                    descriptionFilterButton.setBackgroundColor(colorFilterApplied);
                     descriptionPressed = true;
                 }
             }
