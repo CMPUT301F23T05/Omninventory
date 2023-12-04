@@ -12,6 +12,10 @@ public class InventoryItemUnitTest {
 
     public InventoryItem item;
 
+    /**
+     * setup for inventory item tests
+     * @author Kevin
+     */
     @Before
     public void setUp(){
         Calendar c1 = Calendar.getInstance();
@@ -31,6 +35,10 @@ public class InventoryItemUnitTest {
         );
     }
 
+    /**
+     * Testing getters and setters for inventory item
+     * @author Kevin
+     */
     @Test
     public void testGetterSetter(){
 

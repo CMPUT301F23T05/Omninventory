@@ -7,6 +7,10 @@ import org.junit.Test;
 
 public class ItemValueUnitTest {
 
+    /**
+     * Unit test for Item value
+     * @author Castor Shem
+     */
     @Test
     public void test(){
         ItemValue tester = new ItemValue("4500");

@@ -7,6 +7,10 @@ import org.junit.Test;
 
 public class UtilsUnitTest {
 
+    /**
+     * Unit test for password validation
+     * @author Castor
+     */
     @Test
     public void testUtilPassword(){
 
@@ -22,6 +26,10 @@ public class UtilsUnitTest {
         assertEquals(Utils.validatePassword("ABCDEf10-"), true);
     }
 
+    /**
+     * Unit test for Sha256
+     * @author castor
+     */
     @Test
     public void testUtilSha256(){
         // same hash

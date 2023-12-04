@@ -13,11 +13,19 @@ public class ItemDateUnitTest {
 
     Calendar temp = Calendar.getInstance();
 
+    /**
+     * setup for item date
+     * @author Kevin
+     */
     @Before
     public void setUp(){
         temp.set(2022,02,22);
     }
 
+    /**
+     * UnitTest for Item date
+     * @author Kevin
+     */
     @Test
     public void test(){
         ItemDate tester = new ItemDate(temp);

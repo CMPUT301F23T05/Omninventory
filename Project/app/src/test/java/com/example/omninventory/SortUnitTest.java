@@ -14,6 +14,10 @@ public class SortUnitTest {
     private InventoryItem item2;
     private InventoryItem item3;
 
+    /**
+     * Set up unit test for sort
+     * @author Kevin
+     */
     @Before
     public void setUp(){
 
@@ -66,6 +70,10 @@ public class SortUnitTest {
         );
     }
 
+    /**
+     * Unit test sort date
+     * @author Kevin
+     */
     @Test
     public void testSortDate(){
         SortByDate sorter = new SortByDate();
@@ -74,6 +82,10 @@ public class SortUnitTest {
         assertEquals(0,sorter.compare(item2,item2));
     }
 
+    /**
+     * unit test for sorting description
+     * @author Kevin
+     */
     @Test
     public void testSortDescription(){
         SortByDescription sorter = new SortByDescription();
@@ -82,6 +94,10 @@ public class SortUnitTest {
         assertEquals(0,sorter.compare(item2,item2));
     }
 
+    /**
+     * unit test for sorting Make
+     * @author Kevin
+     */
     @Test
     public void testSortMake(){
         SortByMake sorter = new SortByMake();
@@ -90,6 +106,10 @@ public class SortUnitTest {
         assertEquals(0,sorter.compare(item2,item2));
     }
 
+    /**
+     * unit test for sorting Value
+     * @author Kevin
+     */
     @Test
     public void testSortValue(){
         SortByValue sorter = new SortByValue();
