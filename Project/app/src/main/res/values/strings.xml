@@ -9,6 +9,7 @@
     <string name="sort_filter_title_text">SORT AND FILTER</string>
     <string name="signup_title_text">SIGN UP</string>
     <string name="login_title_text">LOG IN</string>
+    <string name="profile_title_text">USER PROFILE</string>
     <string name="manage_tags_title_text">MANAGE TAGS</string>
     <string name="apply_tags_title_text">APPLY TAGS</string>
 
@@ -25,6 +26,18 @@
     <string name="save_button_label">Save Button</string>
     <string name="delete_tag_button_label">Delete Tag Button</string>
     <string name="add_tag_button_label">Add Tag Button</string>
+
+    <!-- Text in ProfileActivity -->
+    <string name="profile_picture">Profile picture</string>
+    <string name="username">Username</string>
+    <string name="full_name">Full Name</string>
+    <string name="change_password_title">CHANGE PASSWORD</string>
+    <string name="current_password_hint">Current password</string>
+    <string name="new_password_hint">New password</string>
+    <string name="confirm_new_password_hint">Confirm new password</string>
+    <string name="ok_dialog_button">DONE</string>
+    <string name="change_name_dialog_title">CHANGE NAME</string>
+    <string name="change_name_hint">Name</string>
 
     <!-- Text in DetailsActivity and EditActivity -->
     <string name="item_name_head">Item Name</string>
@@ -65,6 +78,7 @@
         <item>Description</item>
         <item>Make</item>
         <item>Estimated Value</item>
+        <item>Tags</item>
     </string-array>
 
     <!-- Text in apply tags activity -->
@@ -83,5 +97,9 @@
 
     <!-- Text in barcode scan -->
     <string name="barcode_text">SCAN THE BARCODE WITHIN THE WHITE FRAME ABOVE</string>
+
+    <!-- Text in serialno scan -->
+    <string name="serialno_scanning_text">SCAN THE SERIAL NUMBER WITHIN THE BLACK BOX ABOVE</string>
+    <string name="confirm_button_text">CONFIRM</string>
 
 </resources>

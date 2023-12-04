@@ -84,6 +84,7 @@ public class TestDeleteItemActivity {
                 .perform(click());
         onView(withId(R.id.delete_dialog_button)).perform(click());
 
+        //stall is required to update the database properly
         try {
             Thread.sleep(2000); // Sleep for 1 second
         } catch (InterruptedException e) {
@@ -96,7 +97,6 @@ public class TestDeleteItemActivity {
         onView(withText("TestItem1")).check(doesNotExist());
         onView(withText("TestItem2")).check(doesNotExist());
         onView(withText("TestItem3")).check(doesNotExist());
-
 
     }
 
