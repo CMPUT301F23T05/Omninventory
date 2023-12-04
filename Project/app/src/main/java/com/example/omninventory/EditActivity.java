@@ -489,7 +489,7 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
      */
     public void onImageDownloadFailed(int pos) {
         // just keep trying to download the image
-        Log.d("EditActivity", String.format("onImageDownloadFailed called for pos %d, trying again after 1s...", pos));
+        Log.d("EditActivity", String.format("onImageDownloadFailed called for pos %d, trying again...", pos));
 
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -497,7 +497,7 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
             public void run() {
                 repo.attemptDownloadImage(currentItem, pos, EditActivity.this);
             }
-        }, 750); // try again after 0.75s
+        }, 1500); // try again after 1.5s
     }
 
     /**
@@ -509,15 +509,14 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
         String imageFileName = "omninventory";
 
         // storage directory on device
-        File storageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DCIM), "Camera");
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
 
         File imageFile;
         try {
             imageFile = File.createTempFile(imageFileName, ".jpg", storageDir);
         }
         catch (IOException e) {
-            Log.e("EditActivity", "error creating new image file");
+            Log.e("EditActivity", "error creating new image file", e);
             return null;
         }
 

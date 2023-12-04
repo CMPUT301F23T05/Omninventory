@@ -11,6 +11,7 @@ import android.content.res.Resources;
 import android.graphics.Color;
 
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
@@ -291,6 +292,9 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         }
         deleteItemsText.setText(defaultText);
 
+        // make background transparent for our rounded corners
+        deleteDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -348,8 +352,8 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
      * are updated when items are actually loaded in asynchronously from Firestore.
      */
     public void onItemListUpdate() {
-        this.calcValue();
         this.sortAndFilter();
+        this.calcValue();
     }
 
     /**

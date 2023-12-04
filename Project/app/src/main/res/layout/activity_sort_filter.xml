@@ -6,187 +6,352 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".DetailsActivity">
+    tools:context=".SortFilterActivity">
 
     <!--Override the android:text attribute in Activity code to "SORT AND FILTER"-->
     <include layout="@layout/title_bar"/>
 
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/act_details_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="100"
-        android:layout_gravity="center"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
 
-        <Spinner
-            android:id="@+id/sort_dropdown_spinner"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:spinnerMode="dropdown"
-            android:layout_marginTop="5dp"/>
-
-        <Button
-            android:id="@+id/asc_desc_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/ascending"
-            android:layout_marginTop="5dp"
-            android:backgroundTint="@color/ascending_descending_button">
-        </Button>
-
-        <TextView
-            android:id="@+id/make_text"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/sort_dropdown_spinner"
-            android:layout_marginTop="10dp">
-        </TextView>
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingHorizontal="14dp">
 
-        <EditText
-            android:id="@+id/make_filter_edit_text"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:autofillHints="@string/make"
-            android:hint="Enter make filter here"
-            android:theme="@style/item_edit_edittext"></EditText>
+            <View
+                android:id="@+id/sort_line_1"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="?colorOnSurface"
+                app:layout_constraintBottom_toBottomOf="@+id/sort_text"
+                app:layout_constraintEnd_toStartOf="@+id/sort_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/sort_text" />
 
-        <Button
-            android:layout_gravity="center"
-            android:id="@+id/add_make_filter_button"
-            android:backgroundTint="@color/unclicked_filter_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="@string/make_filter_button_text"
-            ></Button>
+            <TextView style="@style/gray_text"
+                android:id="@+id/sort_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="24dp"
+                android:text="Sort Items"
+                android:textColor="?colorOnSurface"
+                app:layout_constraintEnd_toStartOf="@+id/sort_line_2"
+                app:layout_constraintStart_toEndOf="@+id/sort_line_1"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:id="@+id/date_button_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp">
+            <View
+                android:id="@+id/sort_line_2"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="?colorOnSurface"
+                app:layout_constraintBottom_toBottomOf="@+id/sort_text"
+                app:layout_constraintStart_toEndOf="@+id/sort_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/sort_text" />
 
             <LinearLayout
+                android:id="@+id/sort_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                app:layout_constraintTop_toBottomOf="@+id/sort_text">
 
-
-                <TextView
-
-                    android:id="@+id/start_date_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="10"
-                    android:text="yyyy-mm-dd"></TextView>
-
-                <!-- change to image button later -->
-                <Button
-                    android:layout_gravity="center"
-                    android:id="@+id/start_date_button"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp"
-                    android:layout_width="wrap_content"
+                <Spinner
+                    android:id="@+id/sort_dropdown_spinner"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/unclicked_filter_button"
-                    android:text="SD"
-                    android:layout_marginStart="10dp">
-                </Button>
-
-            </LinearLayout>
-
-            <LinearLayout
-
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/end_date_text"
-                    android:text="yyyy-mm-dd"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
-                    android:layout_weight="5">
-                </TextView>
-
-                <Button
-                    android:id="@+id/end_date_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="0dp"
-                    android:minHeight="0dp"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="10dp"
                     android:layout_weight="1"
-                    android:backgroundTint="@color/unclicked_filter_button"
-                    android:text="ED"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="parent"></Button>
+                    android:layout_gravity="center"
+                    android:spinnerMode="dropdown" />
+
+                <Button
+                    android:id="@+id/asc_desc_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="16dp"
+                    android:backgroundTint="?colorPrimary"
+                    android:text="@string/ascending" />
 
             </LinearLayout>
 
+            <View
+                android:id="@+id/make_line_1"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="?colorOnSurface"
+                app:layout_constraintBottom_toBottomOf="@+id/make_text"
+                app:layout_constraintEnd_toStartOf="@+id/make_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/make_text" />
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/make_text"
+                style="@style/gray_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="24dp"
+                android:text="Filter by Make"
+                android:textColor="?colorOnSurface"
+                app:layout_constraintBottom_toTopOf="@+id/make_filter_edit_text"
+                app:layout_constraintEnd_toStartOf="@+id/make_line_2"
+                app:layout_constraintStart_toEndOf="@+id/make_line_1"
+                app:layout_constraintTop_toBottomOf="@+id/sort_layout" />
 
-        <Button
-            android:layout_gravity="center"
-            android:id="@+id/add_date_filter_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/date_filter_button_text"
-            android:backgroundTint="@color/unclicked_filter_button"
-            app:layout_constraintTop_toBottomOf="@+id/date_button_layout"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginTop="10dp">
-        </Button>
+            <View
+                android:id="@+id/make_line_2"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="?colorOnSurface"
+                app:layout_constraintBottom_toBottomOf="@+id/make_text"
+                app:layout_constraintStart_toEndOf="@+id/make_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/make_text" />
 
-        <EditText
-            android:id="@+id/description_filter_edit_text"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:autofillHints="@string/description_keywords_autofill"
-            android:hint="Enter description filter here"></EditText>
+            <EditText style="@style/item_edit_edittext"
+                android:id="@+id/make_filter_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:autofillHints="@string/make"
+                android:hint="Enter make filter here"
+                android:theme="@style/item_edit_edittext"
+                app:layout_constraintTop_toBottomOf="@+id/make_text"/>
 
-        <Button
-            android:layout_gravity="center"
-            android:id="@+id/add_description_filter_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/description_filter_button_text"
-            android:backgroundTint="@color/unclicked_filter_button"
-            android:layout_marginTop="10dp">
-        </Button>
+            <Button
+                android:id="@+id/add_make_filter_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="?colorSecondary"
+                android:text="@string/make_filter_button_text"
+                app:layout_constraintBottom_toTopOf="@+id/date_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/make_filter_edit_text" />
 
-        <TextView
-            android:id="@+id/tag_filter_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            app:layout_constraintTop_toBottomOf="@+id/sort_dropdown_spinner"
-            android:layout_marginTop="10dp">
-        </TextView>
+            <View
+                android:id="@+id/date_line_1"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="?colorOnSurface"
+                app:layout_constraintBottom_toBottomOf="@+id/date_text"
+                app:layout_constraintEnd_toStartOf="@+id/date_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/date_text" />
 
-        <Button
-            android:layout_gravity="center"
-            android:id="@+id/filter_by_tags_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/filter_by_tags_button_text"
-            android:backgroundTint="@color/unclicked_filter_button"
-            android:layout_marginTop="10dp">
-        </Button>
+            <TextView
+                android:id="@+id/date_text"
+                style="@style/gray_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="24dp"
+                android:text="Filter by Date"
+                android:textColor="?colorOnSurface"
+                app:layout_constraintBottom_toTopOf="@+id/date_button_layout"
+                app:layout_constraintEnd_toStartOf="@+id/date_line_2"
+                app:layout_constraintStart_toEndOf="@+id/date_line_1"
+                app:layout_constraintTop_toBottomOf="@+id/add_make_filter_button" />
 
-    </LinearLayout>
+            <View
+                android:id="@+id/date_line_2"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="?colorOnSurface"
+                app:layout_constraintBottom_toBottomOf="@+id/date_text"
+                app:layout_constraintStart_toEndOf="@+id/date_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/date_text" />
+
+            <LinearLayout
+                android:id="@+id/date_button_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
+                app:layout_constraintTop_toBottomOf="@+id/date_text">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView style="@style/item_details_text"
+                        android:id="@+id/start_date_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Start Date" />
+
+                    <ImageButton style="@style/rounded_button"
+                        android:id="@+id/start_date_button"
+                        android:src="@drawable/icon_calendar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="10dp"
+                        android:paddingHorizontal="10dp" />
+
+                </LinearLayout>
+
+                <TextView style="@style/gray_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="to"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_gravity="center"/>
+
+                <LinearLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <TextView style="@style/item_details_text"
+                        android:id="@+id/end_date_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="5"
+                        android:text="End Date"/>
+
+                    <ImageButton style="@style/rounded_button"
+                        android:id="@+id/end_date_button"
+                        android:src="@drawable/icon_calendar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="10dp"
+                        android:paddingHorizontal="10dp" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/add_date_filter_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="?colorSecondary"
+                android:text="@string/date_filter_button_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/date_button_layout"/>
+
+            <View
+                android:id="@+id/desc_line_1"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="?colorOnSurface"
+                app:layout_constraintBottom_toBottomOf="@+id/desc_text"
+                app:layout_constraintEnd_toStartOf="@+id/desc_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/desc_text" />
+
+            <TextView style="@style/gray_text"
+                android:id="@+id/desc_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="10dp"
+                android:layout_marginVertical="24dp"
+                android:text="Filter by Description"
+                android:textColor="?colorOnSurface"
+                app:layout_constraintBottom_toTopOf="@+id/description_filter_edit_text"
+                app:layout_constraintEnd_toStartOf="@+id/desc_line_2"
+                app:layout_constraintStart_toEndOf="@+id/desc_line_1"
+                app:layout_constraintTop_toBottomOf="@+id/add_date_filter_button" />
+
+            <View
+                android:id="@+id/desc_line_2"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="?colorOnSurface"
+                app:layout_constraintBottom_toBottomOf="@+id/desc_text"
+                app:layout_constraintStart_toEndOf="@+id/desc_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/desc_text" />
+
+            <EditText style="@style/item_edit_edittext"
+                android:id="@+id/description_filter_edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:autofillHints="@string/description_keywords_autofill"
+                android:hint="Enter description filter here"
+                app:layout_constraintTop_toBottomOf="@+id/desc_text" />
+
+            <Button
+                android:id="@+id/add_description_filter_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="?colorSecondary"
+                android:text="@string/description_filter_button_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/description_filter_edit_text"/>
+
+            <View
+                android:id="@+id/tags_line_1"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="?colorOnSurface"
+                app:layout_constraintBottom_toBottomOf="@+id/tags_text"
+                app:layout_constraintEnd_toStartOf="@+id/tags_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tags_text" />
+
+            <TextView style="@style/gray_text"
+                android:id="@+id/tags_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="30dp"
+                android:layout_marginVertical="24dp"
+                android:text="Filter by Tags"
+                android:textColor="?colorOnSurface"
+                app:layout_constraintBottom_toTopOf="@+id/filter_by_tags_button"
+                app:layout_constraintEnd_toStartOf="@+id/tags_line_2"
+                app:layout_constraintStart_toEndOf="@+id/tags_line_1"
+                app:layout_constraintTop_toBottomOf="@+id/add_description_filter_button" />
+
+            <View
+                android:id="@+id/tags_line_2"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:background="?colorOnSurface"
+                app:layout_constraintBottom_toBottomOf="@+id/tags_text"
+                app:layout_constraintStart_toEndOf="@+id/tags_text"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tags_text" />
+
+            <Button
+                android:id="@+id/filter_by_tags_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="?colorSecondary"
+                android:text="@string/filter_by_tags_button_text"
+                android:layout_marginBottom="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tags_text"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
     <include layout="@layout/taskbar_sort_filter"/>
 </LinearLayout>
