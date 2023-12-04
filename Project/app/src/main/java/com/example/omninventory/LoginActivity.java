@@ -36,7 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText usernameEditText;
     private EditText passwordEditText;
     private FirebaseFirestore db;
-    public InventoryRepository repo;
+    private InventoryRepository repo;
 
     /**
      * Method called on Activity creation. Contains most of the logic of this Activity; programmatically
