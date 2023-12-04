@@ -52,6 +52,7 @@ public class SortFilterActivity extends AppCompatActivity {
     private boolean makePressed;
     private boolean datePressed;
     private boolean descriptionPressed;
+    private User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +126,9 @@ public class SortFilterActivity extends AppCompatActivity {
                 descriptionFilterEditText.setText(descriptionText);
                 descriptionFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
                 descriptionPressed = true;
+            }
+            if (intent.getSerializableExtra("login") != null) {
+                currentUser = (User) intent.getSerializableExtra("login");
             }
         }
 
@@ -311,6 +315,7 @@ public class SortFilterActivity extends AppCompatActivity {
                                  boolean datePressed, boolean descriptionPressed) {
         myIntent.putExtra("sortBy", dropdownSelection);
         myIntent.putExtra("sortOrder", sortOrder);
+        myIntent.putExtra("login", currentUser);
         if (makePressed) {
             myIntent.putExtra("filterMake", makeText);
         }
