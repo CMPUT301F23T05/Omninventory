@@ -65,6 +65,7 @@
         <item>Description</item>
         <item>Make</item>
         <item>Estimated Value</item>
+        <item>Tags</item>
     </string-array>
 
     <!-- Text in apply tags activity -->
@@ -83,5 +84,9 @@
 
     <!-- Text in barcode scan -->
     <string name="barcode_text">SCAN THE BARCODE WITHIN THE WHITE FRAME ABOVE</string>
+
+    <!-- Text in serialno scan -->
+    <string name="serialno_scanning_text">SCAN THE SERIAL NUMBER WITHIN THE BLACK BOX ABOVE</string>
+    <string name="confirm_button_text">CONFIRM</string>
 
 </resources>

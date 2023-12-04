@@ -2,19 +2,25 @@ package com.example.omninventory;
 
 import static android.content.ContentValues.TAG;
 
+import android.net.Uri;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -25,8 +31,13 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.util.ListIterator;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * Encapsulate behaviours related to Firestore, going from Firestore document to InventoryItem and
@@ -41,6 +52,10 @@ public class InventoryRepository {
     private CollectionReference usersRef;
     private CollectionReference inventoryItemsRef;
     private CollectionReference tagsRef;
+    private HashMap<String, Tag> tagDict;
+
+    private FirebaseStorage storage;
+    private StorageReference storageRef;
 
     /**
      * Constructor that sets up connection to Firestore and references.
@@ -50,6 +65,27 @@ public class InventoryRepository {
         usersRef = db.collection("users");
         inventoryItemsRef = db.collection("inventoryItems");
         tagsRef = db.collection("tags");
+
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
+
+        tagDict = new HashMap<>();
+
+        tagsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot snapshot, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.d("TagRepository", error.toString());
+                    return;
+                }
+                if (snapshot != null) {
+                    for (QueryDocumentSnapshot doc : snapshot) {
+                        Tag tag = convertDocumentToTag(doc);
+                        tagDict.put(tag.getId(), tag);
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -90,24 +126,51 @@ public class InventoryRepository {
      * @return    An InventoryItem whose fields match the DocumentSnapshot.
      */
     public InventoryItem convertDocumentToInventoryItem(DocumentSnapshot doc) {
-        Log.d("InventoryRepository", "convert called with document id=" + doc.getId());
-        Log.d("InventoryRepository", doc.getData().toString());
-        ArrayList<DocumentReference> test = (ArrayList<DocumentReference>) doc.get("tags");
+        Log.d("InventoryRepository", "convert called with document id=" + doc.getId() + " data=" + doc.getData().toString());
 
+        // get all image paths as 'empty' ItemImages
+        ArrayList<ItemImage> images = new ArrayList<ItemImage>();
+        ArrayList<String> imagePaths = (ArrayList<String>) doc.get("images");
+        if (imagePaths != null) {
+            for (String imagePath : imagePaths) {
+                images.add(new ItemImage(imagePath));
+            }
+        }
+        else {
+            // may be executed if item was in database from before image functionality was added
+            Log.d("InventoryRepository", "images array is null");
+        }
+
+        ArrayList<Tag> tagList = new ArrayList<>();
         InventoryItem item = new InventoryItem(
-            doc.getId(),
-            doc.getString("name"),
-            doc.getString("description"),
-            doc.getString("comment"),
-            doc.getString("make"),
-            doc.getString("model"),
-            doc.getString("serialno"),
-            new ItemValue(doc.getLong("value")), // convert to ItemValue
-            new ItemDate(doc.getDate("date")), // convert to ItemDate
-            (ArrayList<String>) doc.get("tags")
+                doc.getId(),
+                doc.getString("name"),
+                doc.getString("description"),
+                doc.getString("comment"),
+                doc.getString("make"),
+                doc.getString("model"),
+                doc.getString("serialno"),
+                new ItemValue(doc.getLong("value)")), // convert to ItemValue
+                new ItemDate(doc.getDate("date")), // convert to ItemDate
+                tagList,
+                images
         );
 
+        // don't want to download images here since they may not be displayed, e.g. if this is called
+        // from homepage. but we could do it
+        // attemptDownloadImages(item);
+
+        ArrayList<String> tagIdList = (ArrayList<String>) doc.get("tags");
+        tagIdList.forEach(tagId -> {
+            try {
+                item.addTag(tagDict.get(tagId));
+            } catch (NullPointerException e) {
+                Log.e("InventoryRepository", "Unable to retrieve tag with id=" + tagId);
+            }
+        });
+
         return item;
+
     }
 
     /**
@@ -117,8 +180,13 @@ public class InventoryRepository {
      * @param item        InventoryItem to add to currentUser's owned items.
      */
     public void addInventoryItem(User currentUser, InventoryItem item) {
+
+        // upload images and save their storage paths in the fields of item's ItemImages
+        addImages(item.getImages());
+
         // create data for new item document
         HashMap<String, Object> itemData = item.convertToHashMap();
+        Log.d("InventoryRepository", "addInventoryItem called with itemData: " + itemData.toString());
 
         // create new inventoryItems document with auto-generated id
         DocumentReference newItemRef = inventoryItemsRef.document();
@@ -162,8 +230,8 @@ public class InventoryRepository {
 
         // add new item id to itemlist on each tag
         Object[] idToAdd = {newItemRef.getId()};
-        item.getTags().forEach(tag -> {
-            // get document for tag (name is id)
+        item.getTagIds().forEach(tag -> {
+            // get document for tag
             DocumentReference tagRef = tagsRef.document(tag);
             tagRef
                     .update("items", FieldValue.arrayUnion(idToAdd))
@@ -190,6 +258,9 @@ public class InventoryRepository {
      * @param item The InventoryItem to update.
      */
     public void updateInventoryItem(InventoryItem item) {
+        // update images. this needs to happen before item.convertToHashMap because image paths are written to item here
+        updateItemImages(item.getOriginalImages(), item.getImages());
+
         // create data for new item document
         HashMap<String, Object> itemData = item.convertToHashMap();
 
@@ -202,7 +273,7 @@ public class InventoryRepository {
             .addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void aVoid) {
-                    Log.d("InventoryRepository", String.format("New inventoryItems DocumentSnapshot written, id=%s", itemRef.getId()));
+                    Log.d("InventoryRepository", String.format("Updated inventoryItems DocumentSnapshot written, id=%s", itemRef.getId()));
                 }
             })
             .addOnFailureListener(new OnFailureListener() {
@@ -214,7 +285,7 @@ public class InventoryRepository {
 
         // add new item id to itemlist on each tag
         Object[] idToAdd = {item.getFirebaseId()};
-        item.getTags().forEach(tag -> {
+        item.getTagIds().forEach(tag -> {
             // get document for tag (name is id)
             DocumentReference tagRef = tagsRef.document(tag);
 
@@ -234,6 +305,187 @@ public class InventoryRepository {
                     });
 
         });
+    }
+
+    /**
+     * Given an ArrayList of the previous images held by an item and the images now held by that item
+     * (i.e. after the item is edited), this method compares the two lists, uploads any new images
+     * to storage, and deletes any old images from storage.
+     * Specifically:
+     * - An image that appears in prevImages but not newImages will be deleted from storage.
+     * - An image that appears in newImages but not prevImages will be uploaded to storage.
+     *
+     * This aims to minimize storage usage (by deleting unused images) and wasted upload time (by
+     * not uploading extra copies of the same image).
+     *
+     * Images are compared using their storagePath field, that is the path associated with the image
+     * in Firebase Storage. Any image that has not yet been uploaded to storage will have a
+     * storagePath attribute of null and will always be uploaded.
+     *
+     * @param prevImages The array of 'previous' images held by an InventoryItem before update.
+     * @param newImages The array of 'new' images held by an InventoryItem after update.
+     */
+    public void updateItemImages(ArrayList<ItemImage> prevImages, ArrayList<ItemImage> newImages) {
+        // if no prev images, we are just adding all images
+        if (prevImages == null || prevImages.size() == 0) {
+            addImages(newImages);
+            return;
+        }
+
+        // otherwise, optimize by only uploading/deleting necessary images
+        ArrayList<ItemImage> toUpload = new ArrayList<>();
+        ArrayList<ItemImage> toDelete = new ArrayList<>();
+
+        // find images that haven't been uploaded yet
+        for (ItemImage newImg : newImages) {
+            boolean alreadyUploaded = false;
+
+            for (ItemImage oldImg : prevImages) {
+                if (newImg.equalRef(oldImg)) {
+                    // image was already uploaded to the database, don't need to reupload
+                    alreadyUploaded = true;
+                    break;
+                }
+            }
+            if (!alreadyUploaded) {
+                toUpload.add(newImg);
+            }
+        }
+
+        // find images that can be deleted
+        for (ItemImage oldImg : prevImages) {
+            boolean keep = false;
+
+            for (ItemImage newImg : newImages) {
+                if (newImg.equalRef( oldImg )) {
+                    // image is kept in new list of images
+                    keep = true;
+                    break;
+                }
+            }
+            if (!keep) {
+                toDelete.add(oldImg);
+            }
+        }
+
+        // upload images
+        Log.d("InventoryRepository", "Uploading new images: " + toUpload);
+        addImages(toUpload);
+
+        // delete images
+        Log.d("InventoryRepository", "Deleting images no longer used: " + toDelete);
+        deleteImages(toDelete);
+    }
+
+    /**
+     * Add a list of ItemImages to Firebase Storage.
+     * @param images The images to upload.
+     * @return An ArrayList containing the storage path of each image uploaded.
+     */
+    public ArrayList<String> addImages(ArrayList<ItemImage> images) {
+
+        ArrayList<String> imagePaths = new ArrayList<String>();
+
+        for (ItemImage image : images) {
+            String filepath = "images/" + UUID.randomUUID().toString();
+
+            // create filename for new image
+            StorageReference imageRef = storageRef.child(filepath);
+
+            // store reference
+            imagePaths.add(filepath);
+            image.setStoragePath(filepath);
+
+            imageRef.putFile(image.getUri())
+                    .addOnSuccessListener(
+                            new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    Log.d("InventoryRepository", "addImages: Image uploaded successfully:" + image.getUri() + " as " + filepath);
+                                }
+                            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("InventoryRepository", "addImages: Image failed to upload:" + image.getUri());
+                        }
+                    });
+        }
+
+        // return a list of image paths
+        Log.d("InventoryRepository", "Started tasks to upload images: " + imagePaths.toString());
+        return imagePaths;
+    }
+
+    /**
+     * Delete a list of ItemImages from the Firebase Storage (based on storage path).
+     * @param images The list of ItemImages to delete.
+     */
+    public void deleteImages(ArrayList<ItemImage> images) {
+
+        for (ItemImage image : images) {
+            // get reference for image
+            StorageReference imageRef = storageRef.child(image.getStoragePath());
+            imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    Log.d("InventoryRepository", "deleteImages: deleted image with path " + image.getStoragePath());
+                    image.setStoragePath(null); // ensure we don't try to reference this path again
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d("InventoryRepository", "deleteImages: failed to delete image with path " + image.getStoragePath());
+                    image.setStoragePath(null); // get rid of path anyway because there is probably something wrong with it
+                }
+            });
+        }
+    }
+
+    /**
+     * Attempt to download all the ItemImages referenced by Firebase Storage path held by the
+     * InventoryItem.
+     * @param item
+     * @param handler
+     */
+    public void attemptDownloadImages(InventoryItem item, ImageDownloadHandler handler) {
+        // get all the images associated with this item from storage
+        Log.d("InventoryRepository", "attemptDownloadImages called, item images: " + item.getImages().toString());
+
+        for (int i = 0; i < item.getImages().size(); i++) {
+            // get image's uri, hopefully
+            attemptDownloadImage(item, i, handler);
+        }
+    }
+
+    /**
+     * Attempt to download a single image, at position `pos` in item's images. Calls a handler
+     * function on each successful or failed download.
+     * @param item
+     * @param handler
+     */
+    public void attemptDownloadImage(InventoryItem item, int pos, ImageDownloadHandler handler) {
+        // get all the images associated with this item from storage
+        ItemImage image = item.getImages().get(pos);
+        Log.d("InventoryRepository", "attemptDownloadImage called, image: " + image.toString());
+
+        // get image's uri, hopefully
+        storageRef.child(image.getStoragePath()).getDownloadUrl()
+                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Log.d("InventoryRepository", String.format("Got URI for image path %s, URI %s", image.getStoragePath(), uri));
+                        image.setUri(uri);
+                        handler.onImageDownload(pos, image); // call handler function to refresh its images
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("InventoryRepository", "Couldn't get URI for image path " + image.getStoragePath());
+                        handler.onImageDownloadFailed(pos);
+                    }
+                });
     }
 
     /**
@@ -315,18 +567,26 @@ public class InventoryRepository {
     };
 
     /**
-     * Adds a new Tag to the *tag* collection.
+     * Adds a new Tag to the tags collection.
+     *
      * @param tag Tag to add to the list of tags.
      */
     public void addTag(Tag tag) {
         HashMap<String, Object> data = new HashMap<>();
+        data.put("name", tag.getName());
+        data.put("owner", tag.getOwner());
+        data.put("priority", tag.getPriority());
         data.put("items", tag.getItemIds());
+        if (tag.getId().isEmpty()) {
+            tag.setId(tagsRef.document().getId());
+        }
         tagsRef
-                .document(tag.getName())
+                .document(tag.getId())
                 .set(data)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
+                        tagDict.put(tag.getId(), tag);
                         Log.d("Firestore", "DocumentSnapshot successfully written!");
                     }
                 });
@@ -341,10 +601,13 @@ public class InventoryRepository {
     public void updateTag(Tag tag) {
         // create data for new tag document
         HashMap<String, Object> tagData = new HashMap<>();
+        tagData.put("name", tag.getName());
+        tagData.put("owner", tag.getOwner());
+        tagData.put("priority", tag.getPriority());
         tagData.put("items", tag.getItemIds());
 
         // get the document for this tag
-        DocumentReference tagRef = tagsRef.document(tag.getName());
+        DocumentReference tagRef = tagsRef.document(tag.getId());
 
         // overwrite data of document with tag data
         tagRef
@@ -352,6 +615,7 @@ public class InventoryRepository {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
+                        tagDict.replace(tag.getId(), tag);
                         Log.d("InventoryRepository", String.format("New tags DocumentSnapshot written, id=%s", tagRef.getId()));
                     }
                 })
@@ -370,18 +634,19 @@ public class InventoryRepository {
      */
     public Tag convertDocumentToTag(DocumentSnapshot doc) {
         Log.d("TagRepository", "convert called with document name=" + doc.getId());
-        Tag tag = new Tag(doc.getId());
-        List<String> items = (List<String>) doc.get("items");
-        ListIterator<String> itemIterator = items.listIterator();
-        while (itemIterator.hasNext()) {
-            tag.addItem(itemIterator.next());
+        long priority = 0;
+        try {
+            priority = (long) doc.get("priority");
+        } catch (NullPointerException e) {
+            priority = 0;
         }
+        Tag tag = new Tag(doc.getId(), doc.getString("name"), doc.getString("owner"), priority,   (ArrayList<String>) doc.get("items"));
 
         return tag;
     }
 
     /**
-     * Sets up a TagAdapter to contain contents of Firebase *tags* collection, and be automatically
+     * Sets up a TagAdapter to contain contents of Firebase tags collection, and be automatically
      * updated when the list changes.
      * @param adapter the adapter to contain the tags
      * @return a snapshot listener for the collection that will automatically update the adapter
@@ -400,13 +665,15 @@ public class InventoryRepository {
                     for (QueryDocumentSnapshot doc : snapshot) {
                         // get each item returned by query and add to adapter
                         Tag tag = convertDocumentToTag(doc);
+                        tagDict.put(tag.getId(), tag);
                         adapter.add(tag);
                     }
+                    adapter.sort(Comparator.reverseOrder());
+                    adapter.notifyDataSetChanged();
                 }
             }
         });
 
-        adapter.notifyDataSetChanged();
         return registration;
     }
 
@@ -429,9 +696,9 @@ public class InventoryRepository {
                             InventoryItem item = convertDocumentToInventoryItem(documentSnapshot);
                             Log.d("Successfully read document id=", documentSnapshot.getId());
                             for (int j = 0; j < tags.size(); j++) {
-                                String tagName = tags.get(j).getName();
-                                if (!item.getTags().contains(tagName)) {
-                                    item.addTag(tagName);
+                                String tagId = tags.get(j).getId();
+                                if (!item.getTagIds().contains(tagId)) {
+                                    item.addTag(tags.get(j));
                                 }
                             }
 
@@ -443,7 +710,7 @@ public class InventoryRepository {
 
         // run through list of tags, adding items to each
         for (int i = 0; i < tags.size(); i++) {
-            DocumentReference tagRef = tagsRef.document(tags.get(i).getName());
+            DocumentReference tagRef = tagsRef.document(tags.get(i).getId());
             tagRef.
                     get()
                     .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
