@@ -94,4 +94,7 @@
     <string name="add_tag_dialog_button">ADD</string>
     <string name="add_tag_dialog_hint">Tag Name</string>
 
+    <!-- Text in barcode scan -->
+    <string name="barcode_text">SCAN THE BARCODE WITHIN THE WHITE FRAME ABOVE</string>
+
 </resources>

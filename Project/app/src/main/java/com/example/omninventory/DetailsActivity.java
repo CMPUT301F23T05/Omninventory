@@ -1,22 +1,25 @@
 package com.example.omninventory;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 
 /**
  * Activity for viewing the contents of all of an InventoryItem's fields.
  * @author Castor
  */
-public class DetailsActivity extends AppCompatActivity implements GetInventoryItemHandler {
+public class DetailsActivity extends AppCompatActivity implements GetInventoryItemHandler, ImageDownloadHandler {
 
     private InventoryRepository repo;
     private InventoryItem currentItem;
@@ -31,6 +34,9 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
     private TextView itemValueText;
     private TextView itemDateText;
     private TextView itemTagsText;
+    private RecyclerView imageList;
+
+    private ItemImageAdapter imageAdapter;
 
     /**
      * Method called on Activity creation. Contains most of the logic of this Activity; programmatically
@@ -59,6 +65,7 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
         itemValueText = findViewById(R.id.item_value_text);
         itemDateText = findViewById(R.id.item_date_text);
         itemTagsText = findViewById(R.id.item_tags_text);
+        imageList = findViewById(R.id.item_images_list);
 
         // ============== RETRIEVE DATA ================
 
@@ -90,7 +97,13 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
         // ============== UI SETUP ================
 
         titleText.setText(getString(R.string.details_title_text)); // set title text
-        setFields(currentItem); // set item fields to contain data from InventoryItem passed in
+        setFields(); // set item fields to contain data from InventoryItem passed in
+
+        // set up list adapter for images
+        imageAdapter = new ItemImageAdapter(new ArrayList<ItemImage>());
+        imageAdapter.resetData(currentItem.getImages().size());
+        imageList.setAdapter(imageAdapter);
+        imageList.setLayoutManager(new LinearLayoutManager(this));
 
         // ============== ONCLICK ACTIONS ================
 
@@ -113,19 +126,21 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
     }
 
     /**
-     * Set fields in this activity's layout to display the field values of an InventoryItem.
-     * @param item The InventoryItem to display.
+     * Set fields in this activity's layout to display the field values of the current InventoryItem.
      */
-    private void setFields(InventoryItem item) {
-        itemNameText.setText(item.getName());
-        itemDescriptionText.setText(item.getDescription());
-        itemCommentText.setText(item.getComment());
-        itemMakeText.setText(item.getMake());
-        itemModelText.setText(item.getModel());
-        itemSerialText.setText(item.getSerialNo());
-        itemValueText.setText(item.getValue().toString()); // convert ItemValue to String
-        itemDateText.setText(item.getDate().toString()); // convert ItemDate to String
-        itemTagsText.setText(item.getTagsString());
+    private void setFields() {
+        itemNameText.setText(currentItem.getName());
+        itemDescriptionText.setText(currentItem.getDescription());
+        itemCommentText.setText(currentItem.getComment());
+        itemMakeText.setText(currentItem.getMake());
+        itemModelText.setText(currentItem.getModel());
+        itemSerialText.setText(currentItem.getSerialNo());
+        itemValueText.setText(currentItem.getValue().toString()); // convert ItemValue to String
+        itemDateText.setText(currentItem.getDate().toString()); // convert ItemDate to String
+        itemTagsText.setText(currentItem.getTagsString());
+
+        // attempt image download into this activity, calling this.onImageDownload on success
+        repo.attemptDownloadImages(currentItem, this);
     }
 
     /**
@@ -138,7 +153,6 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
     @Override
     protected void onResume() {
         super.onResume();
-        Log.d("DetailsActivity", "onResume called");
 
         // repo and currentItem may be null if we are entering DetailActivity from MainActivity
         if (repo != null && currentItem != null) {
@@ -146,6 +160,7 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
             // as they may have been edited
             Log.d("DetailsActivity", "refreshing currentItem");
             repo.getInventoryItemInto(currentItem.getFirebaseId(), this);
+            // need to redownload images in onGetInventoryItem because size of array may change
         }
     }
 
@@ -159,6 +174,29 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
     public void onGetInventoryItem(InventoryItem item) {
         // update fields for the new item
         currentItem = item;
-        setFields(currentItem);
+
+        // clear adapter in case we had anything in there (otherwise downloading new images will cause duplicates)
+        imageAdapter.resetData(currentItem.getImages().size());
+        imageAdapter.notifyItemRangeChanged(0, imageAdapter.getItemCount());
+
+        setFields(); // finally can set fields for display (and attempt to download images)
+    }
+
+    public void onImageDownload(int pos, ItemImage image) {
+        Log.d("DetailsActivity", "onImageDownload called");
+        imageAdapter.set(pos, image);
+    }
+
+    public void onImageDownloadFailed(int pos) {
+        // just keep trying to download the image
+        Log.d("DetailsActivity", String.format("onImageDownloadFailed called for pos %d, trying again after 1s...", pos));
+
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                repo.attemptDownloadImage(currentItem, pos, DetailsActivity.this);
+            }
+        }, 1000); // try again after 1s
     }
 }
