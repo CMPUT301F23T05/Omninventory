@@ -64,6 +64,7 @@ public class TestItems {
                 typeText("TestItem3"));
 
         onView(withId(R.id.save_button)).perform(click());
+        sleepProblemsAway(100);
     }
 
     /**
@@ -80,12 +81,7 @@ public class TestItems {
                 .perform(click());
         onView(withId(R.id.delete_dialog_button)).perform(click());
 
-        try {
-            Thread.sleep(100); // Sleep for 1 second
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return;
-        }
+        sleepProblemsAway(100);
 
         onView(withText("TestItem2"))
                 .perform(scrollTo())
@@ -94,12 +90,7 @@ public class TestItems {
                 .perform(click());
         onView(withId(R.id.delete_dialog_button)).perform(click());
 
-        try {
-            Thread.sleep(100); // Sleep for 1 second
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return;
-        }
+        sleepProblemsAway(100);
 
         onView(withText("TestItem3"))
                 .perform(scrollTo())
@@ -108,12 +99,7 @@ public class TestItems {
                 .perform(click());
         onView(withId(R.id.delete_dialog_button)).perform(click());
 
-        try {
-            Thread.sleep(100); // Sleep for 1 second
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return;
-        }
+        sleepProblemsAway(100);
 
     }
 
@@ -141,8 +127,16 @@ public class TestItems {
                 .perform(click());
         onView(withId(R.id.delete_dialog_button)).perform(click());
 
+        sleepProblemsAway(2000);
+    }
+
+    /**
+     * A lot of tests run too fast. Need to halt it to allow program to load in time.
+     * @param sleepTime
+     */
+    public void sleepProblemsAway(int sleepTime){
         try {
-            Thread.sleep(2000); // Sleep for 1 second
+            Thread.sleep(sleepTime); // Sleep for 1 second
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return;

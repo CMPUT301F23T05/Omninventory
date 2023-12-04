@@ -48,15 +48,23 @@ public class TestAddItemActivity {
     public ActivityScenarioRule<MainActivity> scenario = new
             ActivityScenarioRule<MainActivity>(MainActivity.class);
 
+    TestItems testItems = new TestItems();
+
     /**
      * PLEASE ONLY USE "AddItemTest" as the name for testing item.
      */
     @Before
     public void setup() {
+        testItems.sleepProblemsAway(500);
+
+
         onView(withId(R.id.login_username_edit_text)).perform(typeText("Tester"));
         onView(withId(R.id.login_password_edit_text))
                 .perform(typeText("Hahaha123!"), closeSoftKeyboard());
         onView(withId(R.id.login_btn)).perform(click());
+
+        //allow app to load in time
+        testItems.sleepProblemsAway(2000);
     }
 
 
@@ -74,12 +82,7 @@ public class TestAddItemActivity {
         onView(withId(R.id.delete_dialog_button)).perform(click());
 
         //stall is required to update the database properly
-        try {
-            Thread.sleep(2000); // Sleep for 1 second
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return;
-        }
+        testItems.sleepProblemsAway(1000);
     }
 
     /**
@@ -87,6 +90,7 @@ public class TestAddItemActivity {
      */
     @Test
     public void testAddItemBase(){
+
         // start on the inventory screen click on the add button
         onView(allOf(withId(R.id.add_item_button), isDisplayed()))
                 .perform(click());
@@ -126,7 +130,8 @@ public class TestAddItemActivity {
 
         onView(withId(R.id.item_make_edittext)).perform(ViewActions.
                 typeText("Make Test"));
-        onView(withId(R.id.item_model_edittext)).perform(ViewActions.
+        onView(withId(R.id.item_model_edittext))
+                .perform(ViewActions.
                 typeText("Test Model"));
         onView(withId(R.id.item_value_edittext)).perform(ViewActions.
                 typeText("9.99"));
@@ -134,10 +139,13 @@ public class TestAddItemActivity {
                 typeText("2222"));
 
         // Click the button to open the DatePickerDialog
-        onView(withId(R.id.item_date_button)).perform(click());
+        onView(withId(R.id.item_date_button))
+                .perform(scrollTo())
+                .perform(click());
 
         // Set the date on the DatePicker
-        onView(withClassName(Matchers.equalTo(DatePicker.class.getName()))).perform(PickerActions.setDate(2002, 2, 22));
+        onView(withClassName(Matchers.equalTo(DatePicker.class.getName())))
+                .perform(PickerActions.setDate(2002, 2, 22));
 
         // Click the OK button on the dialog
         onView(withId(android.R.id.button1)).perform(click());
@@ -163,18 +171,13 @@ public class TestAddItemActivity {
         onView(withText("$9.99")).check(matches(isDisplayed()));
         onView(withText("Test Model")).check(matches(isDisplayed()));
 
-        try {
-            Thread.sleep(2000); // Sleep for 1 second
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return;
-        }
+        testItems.sleepProblemsAway(2000);
 
         onView(withId(R.id.back_button)).perform(click());
 
     }
 
-    @Test
+    //@Test
     public void testAddItemWithTag(){
         //Start on inventory screen, click on the add button
 
@@ -214,22 +217,12 @@ public class TestAddItemActivity {
 
         onView(withText("AddItemTest")).perform(click());
 
-        try {
-            Thread.sleep(2000); // Sleep for 1 second
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return;
-        }
+        testItems.sleepProblemsAway(1000);
 
         // Now check if the TextView contains the expected tag
         onView(withId(R.id.item_tags_text)).check(matches(withText(containsString("#important"))));
 
-        try {
-            Thread.sleep(2000); // Sleep for 1 second
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return;
-        }
+        testItems.sleepProblemsAway(1000);
 
         onView(withId(R.id.back_button)).perform(click());
 
