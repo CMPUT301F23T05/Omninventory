@@ -479,15 +479,14 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
         String imageFileName = "omninventory";
 
         // storage directory on device
-        File storageDir = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_DCIM), "Camera");
+        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
 
         File imageFile;
         try {
             imageFile = File.createTempFile(imageFileName, ".jpg", storageDir);
         }
         catch (IOException e) {
-            Log.e("EditActivity", "error creating new image file");
+            Log.e("EditActivity", "error creating new image file", e);
             return null;
         }
 
