@@ -8,16 +8,45 @@ import java.util.ArrayList;
  * @author Patrick
  */
 public class Tag implements Serializable {
+    private String id;
     private String name;
+    private String owner;
     private ArrayList<String> itemIds;
+
+    private boolean isSelected;
 
     /**
      * Basic constructor to initialize a new tag that's not applied to anything yet.
      * @param name Name of new Tag.
      */
-    public Tag(String name) {
+    public Tag(String name, String owner) {
+        this.id = "";
         this.name = name;
+        this.owner = owner;
         this.itemIds = new ArrayList<>();
+        this.isSelected = false;
+    }
+
+    /**
+     * Basic constructor to initialize a tag object to represent an existing tag
+     * @param id Id of tag.
+     * @param name Name of tag.
+     * @param itemIds List of references to the items to which the tag is applied.
+     */
+    public Tag(String id, String name, String owner, ArrayList<String> itemIds) {
+        this.id = id;
+        this.name = name;
+        this.owner = owner;
+        this.itemIds = itemIds;
+        this.isSelected = false;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
     }
 
     /**
@@ -26,6 +55,22 @@ public class Tag implements Serializable {
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Getter for id of Tag.
+     * @return Id of Tag.
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Setter for id of Tag.
+     * @param id New id.
+     */
+    public void setId(String id) {
+        this.id = id;
     }
 
     /**
@@ -60,6 +105,10 @@ public class Tag implements Serializable {
         itemIds.add(itemId);
     }
 
+    public boolean isSelected() {
+        return isSelected;
+    }
 
+    public void setSelected(boolean isSelected) { this.isSelected = isSelected; }
 
 }

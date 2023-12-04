@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ public class ApplyTagsActivity extends AppCompatActivity  {
     private InventoryRepository repo;
     private ArrayList<InventoryItem> selectedItems;
     private Boolean apply;
+    private User currentUser;
 
     private ArrayList<Tag> appliedTagsListData;
     private ArrayList<Tag> unappliedTagsListData;
@@ -61,11 +63,6 @@ public class ApplyTagsActivity extends AppCompatActivity  {
         // === set up database
         repo = new InventoryRepository();
 
-        // === add taskbar
-        LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View taskbarLayout = taskbarInflater.inflate(R.layout.taskbar_apply_tags, null);
-        ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.taskbar_holder);
-        taskbarHolder.addView(taskbarLayout);
 
         // === get references to views
         final TextView titleText = findViewById(R.id.title_text);
@@ -80,6 +77,12 @@ public class ApplyTagsActivity extends AppCompatActivity  {
         // === load info passed in from previous activity
         selectedItems = (ArrayList<InventoryItem>) getIntent().getExtras().get("selectedItems");
         apply = (Boolean) getIntent().getExtras().get("apply"); // "return" or "apply", controls what to do on return
+        if (getIntent().getExtras().getSerializable("user") == null) {
+            Log.d("ApplyTagsActivity", "ApplyTagsActivity opened without a User; possibly concerning");
+        }
+        else {
+            currentUser = (User) getIntent().getExtras().getSerializable("user");
+        }
 
         // === set up the ListViews, Adapters, etc
         appliedTagsListData = new ArrayList<>();
@@ -149,8 +152,8 @@ public class ApplyTagsActivity extends AppCompatActivity  {
                 public void onClick(View view) {
 
                     appliedTagsListData.forEach(tag -> {
-                        if (!selectedItems.get(0).getTags().contains(tag.getName())) {
-                            selectedItems.get(0).addTag(tag.getName());
+                        if (!selectedItems.get(0).getTags().contains(tag.getId())) {
+                            selectedItems.get(0).addTag(tag);
                         }
                     });
 
@@ -227,7 +230,7 @@ public class ApplyTagsActivity extends AppCompatActivity  {
                 }
 
                 // If not empty and not a duplicate, create the tag and dismiss the dialog
-                repo.addTag(new Tag(tagName));
+                repo.addTag(new Tag(tagName, currentUser.getUsername()));
                 CharSequence toastText = "Tag added successfully!";
                 Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
                 toast.show();

@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
         setContentView(R.layout.activity_main);
 
         // TODO: this is testing code, replace when merged with Rose's code
-        currentUser = new User("erika", "erikausername", "password", new ArrayList<String>());
+        currentUser = new User("erika", "erika", "password", new ArrayList<String>());
 
         selectedItems = new ArrayList<>();
 
@@ -250,10 +250,12 @@ public class MainActivity extends AppCompatActivity implements InventoryUpdateHa
 
                     // run in "apply" mode to apply changes upon activity exit
                     applyTagsIntent.putExtra("apply", true);
+                    applyTagsIntent.putExtra("user", currentUser);
                     startActivity(applyTagsIntent);
                 } else {
                     // if nothing selected, go to ManageTagsActivity
                     Intent manageTagsIntent = new Intent(MainActivity.this, ManageTagsActivity.class);
+                    manageTagsIntent.putExtra("user", currentUser);
                     startActivity(manageTagsIntent);
                 }
             }

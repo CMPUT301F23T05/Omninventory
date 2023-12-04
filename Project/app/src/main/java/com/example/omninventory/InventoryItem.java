@@ -25,7 +25,7 @@ public class InventoryItem implements Serializable {
     private String serialNo;
     private ItemValue value;
     private ItemDate date;
-    private ArrayList<String> tags;
+    private ArrayList<Tag> tags;
     private ArrayList<Object> images; // placeholder
 
     private boolean isSelected;
@@ -62,7 +62,7 @@ public class InventoryItem implements Serializable {
      * @param date         Date of purchase of item to create (an ItemDate).
      */
     public InventoryItem(String firebaseId, String name, String description, String comment,
-                         String make, String model, String serialNo, ItemValue value, ItemDate date, ArrayList<String> tags) {
+                         String make, String model, String serialNo, ItemValue value, ItemDate date, ArrayList<Tag> tags) {
         // full constructor
         this.firebaseId = firebaseId;
         this.name = name;
@@ -73,7 +73,7 @@ public class InventoryItem implements Serializable {
         this.serialNo = serialNo;
         this.value = value;
         this.date = date;
-        this.tags = tags;
+        this.tags = (ArrayList<Tag>) tags.clone();
         // TODO: images
         this.isSelected = false;
     }
@@ -94,7 +94,7 @@ public class InventoryItem implements Serializable {
         itemData.put("serialno", this.getSerialNo());
         itemData.put("value", this.getValue().toPrimitiveLong()); // convert ItemValue to long
         itemData.put("date", this.getDate().toDate()); // convert ItemDate to Date
-        itemData.put("tags", this.getTags());
+        itemData.put("tags", this.getTagIds());
         // TODO: tags and images
         return itemData;
     }
@@ -106,16 +106,16 @@ public class InventoryItem implements Serializable {
     public String getTagsString() {
         String tagString = "";
         for (int i = 0; i < tags.size(); i++) {
-            tagString = String.join(" ", tagString, String.format("#%s", tags.get(i)));
+            tagString = String.join(" ", tagString, String.format("#%s", tags.get(i).getName()));
         }
         return tagString;
     }
 
     /**
      * Adds a new tag to this InventoryItem's ArrayList of tags.
-     * @param tagName The tag to add.
+     * @param tag The tag to add.
      */
-    public void addTag(String tagName) { tags.add(tagName); }
+    public void addTag(Tag tag) { tags.add(tag); }
 
     /**
      * For InventoryItems in the MainActivity item list, this returns a flag describing whether or
@@ -276,11 +276,27 @@ public class InventoryItem implements Serializable {
      * Setter for the InventoryItem's tags.
      * @param tags New tags.
      */
-    public void setTags(ArrayList<String> tags) { this.tags = tags; }
+    public void setTags(ArrayList<Tag> tags) { this.tags = tags; }
 
     /**
      * Getter for the InventoryItem's tags.
      * @return InventoryItem's tags (an ArrayList of String objects)
      */
-    public ArrayList<String> getTags() { return tags; }
+    public ArrayList<Tag> getTags() { return tags; }
+
+    public ArrayList<String> getTagNames() {
+        ArrayList<String> tagNames = new ArrayList<>();
+        this.tags.forEach(tag -> {
+            tagNames.add(tag.getName());
+        });
+        return tagNames;
+    }
+
+    public ArrayList<String> getTagIds() {
+        ArrayList<String> tagIds = new ArrayList<>();
+        this.tags.forEach(tag -> {
+            tagIds.add(tag.getId());
+        });
+        return tagIds;
+    }
 }

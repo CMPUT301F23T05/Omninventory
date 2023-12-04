@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ public class ManageTagsActivity extends AppCompatActivity {
     private ListView tagList;
     private TextView titleText;
     private Dialog addTagDialog;
+    private User currentUser;
 
     /**
      * Method called on Activity creation. Contains most of the logic of this Activity; programmatically
@@ -57,17 +59,24 @@ public class ManageTagsActivity extends AppCompatActivity {
         titleText.setText(getString(R.string.manage_tags_title_text)); // set title text
         addTagDialog = new Dialog(this);
 
-        // add taskbar
-        LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View taskbarLayout = taskbarInflater.inflate(R.layout.taskbar_manage_tags, null);
-        ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.taskbar_holder);
-        taskbarHolder.addView(taskbarLayout);
+//        // add taskbar
+//        LayoutInflater taskbarInflater = (LayoutInflater) getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        View taskbarLayout = taskbarInflater.inflate(R.layout.taskbar_manage_tags, null);
+//        ViewGroup taskbarHolder = (ViewGroup) findViewById(R.id.taskbar_holder);
+//        taskbarHolder.addView(taskbarLayout);
 
         // get taskbar buttons
-        ImageButton backButton = findViewById(R.id.back_button);
-        ImageButton deleteTagButton = findViewById(R.id.delete_tag_button);
-        ImageButton addTagButton = findViewById(R.id.add_tag_button);
-        ImageButton saveButton = findViewById(R.id.save_button);
+        final ImageButton backButton = findViewById(R.id.back_button);
+        final ImageButton deleteTagButton = findViewById(R.id.delete_tag_button);
+        final ImageButton addTagButton = findViewById(R.id.add_tag_button);
+        final ImageButton saveButton = findViewById(R.id.save_button);
+
+        if (getIntent().getExtras().getSerializable("user") == null) {
+            Log.d("EditActivity", "EditActivity opened without a User; possibly concerning");
+        }
+        else {
+            currentUser = (User) getIntent().getExtras().getSerializable("user");
+        }
 
         // === set up tag ListView
         tagListData = new ArrayList<>();
@@ -138,7 +147,7 @@ public class ManageTagsActivity extends AppCompatActivity {
                 }
 
                 // If not empty and not a duplicate, create the tag and dismiss the dialog
-                repo.addTag(new Tag(tagName));
+                repo.addTag(new Tag(tagName, currentUser.getUsername()));
                 CharSequence toastText = "Tag added successfully!";
                 Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
                 toast.show();

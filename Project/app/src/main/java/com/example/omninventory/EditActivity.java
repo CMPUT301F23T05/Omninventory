@@ -206,6 +206,7 @@ public class EditActivity extends AppCompatActivity  {
                 // this makes sure we get it back instead of writing it to the db
                 applyTagsIntent.putExtra("selectedItems", itemList);
                 applyTagsIntent.putExtra("apply", false);
+                applyTagsIntent.putExtra("user", currentUser);
                 mDefineTags.launch(applyTagsIntent);
             }
         });
