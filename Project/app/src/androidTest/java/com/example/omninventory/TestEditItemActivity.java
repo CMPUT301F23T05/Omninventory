@@ -189,7 +189,7 @@ public class TestEditItemActivity {
 
 
     /**
-     * Can edit an item with tag now
+     * Edit item with adding and removing tags
      * @author Kevin
      */
     @Test
@@ -223,6 +223,7 @@ public class TestEditItemActivity {
         onView(withId(R.id.item_tags_text))
                 .check(matches(withText(containsString("#important"))));
 
+        //---- tag exists, we can test remove tags-----
         testItems.sleepProblemsAway(1000);
 
         //click the edit button
@@ -249,8 +250,6 @@ public class TestEditItemActivity {
 
         onView(withId(R.id.back_button)).perform(click());
 
-        //apply the changes
-        //validate from the inventory screen that the item's tags are changed
     }
 
 
