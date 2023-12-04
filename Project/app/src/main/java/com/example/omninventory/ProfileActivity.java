@@ -161,11 +161,10 @@ public class ProfileActivity extends AppCompatActivity {
                     confirmPasswordEditText.setError("Passwords do not match");
                     return;
                 }
-                // TODO: uncomment this. Commenting this out for testing.
-//                if (!Utils.validatePassword(newPassword)) {
-//                    confirmPasswordEditText.setError("Password must be between 8-20 characters, have at least one uppercase letter (A-Z), one lowercase letter (a-z), one digit (0-9), and one symbol");
-//                    return;
-//                }
+                if (!Utils.validatePassword(newPassword)) {
+                    confirmPasswordEditText.setError("Password must be between 8-20 characters, have at least one uppercase letter (A-Z), one lowercase letter (a-z), one digit (0-9), and one symbol");
+                    return;
+                }
                 currentUser.setPassword(Utils.sha256(newPassword));
                 repo.updateUser(currentUser);
                 changePasswordDialog.dismiss();

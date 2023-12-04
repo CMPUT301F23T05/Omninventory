@@ -139,9 +139,9 @@ public class SignupActivity extends AppCompatActivity {
         else if (confirmPassword.isEmpty()) {
             callback.onValidationResult(false, "emptyConfirmPassword", null);
         }
-//        else if (!Utils.validatePassword(password)) {
-//            callback.onValidationResult(false, "weakPassword", null);
-//        }
+        else if (!Utils.validatePassword(password)) {
+            callback.onValidationResult(false, "weakPassword", null);
+        }
         else if (!password.equals(confirmPassword)) {
             callback.onValidationResult(false, "unmatchedPasswords", null);
         }
