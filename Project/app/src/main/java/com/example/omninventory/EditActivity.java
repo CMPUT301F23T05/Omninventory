@@ -1,8 +1,13 @@
 package com.example.omninventory;
 
+import static androidx.core.content.PermissionChecker.PERMISSION_GRANTED;
+
+import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -21,7 +26,10 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,6 +39,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 
 /**
@@ -334,26 +343,9 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
         imageTakeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent imageTakeIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-                // try to create a new file to store image in
-                File photoFile = createImageFile();
-
-                if (photoFile != null) {
-                    // store filepath and URI
-                    imageFilePath = photoFile.getAbsolutePath();
-                    imageUri = FileProvider.getUriForFile(EditActivity.this,
-                            EditActivity.this.getPackageName() + ".provider",
-                            photoFile);
-
-                    imageTakeIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                    imageTakeLauncher.launch(imageTakeIntent);
-                }
-                else {
-                    // something went wrong in file creation
-                    Log.e("EditActivity", "File creation failed, not allowing user to take a photo");
-                    Toast toast = Toast.makeText(getApplicationContext(), "There was a problem accessing device storage.", Toast.LENGTH_SHORT);
-                    toast.show();
+                boolean hasPermission = checkCameraPermissions(EditActivity.this); // first need camera permissions
+                if (hasPermission) {
+                    startImageTakeActivity();
                 }
             }
         });
@@ -363,8 +355,8 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
             @Override
             public void onClick(View view) {
                 // Launch the photo picker and let the user choose only images.
-                // known issue with androidx.activity:activity, this line gets underlined as an error
-                // in the IDE but code runs with no issue.
+                // Known issue with our version of androidx.activity:activity, this line gets
+                // underlined as an error by the IDE but code runs with no issue.
                 pickMedia.launch(new PickVisualMediaRequest.Builder()
                         .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
                         .build());
@@ -523,5 +515,76 @@ public class EditActivity extends AppCompatActivity implements ImageDownloadHand
 
         Log.d("EditActivity", "image file created: " + imageFile.getPath() + ", absolute: " + imageFile.getAbsolutePath());
         return imageFile;
+    }
+
+    private void startImageTakeActivity() {
+        Intent imageTakeIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        // try to create a new file to store image in
+        File photoFile = createImageFile();
+
+        if (photoFile != null) {
+            // store filepath and URI
+            imageFilePath = photoFile.getAbsolutePath();
+            imageUri = FileProvider.getUriForFile(EditActivity.this,
+                    EditActivity.this.getPackageName() + ".provider",
+                    photoFile);
+
+            imageTakeIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+            imageTakeLauncher.launch(imageTakeIntent);
+        }
+        else {
+            // something went wrong in file creation
+            Log.e("EditActivity", "File creation failed, not allowing user to take a photo");
+            Toast toast = Toast.makeText(getApplicationContext(), "There was a problem accessing device storage.", Toast.LENGTH_SHORT);
+            toast.show();
+        }
+    }
+
+    /**
+     * Method to dynamically request camera permissions for the barcode scanner
+     * @param context Context of barcode activity
+     * @reference https://stackoverflow.com/questions/67553067/cannot-open-camera-0-without-camera-permission
+     */
+    private static boolean checkCameraPermissions(Context context){
+        if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            Log.d("checkCameraPermissions", "No Camera Permissions");
+            ActivityCompat.requestPermissions((Activity) context,
+                    new String[] { Manifest.permission.CAMERA },
+                    100);
+
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * When a permission is granted to a result, this method is called; if camera permissions were
+     * just granted, it should open the imageTakeIntent.
+     *
+     * @param requestCode The request code passed in requestPermissions.
+     * @param permissions The requested permissions. Never null.
+     * @param grantResults The grant results for the corresponding permissions
+     *     which is either android.content.pm.PackageManager.PERMISSION_GRANTED
+     *     or android.content.pm.PackageManager.PERMISSION_DENIED. Never null.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.d("EditActivity", String.format("onRequestPermissionsResult called with requestCode %d, grantResults %s", requestCode, Arrays.toString(grantResults)));
+
+        // Check if the permissions were granted by the user.
+        if (requestCode == 100 &&
+                ContextCompat.checkSelfPermission(EditActivity.this, android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            // permissions were just granted, so we should again open imageTakeIntent
+            Log.d("EditActivity", "camera permissions granted");
+            startImageTakeActivity();
+        } else {
+            // Permissions were denied by the user
+            Toast toast = Toast.makeText(getApplicationContext(), "Can't take an image without camera permissions.", Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 }

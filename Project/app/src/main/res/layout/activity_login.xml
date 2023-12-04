@@ -13,7 +13,7 @@
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@color/gray_background"
+        android:background="?colorSurface"
         android:orientation="vertical">
 
         <LinearLayout
@@ -25,13 +25,22 @@
             android:gravity="center_vertical"
             android:orientation="vertical">
 
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:gravity="center_vertical"
+                android:layout_marginTop="-50dp"
+                android:layout_marginBottom="30dp"
+                android:src="@drawable/omninventory_logo"/>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
                 android:gravity="center_horizontal"
                 android:text="Please log in to continue"
-                android:textColor="?attr/colorOnSurface"
+                android:textColor="?colorOnSurface"
                 android:textSize="18dp" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -74,7 +83,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="5dp"
                     android:text="Don't have an account?"
-                    android:textColor="?attr/colorOnSurface"
+                    android:textColor="?colorOnSurface"
                     android:textSize="18dp" />
 
                 <TextView
@@ -85,7 +94,7 @@
                     android:onClick="onClickSignUpLink"
                     android:padding="3dp"
                     android:text="Sign Up"
-                    android:textColor="?attr/colorPrimary"
+                    android:textColor="?colorPrimary"
                     android:textSize="18dp"
                     android:textStyle="bold" />
 
@@ -98,9 +107,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="20dp"
-                android:backgroundTint="?attr/colorSecondary"
+                android:backgroundTint="?colorSecondary"
                 android:text="Log in"
-                android:textColor="?attr/colorOnSecondary"
+                android:textColor="?colorOnSecondary"
                 android:textSize="18dp"
                 android:textStyle="bold"
                 app:cornerRadius="20dp" />

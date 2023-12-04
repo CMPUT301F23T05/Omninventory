@@ -21,7 +21,16 @@ Patrick Harvey | psharvey | PatchyH
 Zachary Schmidt | zschmidt | ZacharySchmidt0
 
 
-## Running FAQ
+## Other Information
+
+### Image Credits
+
+> Iconset: [Zondicons](https://www.iconfinder.com/iconsets/zondicons) \
+> Author: Steve Schoger \
+> License: [Creative Commons (Attribution 3.0 Unported)](http://creativecommons.org/licenses/by/3.0/) \
+> Download date: 2023-12-03
+
+### Running Issues
 
 If you are running the app on an emulator attempt to open the camera to take an image, scan a barcode, or read a serial number, you may see this funny little guy instead of your actual webcam feed.
 
