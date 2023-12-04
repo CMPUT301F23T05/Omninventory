@@ -53,6 +53,11 @@ public class TestAddItemActivity {
     /**
      * PLEASE ONLY USE "AddItemTest" as the name for testing item.
      */
+
+    /**
+     * SetUp code for add item test
+     * @author Kevin
+     */
     @Before
     public void setup() {
         testItems.sleepProblemsAway(500);
@@ -70,6 +75,7 @@ public class TestAddItemActivity {
 
     /**
      * Clean up for the item added during test
+     * @author Kevin
      */
     @After
     public void cleanup(){
@@ -87,6 +93,7 @@ public class TestAddItemActivity {
 
     /**
      * Test for the base case of adding an item
+     * @author Kevin
      */
     @Test
     public void testAddItemBase(){
@@ -109,6 +116,10 @@ public class TestAddItemActivity {
 
     }
 
+    /**
+     * Add item with full info
+     * @author Kevin
+     */
     @Test
     public void testAddItemWithMostInfo(){
         // start on the inventory screen click on the add button
@@ -158,7 +169,6 @@ public class TestAddItemActivity {
                 .check(matches(isDisplayed()));
 
         //validate in the inventory screen that the item was added
-        //may crash if the database is not reset before hand.
         onView(withText("AddItemTest description test")).check(matches(isDisplayed()));
 
         onView(withText("AddItemTest")).perform(click());
@@ -177,7 +187,11 @@ public class TestAddItemActivity {
 
     }
 
-    //@Test
+    /**
+     * Test for adding item with tag
+     * @author Kevin
+     */
+    @Test
     public void testAddItemWithTag(){
         //Start on inventory screen, click on the add button
 
@@ -191,30 +205,29 @@ public class TestAddItemActivity {
         onView(withId(R.id.item_description_edittext)).perform(ViewActions.
                 typeText("AddItemTest description test"));
 
-        //add tag to item
+        //Click tags button
         onView(withId(R.id.item_tags_button))
                 .perform(scrollTo())
                 .check(matches(isDisplayed()));
 
         onView(withId(R.id.item_tags_button)).perform(click());
 
+        //add tag to item
         onView(withText("important"))
                 .perform(scrollTo())
                 .check(matches(isDisplayed()))
                 .perform(click());
-
         onView(withId(R.id.confirm_tags_button)).perform(click());
 
         onView(withId(R.id.save_button)).perform(click());
 
+        //validate tags are added
         onView(withText("AddItemTest"))
                 .perform(scrollTo())
                 .check(matches(isDisplayed()));
 
-        //validate in the inventory screen that the item was added
-        //may crash if the database is not reset before hand.
+        //validate add item
         onView(withText("AddItemTest description test")).check(matches(isDisplayed()));
-
         onView(withText("AddItemTest")).perform(click());
 
         testItems.sleepProblemsAway(1000);

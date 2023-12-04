@@ -32,20 +32,22 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class TestTagActivity {
+
+    TestItems testItems = new TestItems();
+
     //Note that editing adding and editing tags are handled in
     // testAddItemActivity and testEditItemActivity.
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new
             ActivityScenarioRule<MainActivity>(MainActivity.class);
 
+    /**
+     * setup for tag test
+     * @author Kevin
+     */
     @Before
     public void setup() {
-        try { //allow app to start
-            Thread.sleep(1000); // Sleep for 1 second
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return;
-        }
+        testItems.sleepProblemsAway(1000);
 
         onView(withId(R.id.login_username_edit_text)).perform(typeText("Tester"));
         onView(withId(R.id.login_password_edit_text))
@@ -53,14 +55,13 @@ public class TestTagActivity {
         onView(withId(R.id.login_btn)).perform(click());
 
         //allow app to load in time
-        try {
-            Thread.sleep(2000); // Sleep for 1 second
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return;
-        }
+        testItems.sleepProblemsAway(1000);
     }
 
+    /**
+     * test create and delete tag
+     * @author Kevin
+     */
     @Test
     public void testCreateAndDeleteTag(){
         //From inventory screen select tags button
@@ -71,18 +72,26 @@ public class TestTagActivity {
 
         //Enter in dialog box new tag name
         onView(withId(R.id.new_tag_name_editText)).perform(typeText("TagTest"));
+        onView(withId(R.id.new_tag_priority_editText)).perform(typeText("22"));
 
         //click add button
         onView(withId(R.id.add_tag_dialog_button)).perform(click());
 
         //validate new tag added
-        onView(withText("TestTag")).check(matches(isDisplayed()));
+        onView(withText("TagTest")).check(matches(isDisplayed()));
 
-        //todo not yet implemented
-        //delete said tag
+        onView(withText("TagTest")).perform(longClick());
+        onView(withId(R.id.delete_tag_button)).perform(click());
+        onView(withId(R.id.delete_dialog_button)).perform(click());
+        testItems.sleepProblemsAway(50);//process the delete
+        onView(withText("TestTag")).check(doesNotExist());
 
     }
 
+    /**
+     * Test cancel adding tag
+     * @author Kevin
+     */
     @Test
     public void testAddTagCancel(){
         //From inventory screen select tags button
@@ -99,6 +108,51 @@ public class TestTagActivity {
 
         //validate cancel isnt on screen
         onView(withText("CancelTag")).check(doesNotExist());
+    }
+
+    /**
+     * test deleting multiple tags
+     * @author kevin
+     */
+    @Test
+    public void testDeleteMultipleTags(){
+        //From inventory screen select tags button
+        onView(withId(R.id.tag_button)).perform(click());
+
+        //Select add tag
+        onView(withId(R.id.add_tag_button)).perform(click());
+
+        //Enter in dialog box new tag name
+        onView(withId(R.id.new_tag_name_editText)).perform(typeText("TagTest1"));
+        onView(withId(R.id.new_tag_priority_editText)).perform(typeText("22"));
+
+        //click add button
+        onView(withId(R.id.add_tag_dialog_button)).perform(click());
+
+        //validate new tag added
+        onView(withText("TagTest1")).check(matches(isDisplayed()));
+
+        //Select add tag
+        onView(withId(R.id.add_tag_button)).perform(click());
+
+        //Enter in dialog box new tag name
+        onView(withId(R.id.new_tag_name_editText)).perform(typeText("TagTest2"));
+        onView(withId(R.id.new_tag_priority_editText)).perform(typeText("22"));
+
+        //click add button
+        onView(withId(R.id.add_tag_dialog_button)).perform(click());
+
+        //validate new tag added
+        onView(withText("TagTest2")).check(matches(isDisplayed()));
+
+        //select the 2 tags
+        onView(withText("TagTest1")).perform(longClick());
+        onView(withText("TagTest2")).perform(longClick());
+        onView(withId(R.id.delete_tag_button)).perform(click());
+        onView(withId(R.id.delete_dialog_button)).perform(click());
+        testItems.sleepProblemsAway(50);//process the delete
+        onView(withText("TestTag1")).check(doesNotExist());
+        onView(withText("TestTag2")).check(doesNotExist());
     }
 
 }

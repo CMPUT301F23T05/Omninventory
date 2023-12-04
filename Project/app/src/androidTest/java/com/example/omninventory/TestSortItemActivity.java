@@ -48,6 +48,10 @@ public class TestSortItemActivity {
 
     TestItems testItems = new TestItems();
 
+    /**
+     * Set up for sort item
+     * @author Kevin
+     */
     @Before
     public void setup() {
 
@@ -62,11 +66,19 @@ public class TestSortItemActivity {
         testItems.sleepProblemsAway(2000);
     }
 
+    /**
+     * Cleaup for test items
+     * @author Kevin
+     */
     @After
     public void cleanup(){
         testItems.wipeTestItems();
     }
 
+    /**
+     * Test sort date
+     * @author Kevin
+     */
     @Test
     public void testSortItemByDate(){
         testItems.generateTestItems();
@@ -192,6 +204,10 @@ public class TestSortItemActivity {
                 .check(matches(withText("TestItem3")));
     }
 
+    /**
+     * Test sort Description
+     * @author Kevin
+     */
     @Test
     public void testSortItemByDescription(){
         testItems.generateTestItems();
@@ -290,6 +306,10 @@ public class TestSortItemActivity {
                 .check(matches(withText("TestItem3")));
     }
 
+    /**
+     * Test sort by make
+     * @author Kevin
+     */
     @Test
     public void testSortItemByMake(){
         testItems.generateTestItems();
@@ -389,6 +409,10 @@ public class TestSortItemActivity {
                 .check(matches(withText("TestItem1")));
     }
 
+    /**
+     * Test sort by estimated value
+     * @author Kevin
+     */
     @Test
     public void testSortItemByEstValue(){
         testItems.generateTestItems();
@@ -501,18 +525,6 @@ public class TestSortItemActivity {
                 .atPosition(2)
                 .onChildView(withId(R.id.item_name_text))
                 .check(matches(withText("TestItem3")));
-    }
-
-
-    public void testSortItemByTags(){
-
-        //This test might need to be done manually
-        testItems.generateTestItems();
-        //From inventory screen select sort/filter button
-        //Select the sort option dropdown
-        //Select Tag
-        //Select go back button
-        //validate that items are sorted by Tag based on the determined tag sort order.
     }
 
 }

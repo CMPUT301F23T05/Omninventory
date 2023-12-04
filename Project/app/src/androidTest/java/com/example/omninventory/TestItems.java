@@ -34,6 +34,7 @@ public class TestItems {
 
     /**
      * Run the add item and delete item test before running this class
+     * @author Kevin
      */
     public void generateTestItems(){
         //todo: add more information to items being tested
@@ -69,6 +70,7 @@ public class TestItems {
 
     /**
      * Deletes test items generated for test cases
+     * @author Kevin
      */
     public void wipeTestItems() {
         //todo: change to delete item if it exists
@@ -103,6 +105,10 @@ public class TestItems {
 
     }
 
+    /**
+     * Generate one test item
+     * @author Kevin
+     */
     public void generateOneTestItems() {
         //todo: add more information to items being tested
 
@@ -118,6 +124,10 @@ public class TestItems {
         onView(withId(R.id.save_button)).perform(click());
     }
 
+    /**
+     * Remove the one test item generated
+     * @author Kevin
+     */
     public void cleanOneTestItem(){
         //Clear generated test items from the database
         onView(withText("TestItem1"))
@@ -133,6 +143,7 @@ public class TestItems {
     /**
      * A lot of tests run too fast. Need to halt it to allow program to load in time.
      * @param sleepTime
+     * @author Kevin
      */
     public void sleepProblemsAway(int sleepTime){
         try {
