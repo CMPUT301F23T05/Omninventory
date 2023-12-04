@@ -2,7 +2,9 @@ package com.example.omninventory;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.longClick;
+import static androidx.test.espresso.action.ViewActions.typeText;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -16,6 +18,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,9 +38,13 @@ public class TestDeleteItemActivity {
 
     TestItems testItems = new TestItems();
 
-    /**
-     * Todo: May need to revamp the test cases to test onData instead
-     */
+    @Before
+    public void setup() {
+        onView(withId(R.id.login_username_edit_text)).perform(typeText("Tester"));
+        onView(withId(R.id.login_password_edit_text))
+                .perform(typeText("Hahaha123!"), closeSoftKeyboard());
+        onView(withId(R.id.login_btn)).perform(click());
+    }
 
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new
