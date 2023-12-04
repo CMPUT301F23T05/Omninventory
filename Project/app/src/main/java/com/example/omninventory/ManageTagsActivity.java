@@ -163,6 +163,10 @@ public class ManageTagsActivity extends AppCompatActivity {
         } else {
             dialogHeader.setText("ADD TAG");
         }
+
+        // make background transparent for our rounded corners
+        addTagDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
         // Add tag button will create a new tag with the specified name
         addTagDialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
