@@ -56,6 +56,14 @@ public class TestSortItemActivity {
     public void testSortItemByDate(){
         testItems.generateTestItems();
         //add dates to each test item
+
+        try {
+            Thread.sleep(100); // Sleep for 1 second
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
+
         onView(withText("TestItem1"))
                 .perform(scrollTo())
                 .perform(click());
@@ -150,27 +158,131 @@ public class TestSortItemActivity {
                 .onChildView(withId(R.id.item_name_text))
                 .check(matches(withText("TestItem2")));
 
-    }
+        //Test DESC
+        onView(withId(R.id.sort_filter_button)).perform(click());
+        onView(withId(R.id.asc_desc_button)).perform(click());
+        onView(withId(R.id.back_button)).perform(click());
 
-    @Test
-    public void testSortItemDESCByDate(){
-        testItems.generateTestItems();
-        //From inventory screen select sort/filter button
-        //Select the sort option dropdown
-        //Select Date
-        //Select the ASC button to change sort order
-        //Select go back button
-        //validate that items are sorted by date DESC.
+        onData(anything())
+                .inAdapterView(withId(R.id.item_list)) // Replace with the actual ID of your ListView
+                .atPosition(0)
+                .onChildView(withId(R.id.item_name_text)) // Replace with the actual ID of the TextView within the list item
+                .check(matches(withText("TestItem2")));
+
+        onData(anything())
+                .inAdapterView(withId(R.id.item_list))
+                .atPosition(1)
+                .onChildView(withId(R.id.item_name_text))
+                .check(matches(withText("TestItem1")));
+
+        onData(anything())
+                .inAdapterView(withId(R.id.item_list))
+                .atPosition(2)
+                .onChildView(withId(R.id.item_name_text))
+                .check(matches(withText("TestItem3")));
     }
 
     @Test
     public void testSortItemByDescription(){
         testItems.generateTestItems();
+
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return;
+        }
+
+        onView(withText("TestItem1"))
+                .perform(scrollTo())
+                .perform(click());
+
+        onView(withId(R.id.edit_button)).perform(click());
+
+        onView(withId(R.id.item_description_edittext)).perform(typeText("Sort C"));
+        onView(withId(R.id.save_button)).perform(click());
+        onView(withId(R.id.back_button)).perform(click());
+
+        onView(withText("TestItem2"))
+                .perform(scrollTo())
+                .perform(click());
+        onView(withId(R.id.edit_button)).perform(click());
+
+        onView(withId(R.id.item_description_edittext)).perform(typeText("Sort B"));
+        onView(withId(R.id.save_button)).perform(click());
+        onView(withId(R.id.back_button)).perform(click());
+
+        onView(withText("TestItem3"))
+                .perform(scrollTo())
+                .perform(click());
+        onView(withId(R.id.edit_button)).perform(click());
+        // Click the button to open the DatePickerDialog
+        onView(withId(R.id.item_description_edittext)).perform(typeText("Sort A"));
+        onView(withId(R.id.save_button)).perform(click());
+        onView(withId(R.id.back_button)).perform(click());
+
+        //Expected order would be testitem3, testitem2, testitem1
         //From inventory screen select sort/filter button
+        onView(withId(R.id.sort_filter_button)).perform(click());
+
         //Select the sort option dropdown
-        //Select Description
+        onView(withId(R.id.sort_dropdown_spinner)).perform(click());
+
+        //Select Date
+        // Select the "Date" sort option from the dropdown
+        onData(allOf(is(instanceOf(String.class)), is("Description")))
+                .inRoot(isPlatformPopup()).perform(click());
+
+        //add a description filter to test sort for only certain items
+        onView(withId(R.id.description_filter_edit_text))
+                .perform(typeText("Sort"), closeSoftKeyboard());
+        onView(withId(R.id.add_description_filter_button)).perform(click());
+
         //Select go back button
-        //validate that items are sorted by description ASC.
+        onView(withId(R.id.back_button)).perform(click());
+
+        //validate that items are sorted by date ASC.
+        // Scroll to the first expected item and verify its position
+        onData(anything())
+                .inAdapterView(withId(R.id.item_list)) // Replace with the actual ID of your ListView
+                .atPosition(0)
+                .onChildView(withId(R.id.item_name_text)) // Replace with the actual ID of the TextView within the list item
+                .check(matches(withText("TestItem3")));
+
+        onData(anything())
+                .inAdapterView(withId(R.id.item_list))
+                .atPosition(1)
+                .onChildView(withId(R.id.item_name_text))
+                .check(matches(withText("TestItem2")));
+
+        onData(anything())
+                .inAdapterView(withId(R.id.item_list))
+                .atPosition(2)
+                .onChildView(withId(R.id.item_name_text))
+                .check(matches(withText("TestItem1")));
+
+        //Test DESC
+        onView(withId(R.id.sort_filter_button)).perform(click());
+        onView(withId(R.id.asc_desc_button)).perform(click());
+        onView(withId(R.id.back_button)).perform(click());
+
+        onData(anything())
+                .inAdapterView(withId(R.id.item_list)) // Replace with the actual ID of your ListView
+                .atPosition(0)
+                .onChildView(withId(R.id.item_name_text)) // Replace with the actual ID of the TextView within the list item
+                .check(matches(withText("TestItem1")));
+
+        onData(anything())
+                .inAdapterView(withId(R.id.item_list))
+                .atPosition(1)
+                .onChildView(withId(R.id.item_name_text))
+                .check(matches(withText("TestItem2")));
+
+        onData(anything())
+                .inAdapterView(withId(R.id.item_list))
+                .atPosition(2)
+                .onChildView(withId(R.id.item_name_text))
+                .check(matches(withText("TestItem3")));
     }
 
     @Test
