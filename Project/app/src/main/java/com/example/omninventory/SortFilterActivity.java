@@ -56,6 +56,7 @@ public class SortFilterActivity extends AppCompatActivity {
     private boolean makePressed;
     private boolean datePressed;
     private boolean descriptionPressed;
+    private User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +131,9 @@ public class SortFilterActivity extends AppCompatActivity {
                 descriptionFilterEditText.setText(descriptionText);
                 descriptionFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
                 descriptionPressed = true;
+            }
+            if (intent.getSerializableExtra("login") != null) {
+                currentUser = (User) intent.getSerializableExtra("login");
             }
         }
 
@@ -251,7 +255,6 @@ public class SortFilterActivity extends AppCompatActivity {
                     makePressed = false;
                 }
                 else {
-                    makeText = makeFilterEditText.getText().toString();
                     makeFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
                     makePressed = true;
                 }
@@ -280,7 +283,6 @@ public class SortFilterActivity extends AppCompatActivity {
                     descriptionPressed = false;
                 }
                 else {
-                    descriptionText = descriptionFilterEditText.getText().toString();
                     descriptionFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
                     descriptionPressed = true;
                 }
@@ -299,6 +301,8 @@ public class SortFilterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent myIntent = new Intent(SortFilterActivity.this, MainActivity.class);
+                makeText = makeFilterEditText.getText().toString();
+                descriptionText = descriptionFilterEditText.getText().toString();
                 putFieldsIntent(myIntent, makePressed, datePressed, descriptionPressed);
                 SortFilterActivity.this.startActivity(myIntent);
             }
@@ -316,6 +320,7 @@ public class SortFilterActivity extends AppCompatActivity {
                                  boolean datePressed, boolean descriptionPressed) {
         myIntent.putExtra("sortBy", dropdownSelection);
         myIntent.putExtra("sortOrder", sortOrder);
+        myIntent.putExtra("login", currentUser);
         if (makePressed) {
             myIntent.putExtra("filterMake", makeText);
         }
