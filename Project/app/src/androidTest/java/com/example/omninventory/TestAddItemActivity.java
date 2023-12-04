@@ -177,7 +177,7 @@ public class TestAddItemActivity {
 
     }
 
-    //@Test
+    @Test
     public void testAddItemWithTag(){
         //Start on inventory screen, click on the add button
 
