@@ -74,13 +74,37 @@ public class TestProfileActivity {
         onView(withText("Tester newTest")).check(matches(isDisplayed()));
 
         onView(withId(R.id.change_name_btn)).perform(click());
-        testItems.sleepProblemsAway(200);
+        testItems.sleepProblemsAway(100);
         onView(withId(R.id.change_name_editText)).perform(typeText("Tester Test"));
         onView(withId(R.id.ok_dialog_button)).perform(click());
         testItems.sleepProblemsAway(50);
         onView(withText("Tester Test")).check(matches(isDisplayed()));
 
-        //RISKY
+
+        //----Change user name tests ------
+        onView(withId(R.id.change_username_btn)).perform(click());
+        testItems.sleepProblemsAway(100);
+        onView(withId(R.id.change_name_editText)).perform(typeText("Tester1"));
+        onView(withId(R.id.ok_dialog_button)).perform(click());
+        testItems.sleepProblemsAway(50);
+        onView(withText("@Tester1")).check(matches(isDisplayed()));
+
+        onView(withId(R.id.logout_btn)).perform(click());
+        onView(withId(R.id.login_username_edit_text)).perform(typeText("Tester1"));
+        onView(withId(R.id.login_password_edit_text))
+                .perform(typeText("Hahaha123!"), closeSoftKeyboard());
+        onView(withId(R.id.login_btn)).perform(click());
+        onView(withId(R.id.profile_button)).perform(click());
+
+        onView(withId(R.id.change_username_btn)).perform(click());
+        testItems.sleepProblemsAway(100);
+        onView(withId(R.id.change_name_editText)).perform(typeText("Tester"));
+        onView(withId(R.id.ok_dialog_button)).perform(click());
+        testItems.sleepProblemsAway(50);
+        onView(withText("@Tester")).check(matches(isDisplayed()));
+
+
+        //---- PASSWORD TESTS (PASSED) VERY RISKY!! ---
         onView(withId(R.id.change_password_btn)).perform(click());
         testItems.sleepProblemsAway(100);
         onView(withId(R.id.cancel_dialog_button)).perform(click());
