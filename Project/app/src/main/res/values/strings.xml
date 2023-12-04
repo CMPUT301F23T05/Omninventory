@@ -65,6 +65,7 @@
         <item>Description</item>
         <item>Make</item>
         <item>Estimated Value</item>
+        <item>Tags</item>
     </string-array>
 
     <!-- Text in apply tags activity -->

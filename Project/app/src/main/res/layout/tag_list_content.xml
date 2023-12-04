@@ -22,7 +22,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:layout_editor_absoluteY="336dp"/>
+            tools:layout_editor_absoluteY="336dp"
+            android:textColor="?attr/colorOnSurface"/>
 
         <TextView
             android:id="@+id/tag_detail_text"
@@ -36,7 +37,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:layout_editor_absoluteY="328dp"/>
+            tools:layout_editor_absoluteY="328dp"
+            android:textColor="?attr/colorOnSurface"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>

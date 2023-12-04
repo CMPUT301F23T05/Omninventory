@@ -58,9 +58,26 @@ public class TagAdapter extends ArrayAdapter<Tag>  {
         // === UI setup
         Tag tag = tagListData.get(position);
 
+        // get colours so selection works with theme
+        Resources.Theme theme = context.getTheme();
+        TypedValue typedValue = new TypedValue();
+
+        theme.resolveAttribute(com.google.android.material.R.attr.colorSurface, typedValue, true);
+        @ColorInt int colorNotSelected = typedValue.data;
+
+        theme.resolveAttribute(com.google.android.material.R.attr.colorSurfaceVariant, typedValue, true);
+        @ColorInt int colorSelected = typedValue.data;
+
+        // set colour to reflect selection
+        if (tag.isSelected()) {
+            view.setBackgroundColor(colorSelected);
+        } else {
+            view.setBackgroundColor(colorNotSelected);
+        }
+
         // set fields
         tagNameText.setText(tag.getName());
-        tagDetailText.setText(String.format("Currently applied to %d items", tag.getItemCount()));
+        tagDetailText.setText(String.format("Priority: %d", tag.getPriority()));
 
         return view;
     }
