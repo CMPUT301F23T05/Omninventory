@@ -92,7 +92,7 @@ public class ApplyTagsActivity extends AppCompatActivity  {
         appliedTagsListAdapter = new TagAdapter(this, appliedTagsListData);
         unappliedTagsListAdapter = new TagAdapter(this, unappliedTagsListData);
 
-        ListenerRegistration registration = repo.setupTagList(unappliedTagsListAdapter);
+        ListenerRegistration registration = repo.setupTagList(unappliedTagsListAdapter, currentUser);
 
         appliedTagsList.setAdapter(appliedTagsListAdapter);
         unappliedTagsList.setAdapter(unappliedTagsListAdapter);

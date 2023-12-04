@@ -16,29 +16,26 @@
             android:id="@+id/tag_name_text"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:text="Tag"
             android:textSize="30sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:layout_editor_absoluteY="336dp"
             android:textColor="?attr/colorOnSurface"/>
 
         <TextView
             android:id="@+id/tag_detail_text"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|right"
             android:maxLines="3"
             android:singleLine="false"
             android:text="Very long text string that I need to use to test whether this is friggin breaking"
+            android:textAlignment="textEnd"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:layout_editor_absoluteY="328dp"
-            android:textColor="?attr/colorOnSurface"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>
