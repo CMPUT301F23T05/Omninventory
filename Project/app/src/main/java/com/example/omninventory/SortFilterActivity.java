@@ -4,7 +4,6 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.nfc.Tag;
 import android.os.Bundle;
 
 import androidx.annotation.ColorInt;
@@ -69,6 +68,9 @@ public class SortFilterActivity extends AppCompatActivity {
     private boolean tagsPressed;
     private User currentUser;
 
+    @ColorInt int colorFilterApplied;
+    @ColorInt int colorFilterNotApplied;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,10 +117,10 @@ public class SortFilterActivity extends AppCompatActivity {
         TypedValue typedValue = new TypedValue();
 
         theme.resolveAttribute(com.google.android.material.R.attr.colorPrimary, typedValue, true);
-        @ColorInt int colorFilterApplied = typedValue.data;
+        colorFilterApplied = typedValue.data;
 
         theme.resolveAttribute(com.google.android.material.R.attr.colorSecondary, typedValue, true);
-        @ColorInt int colorFilterNotApplied = typedValue.data;
+        colorFilterNotApplied = typedValue.data;
 
         // to restore previous selections, get the data from intent
         // if restoring value, set button background color to R.color.clicked_filter_button
@@ -536,8 +538,8 @@ public class SortFilterActivity extends AppCompatActivity {
         TextView tagFilterText = findViewById(R.id.tag_filter_text);
 
         if (this.tagFilter.isEmpty()) {
-            tagFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.unclicked_filter_button));
-            tagFilterText.setVisibility(View.INVISIBLE);
+            tagFilterButton.setBackgroundColor(colorFilterNotApplied);
+            tagFilterText.setVisibility(View.GONE);
             tagsPressed = false;
         }
         else {
@@ -545,7 +547,7 @@ public class SortFilterActivity extends AppCompatActivity {
             for (int i = 0; i < tagFilter.size(); i++) {
                 tagString = String.join(" ", tagString, String.format("#%s", tagFilter.get(i).getName()));
             }
-            tagFilterButton.setBackgroundColor(ContextCompat.getColor(SortFilterActivity.this, R.color.clicked_filter_button));
+            tagFilterButton.setBackgroundColor(colorFilterApplied);
             tagFilterText.setText(tagString);
             tagFilterText.setVisibility(View.VISIBLE);
             tagsPressed = true;
