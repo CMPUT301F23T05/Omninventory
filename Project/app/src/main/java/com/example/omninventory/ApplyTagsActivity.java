@@ -6,6 +6,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -202,6 +204,9 @@ public class ApplyTagsActivity extends AppCompatActivity  {
 
         addTagDialog.setCancelable(false);
         addTagDialog.setContentView(R.layout.add_tag_dialog);
+
+        // make background transparent for our rounded corners
+        addTagDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         // UI Elements
         EditText tagNameEditText = addTagDialog.findViewById(R.id.new_tag_name_editText);

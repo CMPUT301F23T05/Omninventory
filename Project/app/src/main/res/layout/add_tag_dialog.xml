@@ -4,14 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?attr/colorSurface">
+    android:layout_height="wrap_content"
+    android:minWidth="300dp"
+    android:background="@drawable/rounded_dialog">
 
     <TextView
         android:id="@+id/dialog_tag_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
+        android:background="@drawable/rounded_title_bar"
         android:text="@string/add_tag_dialog"
         android:textAlignment="center"
         android:textColor="?attr/colorOnPrimary"
@@ -28,6 +29,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:layout_marginTop="10dp"
+        android:layout_marginHorizontal="10dp"
         android:hint="@string/add_tag_dialog_hint"
         android:inputType="text"
         android:theme="@style/item_edit_edittext"/>
@@ -37,38 +40,41 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:layout_marginTop="10dp"
+        android:layout_marginHorizontal="10dp"
         android:hint="Tag Priority"
         android:inputType="number"
         android:theme="@style/item_edit_edittext"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <Button
-            android:id="@+id/add_tag_dialog_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:background="?attr/colorPrimary"
-            android:fontFamily="sans-serif"
-            android:text="@string/add_tag_dialog_button"
-            app:layout_constraintEnd_toStartOf="@+id/cancel_dialog_button"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginHorizontal="10dp">
 
         <Button
             android:id="@+id/cancel_dialog_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            android:background="?attr/colorPrimary"
+            android:backgroundTint="?colorSecondary"
             android:fontFamily="sans-serif"
             android:text="@string/cancel_dialog_button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/add_tag_dialog_button"
+            app:layout_constraintEnd_toStartOf="@+id/add_tag_dialog_button"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/add_tag_dialog_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="?colorPrimary"
+            android:fontFamily="sans-serif"
+            android:text="@string/add_tag_dialog_button"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/cancel_dialog_button"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </LinearLayout>
