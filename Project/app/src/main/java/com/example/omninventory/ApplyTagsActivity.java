@@ -1,5 +1,6 @@
 package com.example.omninventory;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
@@ -69,7 +70,11 @@ public class ApplyTagsActivity extends AppCompatActivity  {
 
         // === get references to views
         final TextView titleText = findViewById(R.id.title_text);
-        titleText.setText(R.string.apply_tags_title_text);
+        if (apply) {
+            titleText.setText(R.string.apply_tags_title_text);
+        } else {
+            titleText.setText("EDIT TAGS");
+        }
         appliedTagsList = findViewById(R.id.applied_tag_list);
         unappliedTagsList = findViewById(R.id.unapplied_tag_list);
         backButton = findViewById(R.id.back_button);
@@ -94,7 +99,11 @@ public class ApplyTagsActivity extends AppCompatActivity  {
         appliedTagsListAdapter = new TagAdapter(this, appliedTagsListData);
         unappliedTagsListAdapter = new TagAdapter(this, unappliedTagsListData);
 
-        ListenerRegistration registration = repo.setupTagListsForItem(appliedTagsListAdapter, unappliedTagsListAdapter, currentUser, selectedItems.get(0));
+        if (!apply) {
+            ListenerRegistration registration = repo.setupTagListsForItem(appliedTagsListAdapter, unappliedTagsListAdapter, currentUser, selectedItems.get(0));
+        } else {
+            ListenerRegistration registration = repo.setupTagList(unappliedTagsListAdapter, currentUser);
+        }
 
         appliedTagsList.setAdapter(appliedTagsListAdapter);
         unappliedTagsList.setAdapter(unappliedTagsListAdapter);
@@ -144,7 +153,10 @@ public class ApplyTagsActivity extends AppCompatActivity  {
         addTagButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addTagDialog();
+                ArrayList<Tag> allTags = new ArrayList<>();
+                allTags.addAll(appliedTagsListData);
+                allTags.addAll(unappliedTagsListData);
+                addTagDialog(allTags, null);
             }
         });
 
@@ -154,11 +166,6 @@ public class ApplyTagsActivity extends AppCompatActivity  {
                 @Override
                 public void onClick(View view) {
 
-//                    appliedTagsListData.forEach(tag -> {
-//                        if (!selectedItems.get(0).getTags().contains(tag.getId())) {
-//                            selectedItems.get(0).addTag(tag);
-//                        }
-//                    });
                     selectedItems.get(0).setTags(appliedTagsListData);
 
                     Intent itemReturn = new Intent();
@@ -188,7 +195,7 @@ public class ApplyTagsActivity extends AppCompatActivity  {
      * Displays a dialog that allows the user to specify a new tag, which will appear in the
      * unapplied tags list.
      */
-    private void addTagDialog() {
+    private void addTagDialog(ArrayList<Tag> tagList, @Nullable Tag tag) {
 
         addTagDialog.setCancelable(false);
         addTagDialog.setContentView(R.layout.add_tag_dialog);
@@ -201,33 +208,52 @@ public class ApplyTagsActivity extends AppCompatActivity  {
         EditText tagPriorityEditText = addTagDialog.findViewById(R.id.new_tag_priority_editText);
         Button addTagDialogButton = addTagDialog.findViewById(R.id.add_tag_dialog_button);
         Button cancelDialogButton = addTagDialog.findViewById(R.id.cancel_dialog_button);
+        TextView dialogHeader = addTagDialog.findViewById(R.id.dialog_tag_text);
 
+        if (tag != null) {
+            Log.d("ManageTagsActivity", "ManageTagsActivity is here");
+            tagNameEditText.setText(tag.getName());
+            tagPriorityEditText.setText(Long.toString(tag.getPriority()));
+            dialogHeader.setText("EDIT TAG");
+        } else {
+            dialogHeader.setText("ADD TAG");
+        }
         // Add tag button will create a new tag with the name specified in tagNameEditText
         addTagDialogButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // Check tag name not empty
                 String tagName = tagNameEditText.getText().toString();
-                int priority = Integer.parseInt(tagPriorityEditText.getText().toString());
+                String tagPriorityString = tagPriorityEditText.getText().toString();
+                int priority = 0;
+
                 if (tagName.isEmpty()) {
                     CharSequence toastText = "Tag name cannot be empty!";
                     Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
                     toast.show();
                     return;
                 }
+                try {
+                    priority = Integer.parseInt(tagPriorityEditText.getText().toString());
+                } catch(NumberFormatException e) {
+                    CharSequence toastText = "Invalid priority! Setting to 0...";
+                    Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
+                    toast.show();
+                    priority = 0;
+                }
+                if (priority < 0) {
+                    CharSequence toastText = "Invalid priority! Setting to 0...";
+                    Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
+                    toast.show();
+                    priority = 0;
+                }
+
                 // Check tag isn't a duplicate of an existing one
                 boolean duplicate = false;
-                ListIterator<Tag> tagIter = appliedTagsListData.listIterator();
+                ListIterator<Tag> tagIter = tagList.listIterator();
                 while (tagIter.hasNext()) {
                     Tag nextTag = tagIter.next();
-                    if (tagName.equals(nextTag.getName())) {
-                        duplicate = true;
-                    }
-                }
-                tagIter = unappliedTagsListData.listIterator();
-                while (tagIter.hasNext()) {
-                    Tag nextTag = tagIter.next();
-                    if (tagName.equals(nextTag.getName())) {
+                    if (tagName.equals(nextTag.getName()) && (tag == null || !tag.getId().equals(nextTag.getId()))) {
                         duplicate = true;
                     }
                 }
@@ -239,8 +265,16 @@ public class ApplyTagsActivity extends AppCompatActivity  {
                 }
 
                 // If not empty and not a duplicate, create the tag and dismiss the dialog
-                repo.addTag(new Tag(tagName, currentUser.getUsername(), priority));
-                CharSequence toastText = "Tag added successfully!";
+                CharSequence toastText = "";
+                if (tag == null) {
+                    repo.addTag(new Tag(tagName, currentUser.getUsername(), priority));
+                    toastText = "Tag added successfully!";
+                } else {
+                    tag.setName(tagName);
+                    tag.setPriority(priority);
+                    repo.updateTag(tag);
+                    toastText = "Tag updated successfully!";
+                }
                 Toast toast = Toast.makeText(getApplicationContext(), toastText, Toast.LENGTH_SHORT);
                 toast.show();
                 addTagDialog.dismiss();

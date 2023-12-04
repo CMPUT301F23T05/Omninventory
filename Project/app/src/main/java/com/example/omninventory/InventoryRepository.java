@@ -755,7 +755,7 @@ public class InventoryRepository {
                         if (currentUser.getUsername().equals(doc.getString("owner"))) {
                             Tag tag = convertDocumentToTag(doc);
                             tagDict.put(tag.getId(), tag);
-                            if (item.getTagIds().contains(doc.getString("tags"))) {
+                            if (item.getTagIds().contains(doc.getId())) {
                                 appliedAdapter.add(tag);
                             } else {
                                 unappliedAdapter.add(tag);
