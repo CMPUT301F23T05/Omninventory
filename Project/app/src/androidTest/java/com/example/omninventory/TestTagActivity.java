@@ -3,6 +3,7 @@ package com.example.omninventory;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.longClick;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.typeText;
@@ -20,6 +21,7 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +37,14 @@ public class TestTagActivity {
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new
             ActivityScenarioRule<MainActivity>(MainActivity.class);
+
+    @Before
+    public void setup() {
+        onView(withId(R.id.login_username_edit_text)).perform(typeText("Tester"));
+        onView(withId(R.id.login_password_edit_text))
+                .perform(typeText("Hahaha123!"), closeSoftKeyboard());
+        onView(withId(R.id.login_btn)).perform(click());
+    }
 
     @Test
     public void testCreateAndDeleteTag(){
