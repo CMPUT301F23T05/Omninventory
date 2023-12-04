@@ -1,5 +1,8 @@
 package com.example.omninventory;
 
+import android.media.Image;
+import android.util.Log;
+
 import com.google.firebase.firestore.DocumentReference;
 
 import java.io.Serializable;
@@ -27,7 +30,8 @@ public class InventoryItem implements Serializable {
     private ItemValue value;
     private ItemDate date;
     private ArrayList<Tag> tags;
-    private ArrayList<Object> images; // placeholder
+    private ArrayList<ItemImage> images;
+    private ArrayList<ItemImage> originalImages; // only set if initialized with images
 
     private boolean isSelected;
 
@@ -45,7 +49,7 @@ public class InventoryItem implements Serializable {
         this.value = new ItemValue(0);
         this.date = new ItemDate(new Date());
         this.tags = new ArrayList<>();
-        // TODO: images
+        this.images = new ArrayList<>();
 
         this.isSelected = false;
     }
@@ -63,7 +67,39 @@ public class InventoryItem implements Serializable {
      * @param date         Date of purchase of item to create (an ItemDate).
      */
     public InventoryItem(String firebaseId, String name, String description, String comment,
-                         String make, String model, String serialNo, ItemValue value, ItemDate date, ArrayList<Tag> tags) {
+                         String make, String model, String serialNo, ItemValue value, ItemDate date, ArrayList<Tag> tags, ArrayList<ItemImage> images) {
+        // full constructor
+        this.firebaseId = firebaseId;
+        this.name = name;
+        this.description = description;
+        this.comment = comment;
+        this.make = make;
+        this.model = model;
+        this.serialNo = serialNo;
+        this.value = value;
+        this.date = date;
+        this.tags = tags;
+        this.images = images;
+//        this.originalImages = new ArrayList<>(images); // since initialized with images, store originals as well
+        this.isSelected = false;
+    }
+
+    /**
+     * Initialize all fields of item, as well as an 'originalImages' field used if this item is an update
+     * to something already stored in the database.
+     * @param firebaseId   ID of item to create.
+     * @param name         Name of item to create.
+     * @param description  Description of item to create.
+     * @param comment      Comment of item to create.
+     * @param make         Make of item to create.
+     * @param model        Model of item to create.
+     * @param serialNo     Serial number of item to create.
+     * @param value        Estimated value of item to create (an ItemValue).
+     * @param date         Date of purchase of item to create (an ItemDate).
+     */
+    public InventoryItem(String firebaseId, String name, String description, String comment,
+                         String make, String model, String serialNo, ItemValue value, ItemDate date,
+                         ArrayList<Tag> tags, ArrayList<ItemImage> images, ArrayList<ItemImage> originalImages) {
         // full constructor
         this.firebaseId = firebaseId;
         this.name = name;
@@ -76,7 +112,8 @@ public class InventoryItem implements Serializable {
         this.date = date;
         this.tags = (ArrayList<Tag>) tags.clone();
         this.tags.sort(Comparator.reverseOrder());
-        // TODO: images
+        this.images = images;
+        this.originalImages = originalImages;
         this.isSelected = false;
     }
 
@@ -97,7 +134,7 @@ public class InventoryItem implements Serializable {
         itemData.put("value", this.getValue().toPrimitiveLong()); // convert ItemValue to long
         itemData.put("date", this.getDate().toDate()); // convert ItemDate to Date
         itemData.put("tags", this.getTagIds());
-        // TODO: tags and images
+        itemData.put("images", this.getImagePaths()); // list of image paths as strings
         return itemData;
     }
 
@@ -307,4 +344,26 @@ public class InventoryItem implements Serializable {
         });
         return tagIds;
     }
+
+    public ArrayList<ItemImage> getImages() {
+        return images;
+    }
+
+    public ArrayList<String> getImagePaths() {
+        ArrayList<String> imagePaths = new ArrayList<String>();
+        for (ItemImage image : images) {
+            if (image.getStoragePath() != null) {
+                imagePaths.add(image.getStoragePath());
+            }
+            else {
+                Log.d("InventoryItem", String.format("no path for item %s, skipping in getImagePaths", image));
+            }
+        }
+        return imagePaths;
+    }
+
+    public ArrayList<ItemImage> getOriginalImages() {
+        return originalImages;
+    }
+
 }
