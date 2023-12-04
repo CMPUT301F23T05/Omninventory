@@ -50,10 +50,16 @@ public class TestSortItemActivity {
 
     @Before
     public void setup() {
+
+        testItems.sleepProblemsAway(1000);
+
         onView(withId(R.id.login_username_edit_text)).perform(typeText("Tester"));
         onView(withId(R.id.login_password_edit_text))
                 .perform(typeText("Hahaha123!"), closeSoftKeyboard());
         onView(withId(R.id.login_btn)).perform(click());
+
+        //allow app to load in time
+        testItems.sleepProblemsAway(2000);
     }
 
     @After
@@ -66,12 +72,7 @@ public class TestSortItemActivity {
         testItems.generateTestItems();
         //add dates to each test item
 
-        try {
-            Thread.sleep(100); // Sleep for 1 second
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return;
-        }
+        testItems.sleepProblemsAway(100);
 
         onView(withText("TestItem1"))
                 .perform(scrollTo())
@@ -195,12 +196,7 @@ public class TestSortItemActivity {
     public void testSortItemByDescription(){
         testItems.generateTestItems();
 
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return;
-        }
+        testItems.sleepProblemsAway(100);
 
         onView(withText("TestItem1"))
                 .perform(scrollTo())
@@ -298,12 +294,7 @@ public class TestSortItemActivity {
     public void testSortItemByMake(){
         testItems.generateTestItems();
 
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return;
-        }
+        testItems.sleepProblemsAway(100);
 
         onView(withText("TestItem1"))
                 .perform(scrollTo())
@@ -401,79 +392,62 @@ public class TestSortItemActivity {
     @Test
     public void testSortItemByEstValue(){
         testItems.generateTestItems();
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return;
-        }
+        testItems.sleepProblemsAway(100);
 
         onView(withText("TestItem1"))
                 .perform(scrollTo())
                 .perform(click());
 
-        onView(withId(R.id.edit_button)).perform(click());
-        onView(withId(R.id.item_description_edittext)).perform(typeText("SortTest"));
-        onView(withId(R.id.item_value_edittext)).perform(typeText("3.22"));
-        onView(withId(R.id.save_button)).perform(click());
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return;
-        }
-        onView(withId(R.id.back_button)).perform(click());
+        testItems.sleepProblemsAway(100);
 
+        onView(withId(R.id.edit_button)).perform(click());
+        testItems.sleepProblemsAway(100);
+        onView(withId(R.id.item_description_edittext)).perform(typeText("SortTest"));
+        onView(withId(R.id.item_value_edittext)).perform(scrollTo()).perform(typeText("3.22"));
+        onView(withId(R.id.save_button)).perform(click());
+        testItems.sleepProblemsAway(500);
+        onView(withId(R.id.back_button)).perform(click());
+        testItems.sleepProblemsAway(100);
         onView(withText("TestItem2"))
                 .perform(scrollTo())
                 .perform(click());
+        testItems.sleepProblemsAway(100);
         onView(withId(R.id.edit_button)).perform(click());
+        testItems.sleepProblemsAway(100);
         onView(withId(R.id.item_description_edittext)).perform(typeText("SortTest"));
-        onView(withId(R.id.item_value_edittext)).perform(typeText("2.22"));
+        onView(withId(R.id.item_value_edittext)).perform(scrollTo()).perform(typeText("2.22"));
         onView(withId(R.id.save_button)).perform(click());
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return;
-        }
+        testItems.sleepProblemsAway(500);
         onView(withId(R.id.back_button)).perform(click());
 
         onView(withText("TestItem3"))
                 .perform(scrollTo())
                 .perform(click());
+        testItems.sleepProblemsAway(100);
         onView(withId(R.id.edit_button)).perform(click());
+        testItems.sleepProblemsAway(100);
         // Click the button to open the DatePickerDialog
         onView(withId(R.id.item_description_edittext)).perform(typeText("SortTest"));
-        onView(withId(R.id.item_value_edittext)).perform(typeText("1.11"));
+        onView(withId(R.id.item_value_edittext)).perform(scrollTo()).perform(typeText("1.11"));
         onView(withId(R.id.save_button)).perform(click());
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return;
-        }
+        testItems.sleepProblemsAway(500);
         onView(withId(R.id.back_button)).perform(click());
 
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return;
-        }
+        testItems.sleepProblemsAway(100);
 
         //Expected order would be testitem3, testitem2, testitem1
         //From inventory screen select sort/filter button
         onView(withId(R.id.sort_filter_button)).perform(click());
-
+        testItems.sleepProblemsAway(500);
         //Select the sort option dropdown
         onView(withId(R.id.sort_dropdown_spinner)).perform(click());
-
+        testItems.sleepProblemsAway(100);
         //Select Date
         // Select the "Date" sort option from the dropdown
         onData(allOf(is(instanceOf(String.class)), is("Estimated Value")))
                 .inRoot(isPlatformPopup()).perform(click());
 
+        testItems.sleepProblemsAway(100);
         //add a description filter to test sort for only certain items
         onView(withId(R.id.description_filter_edit_text))
                 .perform(typeText("SortTest"), closeSoftKeyboard());
@@ -481,6 +455,7 @@ public class TestSortItemActivity {
 
         //Select go back button
         onView(withId(R.id.back_button)).perform(click());
+        testItems.sleepProblemsAway(500);
 
         //validate that items are sorted by date ASC.
         // Scroll to the first expected item and verify its position
@@ -488,7 +463,7 @@ public class TestSortItemActivity {
                 .inAdapterView(withId(R.id.item_list)) // Replace with the actual ID of your ListView
                 .atPosition(0)
                 .onChildView(withId(R.id.item_name_text)) // Replace with the actual ID of the TextView within the list item
-                .check(matches(withText("TestItem1")));
+                .check(matches(withText("TestItem3")));
 
         onData(anything())
                 .inAdapterView(withId(R.id.item_list))
@@ -500,18 +475,20 @@ public class TestSortItemActivity {
                 .inAdapterView(withId(R.id.item_list))
                 .atPosition(2)
                 .onChildView(withId(R.id.item_name_text))
-                .check(matches(withText("TestItem3")));
+                .check(matches(withText("TestItem1")));
 
         //Test DESC
         onView(withId(R.id.sort_filter_button)).perform(click());
+        testItems.sleepProblemsAway(100);
         onView(withId(R.id.asc_desc_button)).perform(click());
         onView(withId(R.id.back_button)).perform(click());
 
+        testItems.sleepProblemsAway(100);
         onData(anything())
                 .inAdapterView(withId(R.id.item_list)) // Replace with the actual ID of your ListView
                 .atPosition(0)
                 .onChildView(withId(R.id.item_name_text)) // Replace with the actual ID of the TextView within the list item
-                .check(matches(withText("TestItem3")));
+                .check(matches(withText("TestItem1")));
 
         onData(anything())
                 .inAdapterView(withId(R.id.item_list))
@@ -523,7 +500,7 @@ public class TestSortItemActivity {
                 .inAdapterView(withId(R.id.item_list))
                 .atPosition(2)
                 .onChildView(withId(R.id.item_name_text))
-                .check(matches(withText("TestItem1")));
+                .check(matches(withText("TestItem3")));
     }
 
 

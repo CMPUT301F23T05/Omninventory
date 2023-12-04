@@ -42,16 +42,22 @@ public class TestFilterItemActivity {
 
     @Before
     public void setup() {
+        testItems.sleepProblemsAway(1000);
+
         onView(withId(R.id.login_username_edit_text)).perform(typeText("Tester"));
         onView(withId(R.id.login_password_edit_text))
                 .perform(typeText("Hahaha123!"), closeSoftKeyboard());
         onView(withId(R.id.login_btn)).perform(click());
+
+        //allow app to load in time
+        testItems.sleepProblemsAway(2000);
 
         testItems.generateTestItems();
     }
 
     @After
     public void cleanup(){
+        testItems.sleepProblemsAway(500);
         testItems.wipeTestItems();
     }
 
@@ -91,6 +97,8 @@ public class TestFilterItemActivity {
 
         onView(withId(R.id.add_make_filter_button)).perform(click());
         onView(withId(R.id.back_button)).perform(click());
+
+        testItems.sleepProblemsAway(500);
 
         //validate the items are filtered by make.
         onView(withText("TestItem1")).check(matches(isDisplayed()));
@@ -177,6 +185,8 @@ public class TestFilterItemActivity {
         onView(withId(R.id.add_date_filter_button)).perform(click());
         onView(withId(R.id.back_button)).perform(click());
 
+        testItems.sleepProblemsAway(500);
+
         //validate the items are filtered by make.
         onView(withText("TestItem1")).check(matches(isDisplayed()));
         onView(withText("TestItem2")).check(matches(isDisplayed()));
@@ -224,6 +234,8 @@ public class TestFilterItemActivity {
 
         onView(withId(R.id.add_description_filter_button)).perform(click());
         onView(withId(R.id.back_button)).perform(click());
+
+        testItems.sleepProblemsAway(500);
 
         //validate the items are filtered by make.
         onView(withText("TestItem1")).check(matches(isDisplayed()));
