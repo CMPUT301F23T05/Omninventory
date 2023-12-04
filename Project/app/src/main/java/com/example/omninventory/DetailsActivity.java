@@ -160,7 +160,9 @@ public class DetailsActivity extends AppCompatActivity implements GetInventoryIt
             // as they may have been edited
             Log.d("DetailsActivity", "refreshing currentItem");
             repo.getInventoryItemInto(currentItem.getFirebaseId(), this);
-            // need to redownload images in onGetInventoryItem because size of array may change
+
+            // clear adapter in case we had anything in there (otherwise downloading new images will cause duplicates)
+            imageAdapter.resetData(currentItem.getImages().size());
         }
     }
 
