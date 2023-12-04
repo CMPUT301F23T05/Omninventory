@@ -17,9 +17,9 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/omninventory_logo_static"
+        android:icon="@drawable/omninventory_logo"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/omninventory_logo_static"
+        android:roundIcon="@drawable/omninventory_logo"
         android:supportsRtl="true"
         android:theme="@style/Base.Theme.Omninventory"
         tools:targetApi="31">
