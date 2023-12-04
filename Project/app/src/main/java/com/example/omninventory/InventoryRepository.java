@@ -113,6 +113,7 @@ public class InventoryRepository {
             }
         }
         else {
+            // may be executed if item was in database from before image functionality was added
             Log.d("InventoryRepository", "images array is null");
         }
 
@@ -137,67 +138,6 @@ public class InventoryRepository {
         return item;
     }
 
-    public void attemptDownloadImages(InventoryItem item, ImageDownloadHandler handler) {
-        // get all the images associated with this item from storage
-        ArrayList<ItemImage> images = item.getImages();
-        Log.d("InventoryRepository", "attemptDownloadImages called, item images: " + images.toString());
-
-        for (int i = 0; i < images.size(); i++) {
-            ItemImage image = images.get(i);
-            Log.d("InventoryRepository", "attempting to download image: " + image.toString());
-
-            // get image's uri, hopefully
-            int finalPos = i;
-            storageRef.child(image.getStoragePath()).getDownloadUrl()
-                .addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Log.d("InventoryRepository", String.format("Got URI for image path %s, URI %s", image.getStoragePath(), uri));
-                        image.setUri(uri);
-                        handler.onImageDownload(finalPos, image); // call handler function to refresh its images
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("InventoryRepository", "Couldn't get URI for image path " + image.getStoragePath());
-                        handler.onImageDownloadFailed(finalPos);
-                    }
-                });
-        }
-    }
-
-    /**
-     * Attempt to download a single image, at position `pos` in item's images.
-     * @param item
-     * @param handler
-     */
-    public void attemptDownloadImage(InventoryItem item, int pos, ImageDownloadHandler handler) {
-        // get all the images associated with this item from storage
-        ItemImage image = item.getImages().get(pos);
-        Log.d("InventoryRepository", "attemptDownloadImages called, image: " + image.toString());
-
-        // get image's uri, hopefully
-        storageRef.child(image.getStoragePath()).getDownloadUrl()
-                .addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        Log.d("InventoryRepository", String.format("Got URI for image path %s, URI %s", image.getStoragePath(), uri));
-                        image.setUri(uri);
-                        handler.onImageDownload(pos, image); // call handler function to refresh its images
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d("InventoryRepository", "Couldn't get URI for image path " + image.getStoragePath());
-                        handler.onImageDownloadFailed(pos);
-                    }
-                });
-    }
-
-
-
     /**
      * Add a new InventoryItem to the inventoryItem collection. Also adds reference to the current
      * User's list of owned items.
@@ -206,8 +146,8 @@ public class InventoryRepository {
      */
     public void addInventoryItem(User currentUser, InventoryItem item) {
 
-        // upload images
-        addImages(item.getImages()); // this also returns the storageRefs but we get them in item.convertToHashMap instead
+        // upload images and save their storage paths in the fields of item's ItemImages
+        addImages(item.getImages());
 
         // create data for new item document
         HashMap<String, Object> itemData = item.convertToHashMap();
@@ -332,10 +272,23 @@ public class InventoryRepository {
         });
     }
 
-
-
     /**
-     * remove and add images
+     * Given an ArrayList of the previous images held by an item and the images now held by that item
+     * (i.e. after the item is edited), this method compares the two lists, uploads any new images
+     * to storage, and deletes any old images from storage.
+     * Specifically:
+     * - An image that appears in prevImages but not newImages will be deleted from storage.
+     * - An image that appears in newImages but not prevImages will be uploaded to storage.
+     *
+     * This aims to minimize storage usage (by deleting unused images) and wasted upload time (by
+     * not uploading extra copies of the same image).
+     *
+     * Images are compared using their storagePath field, that is the path associated with the image
+     * in Firebase Storage. Any image that has not yet been uploaded to storage will have a
+     * storagePath attribute of null and will always be uploaded.
+     *
+     * @param prevImages The array of 'previous' images held by an InventoryItem before update.
+     * @param newImages The array of 'new' images held by an InventoryItem after update.
      */
     public void updateItemImages(ArrayList<ItemImage> prevImages, ArrayList<ItemImage> newImages) {
         // if no prev images, we are just adding all images
@@ -379,6 +332,7 @@ public class InventoryRepository {
                 toDelete.add(oldImg);
             }
         }
+
         // upload images
         Log.d("InventoryRepository", "Uploading new images: " + toUpload);
         addImages(toUpload);
@@ -386,6 +340,117 @@ public class InventoryRepository {
         // delete images
         Log.d("InventoryRepository", "Deleting images no longer used: " + toDelete);
         deleteImages(toDelete);
+    }
+
+    /**
+     * Add a list of ItemImages to Firebase Storage.
+     * @param images The images to upload.
+     * @return An ArrayList containing the storage path of each image uploaded.
+     */
+    public ArrayList<String> addImages(ArrayList<ItemImage> images) {
+
+        ArrayList<String> imagePaths = new ArrayList<String>();
+
+        for (ItemImage image : images) {
+            String filepath = "images/" + UUID.randomUUID().toString();
+
+            // create filename for new image
+            StorageReference imageRef = storageRef.child(filepath);
+
+            // store reference
+            imagePaths.add(filepath);
+            image.setStoragePath(filepath);
+
+            imageRef.putFile(image.getUri())
+                    .addOnSuccessListener(
+                            new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    Log.d("InventoryRepository", "addImages: Image uploaded successfully:" + image.getUri() + " as " + filepath);
+                                }
+                            })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("InventoryRepository", "addImages: Image failed to upload:" + image.getUri());
+                        }
+                    });
+        }
+
+        // return a list of image paths
+        Log.d("InventoryRepository", "Started tasks to upload images: " + imagePaths.toString());
+        return imagePaths;
+    }
+
+    /**
+     * Delete a list of ItemImages from the Firebase Storage (based on storage path).
+     * @param images The list of ItemImages to delete.
+     */
+    public void deleteImages(ArrayList<ItemImage> images) {
+
+        for (ItemImage image : images) {
+            // get reference for image
+            StorageReference imageRef = storageRef.child(image.getStoragePath());
+            imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    Log.d("InventoryRepository", "deleteImages: deleted image with path " + image.getStoragePath());
+                    image.setStoragePath(null); // ensure we don't try to reference this path again
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d("InventoryRepository", "deleteImages: failed to delete image with path " + image.getStoragePath());
+                    image.setStoragePath(null); // get rid of path anyway because there is probably something wrong with it
+                }
+            });
+        }
+    }
+
+    /**
+     * Attempt to download all the ItemImages referenced by Firebase Storage path held by the
+     * InventoryItem.
+     * @param item
+     * @param handler
+     */
+    public void attemptDownloadImages(InventoryItem item, ImageDownloadHandler handler) {
+        // get all the images associated with this item from storage
+        Log.d("InventoryRepository", "attemptDownloadImages called, item images: " + item.getImages().toString());
+
+        for (int i = 0; i < item.getImages().size(); i++) {
+            // get image's uri, hopefully
+            attemptDownloadImage(item, i, handler);
+        }
+    }
+
+    /**
+     * Attempt to download a single image, at position `pos` in item's images. Calls a handler
+     * function on each successful or failed download.
+     * @param item
+     * @param handler
+     */
+    public void attemptDownloadImage(InventoryItem item, int pos, ImageDownloadHandler handler) {
+        // get all the images associated with this item from storage
+        ItemImage image = item.getImages().get(pos);
+        Log.d("InventoryRepository", "attemptDownloadImage called, image: " + image.toString());
+
+        // get image's uri, hopefully
+        storageRef.child(image.getStoragePath()).getDownloadUrl()
+                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        Log.d("InventoryRepository", String.format("Got URI for image path %s, URI %s", image.getStoragePath(), uri));
+                        image.setUri(uri);
+                        handler.onImageDownload(pos, image); // call handler function to refresh its images
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("InventoryRepository", "Couldn't get URI for image path " + image.getStoragePath());
+                        handler.onImageDownloadFailed(pos);
+                    }
+                });
     }
 
     /**
@@ -465,77 +530,6 @@ public class InventoryRepository {
                     }
                 });
     };
-
-    /**
-     * Add a list of ItemImages to the storage.
-     * @param images
-     * @return
-     */
-    public ArrayList<String> addImages(ArrayList<ItemImage> images) {
-
-        ArrayList<String> imagePaths = new ArrayList<String>();
-//        ArrayList<Task> uploadTasks = new ArrayList<Task>();
-
-        for (ItemImage image : images) {
-            String filepath = "images/" + UUID.randomUUID().toString();
-
-            // create filename for new image
-            StorageReference imageRef = storageRef.child(filepath);
-
-            // store reference
-            imagePaths.add(filepath);
-            image.setStoragePath(filepath);
-            Log.d(">????>", image.toString());
-
-            imageRef.putFile(image.getUri())
-                .addOnSuccessListener(
-                        new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                            @Override
-                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                Log.d("InventoryRepository", "addImages: Image uploaded successfully:" + image.getUri() + " as " + filepath);
-                            }
-                        })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // usually this gets called if you're returning to ItemDetails and an image hasn't
-                        // been uploaded yet. StorageException is also printed
-                        Log.d("InventoryRepository", "addImages: Image failed to upload:" + image.getUri());
-                    }
-                });
-        }
-
-        // return a list of image paths
-        Log.d("InventoryRepository", "Started tasks to upload images: " + imagePaths.toString());
-        return imagePaths;
-    }
-
-    /**
-     * Delete a list of ItemImages from the storage (based on path).
-     * @param images
-     * @return
-     */
-    public void deleteImages(ArrayList<ItemImage> images) {
-
-        for (ItemImage image : images) {
-            // get reference for image
-            StorageReference imageRef = storageRef.child(image.getStoragePath());
-            imageRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
-                @Override
-                public void onSuccess(Void unused) {
-                    Log.d("InventoryRepository", "deleteImages: deleted image with path " + image.getStoragePath());
-                    image.setStoragePath(null); // ensure we don't try to reference this path again
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d("InventoryRepository", "deleteImages: failed to delete image with path " + image.getStoragePath());
-                    image.setStoragePath(null); // get rid of path anyway because there is probably something wrong with it
-                }
-            });
-        }
-
-    }
 
     /**
      * Adds a new Tag to the *tag* collection.
