@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -355,6 +356,7 @@ public class InventoryRepository {
         HashMap<String, Object> data = new HashMap<>();
         data.put("name", tag.getName());
         data.put("owner", tag.getOwner());
+        data.put("priority", tag.getPriority());
         data.put("items", tag.getItemIds());
         if (tag.getId().isEmpty()) {
             tag.setId(tagsRef.document().getId());
@@ -382,6 +384,7 @@ public class InventoryRepository {
         HashMap<String, Object> tagData = new HashMap<>();
         tagData.put("name", tag.getName());
         tagData.put("owner", tag.getOwner());
+        tagData.put("priority", tag.getPriority());
         tagData.put("items", tag.getItemIds());
 
         // get the document for this tag
@@ -412,8 +415,13 @@ public class InventoryRepository {
      */
     public Tag convertDocumentToTag(DocumentSnapshot doc) {
         Log.d("TagRepository", "convert called with document name=" + doc.getId());
-
-        Tag tag = new Tag(doc.getId(), doc.getString("name"), doc.getString("owner"), (ArrayList<String>) doc.get("items"));
+        long priority = 0;
+        try {
+            priority = (long) doc.get("priority");
+        } catch (NullPointerException e) {
+            priority = 0;
+        }
+        Tag tag = new Tag(doc.getId(), doc.getString("name"), doc.getString("owner"), priority,   (ArrayList<String>) doc.get("items"));
 
         return tag;
     }
@@ -441,11 +449,12 @@ public class InventoryRepository {
                         tagDict.put(tag.getId(), tag);
                         adapter.add(tag);
                     }
+                    adapter.sort(Comparator.reverseOrder());
+                    adapter.notifyDataSetChanged();
                 }
             }
         });
 
-        adapter.notifyDataSetChanged();
         return registration;
     }
 

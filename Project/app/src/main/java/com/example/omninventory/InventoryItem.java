@@ -4,6 +4,7 @@ import com.google.firebase.firestore.DocumentReference;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -74,6 +75,7 @@ public class InventoryItem implements Serializable {
         this.value = value;
         this.date = date;
         this.tags = (ArrayList<Tag>) tags.clone();
+        this.tags.sort(Comparator.reverseOrder());
         // TODO: images
         this.isSelected = false;
     }
@@ -115,7 +117,10 @@ public class InventoryItem implements Serializable {
      * Adds a new tag to this InventoryItem's ArrayList of tags.
      * @param tag The tag to add.
      */
-    public void addTag(Tag tag) { tags.add(tag); }
+    public void addTag(Tag tag) {
+        tags.add(tag);
+        tags.sort(Comparator.reverseOrder());
+    }
 
     /**
      * For InventoryItems in the MainActivity item list, this returns a flag describing whether or
@@ -276,7 +281,10 @@ public class InventoryItem implements Serializable {
      * Setter for the InventoryItem's tags.
      * @param tags New tags.
      */
-    public void setTags(ArrayList<Tag> tags) { this.tags = tags; }
+    public void setTags(ArrayList<Tag> tags) {
+        this.tags = tags;
+        this.tags.sort(Comparator.reverseOrder());
+    }
 
     /**
      * Getter for the InventoryItem's tags.
