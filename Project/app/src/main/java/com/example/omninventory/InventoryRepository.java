@@ -630,6 +630,62 @@ public class InventoryRepository {
     }
 
     /**
+     * Deletes a specified tag for a given owner.
+     *
+     * @param tag  The Tag to be deleted
+     * @param owner The owner of the tag
+     */
+    public void deleteTag(Tag tag, String owner) {
+        // Check if the tag's owner matches the specified owner
+        if (tag.getOwner().equals(owner)) {
+
+            // Delete the tag
+            tagsRef.document(tag.getId()).delete()
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, "Tag successfully deleted: " + tag.getId());
+                            // Remove this tag from all items that contain it
+                            removeTagFromItems(tag.getId());
+
+                            // Remove the tag from the local tag dictionary if used
+                            tagDict.remove(tag.getId());
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e(TAG, "Error deleting tag: " + tag.getId(), e);
+                        }
+                    });
+        } else {
+            Log.e(TAG, "Attempted to delete a tag with mismatched owner. Tag ID: " + tag.getId() + ", Owner: " + owner);
+        }
+    }
+
+    /**
+     * Remove the deleted tag from all owner items containing the tag
+     * @param tagId ID of tag to remove from specific inventory items
+     */
+    private void removeTagFromItems(String tagId) {
+        // Query all items that contain the tag in their 'tags' field
+        inventoryItemsRef.whereArrayContains("tags", tagId).get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            // Remove the tag from each item
+                            DocumentReference itemRef = inventoryItemsRef.document(documentSnapshot.getId());
+                            itemRef.update("tags", FieldValue.arrayRemove(tagId))
+                                    .addOnSuccessListener(aVoid -> Log.d(TAG, "Tag removed from item: " + documentSnapshot.getId()))
+                                    .addOnFailureListener(e -> Log.e(TAG, "Error removing tag from item: " + documentSnapshot.getId(), e));
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> Log.e(TAG, "Error querying items for tag removal", e));
+    }
+
+    /**
      * Convert fields of a DocumentSnapshot from the tag collection to a Tag.
      * @param doc DocumentSnapshot to convert
      * @return the resultant tag
