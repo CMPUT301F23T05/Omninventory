@@ -121,9 +121,9 @@ public class ManageTagsActivity extends AppCompatActivity {
         EditText tagPriorityEditText = addTagDialog.findViewById(R.id.new_tag_priority_editText);
         Button addTagDialogButton = addTagDialog.findViewById(R.id.add_tag_dialog_button);
         Button cancelDialogButton = addTagDialog.findViewById(R.id.cancel_dialog_button);
-        TextView dialogHeader = addTagDialog.findViewById(R.id.filter_by_tags_header_text);
-
+        TextView dialogHeader = addTagDialog.findViewById(R.id.dialog_tag_text);
         if (tag != null) {
+            Log.d("ManageTagsActivity", "ManageTagsActivity is here");
             tagNameEditText.setText(tag.getName());
             tagPriorityEditText.setText(Long.toString(tag.getPriority()));
             dialogHeader.setText("EDIT TAG");
